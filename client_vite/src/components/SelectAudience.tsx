@@ -2,7 +2,7 @@ import { AiOutlineClose } from "react-icons/ai";
 
 interface SelectAudienceProps {
     setSelectAudience: React.Dispatch<React.SetStateAction<boolean>>;
-    setUploadPost: React.Dispatch<React.SetStateAction<any>>;
+    setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
   }
 const SelectAudience = ({ setSelectAudience, setUploadPost }: SelectAudienceProps) => {
 
@@ -26,7 +26,7 @@ const SelectAudience = ({ setSelectAudience, setUploadPost }: SelectAudienceProp
                 <p className='text-xl text-center font-semibold px-5 pt-1 pb-3'>
                     Create post
                 </p>
-                <hr className="text-fb-gray-dark" />
+                <hr className="text-fb-dark" />
                 <div className="w-full">
                 </div>
                 <div className="flex flex-row gap-3 m-3">

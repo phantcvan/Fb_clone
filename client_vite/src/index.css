@@ -32,6 +32,11 @@ code {
 }
 
 .content-box {
-  -webkit-box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.12); 
-  box-shadow: 0px 0px 2px 1px rgba(0,0,0,0.12);
+  -webkit-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.12);
+}
+
+.addOn-box {
+  -webkit-box-shadow: 0px 3px 8px 1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 3px 8px 1px rgba(0, 0, 0, 0.3);
 }

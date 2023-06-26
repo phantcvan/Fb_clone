@@ -86,7 +86,7 @@ const Login = () => {
                     <div className="flex items-center justify-center my-4">
                         <span className="text-fb-blue cursor-pointer text-sm">Forgotten password?</span>
                     </div>
-                    <hr className="mx-3 text-fb-gray-dark mb-7 mt-2" />
+                    <hr className="mx-3 text-fb-dark mb-7 mt-2" />
                     <div className="mx-3 mt-3 flex items-center justify-center">
                         <div className="w-fit bg-green rounded-md py-2 px-4 cursor-pointer"
                             onClick={() => setOpenSignUp(true)}>

@@ -3,7 +3,7 @@ import { FaBookOpen } from "react-icons/fa";
 import { BiSolidMoviePlay } from "react-icons/bi";
 import "../index.css";
 import { useState } from "react";
-import CreatPost from "./CreatPost";
+import CreatePost from "./CreatePost";
 
 const Feed = () => {
     const [selectStory, setSelectStory] = useState(true);
@@ -38,7 +38,7 @@ const Feed = () => {
                     <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, USERNAME?</span>
                 </div>
             </div>
-            {uploadPost && <CreatPost setUploadPost={setUploadPost} />}
+            {uploadPost && <CreatePost setUploadPost={setUploadPost} />}
         </div>
     )
 }
