@@ -1,15 +1,18 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { MdNotifications } from "react-icons/md";
 import { BsMessenger } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 
 
 const Topbar = () => {
     return (
-        <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md my-1 pb-1">
+        <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md my-1 pb-1 z-10 bg-white">
             <div className="flex basis-1/4 ml-4">
+            <Link to="/">
                 <img src="http://localhost:5173/assets/facebook-logo.png"
                     className="w-[141px] h-[37px] cursor-pointer object-cover" />
+            </Link>
             </div>
             <div className="flex flex-1 items-center">
                 <div className="w-[100%] h-10 py-2 text-fb-gray-text bg-fb-gray-light hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">

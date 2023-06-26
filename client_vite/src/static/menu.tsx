@@ -13,6 +13,10 @@ export const CategoryItems = [
     Group: [
       { logoUrl:"http://localhost:5173/assets/group/baking.jpg", name: "Baking recipe", path: "/group/bakingrecipe",	},
       { logoUrl:"http://localhost:5173/assets/group/flower.jpeg", name: "Flower shop", path: "/group/flowershop",	},
+      { logoUrl:"http://localhost:5173/assets/group/baking.jpg", name: "Baking recipe", path: "/group/bakingrecipe",	},
+      { logoUrl:"http://localhost:5173/assets/group/flower.jpeg", name: "Flower shop", path: "/group/flowershop",	},
+      { logoUrl:"http://localhost:5173/assets/group/baking.jpg", name: "Baking recipe", path: "/group/bakingrecipe",	},
+      { logoUrl:"http://localhost:5173/assets/group/flower.jpeg", name: "Flower shop", path: "/group/flowershop",	},
     ],
     // Subscriptions: channelsSub.map(channel => ({
     //   logoUrl: channel.logoUrl,
