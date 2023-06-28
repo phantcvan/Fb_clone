@@ -1,6 +1,6 @@
 import { AiFillHome } from "react-icons/ai";
 import { HiUserGroup } from "react-icons/hi2";
-import { SideBarGroup } from "../static/menu";
+import { SideBarGroup, CategoryItems } from "../static/menu";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { Link } from "react-router-dom";
 
@@ -45,7 +45,18 @@ const Sidebar = () => {
                         </div>
 
                     </div>
-
+                    <div className="flex flex-wrap gap-1">
+                    {CategoryItems.map((item,index) => (
+                        <div key={index}
+                                className={`text-xs items-center cursor-pointer text-fb-gray-text cursor-pointer`}
+                            >
+                                {index===CategoryItems.length-1
+                                ?<span className="">{item}</span>
+                            :<span className="">{item} · </span>}
+                                
+                            </div>
+                    ))}
+                    </div>
                 </div>
             </Scrollbars>
 

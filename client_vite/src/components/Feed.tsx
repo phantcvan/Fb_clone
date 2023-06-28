@@ -21,16 +21,19 @@ const Feed = () => {
                             <div className={`w-1/2 flex items-center justify-center cursor-pointer
                              ${selectStory && "border-b-[3px] border-fb-blue"} gap-3 pb-2`}
                                 onClick={() => setSelectStory(true)}>
-                                <FaBookOpen size={22} style={{ color: "#1876F2" }} />
+                                    {selectStory
+                            ? <FaBookOpen size={22} style={{ color: "#1876F2" }} />
+                            : <FaBookOpen size={22} style={{ color: "#65676B" }} />}
+                                
                                 <span className={`${selectStory ? "text-fb-blue" : "text-fb-gray-text"}`}>Stories</span>
                             </div>
-                            {/* <div className={`w-1/2 flex items-center justify-center ${!selectStory&&"border-b-[3px] border-fb-blue"} cursor-pointer gap-3 pb-2`}
+                            <div className={`w-1/2 flex items-center justify-center ${!selectStory&&"border-b-[3px] border-fb-blue"} cursor-pointer gap-3 pb-2`}
                     onClick={()=>setSelectStory(false)}>
                         {selectStory
                             ? <BiSolidMoviePlay size={22} style={{ color:"#65676B"  }} />
                             : <BiSolidMoviePlay size={22} style={{ color: "#1876F2" }} />}
                         <span className={`${selectStory ? "text-fb-gray-text" : "text-fb-blue"}`}>Reels</span>
-                    </div> */}
+                    </div>
                         </div>
                         <Slick />
                     </div>
