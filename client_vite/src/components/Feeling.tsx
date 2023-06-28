@@ -1,46 +1,137 @@
 import { AiOutlineClose } from "react-icons/ai";
+import { BiArrowBack } from "react-icons/bi";
+import { HiMagnifyingGlass } from "react-icons/hi2";
+import { Icon } from "../static/icon";
+import { Scrollbars } from 'react-custom-scrollbars-2';
+import { useState } from "react";
 
+
+interface Feel {
+    icon: string;
+    name: string;
+}
 interface FeelingProps {
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-    setFeeling: React.Dispatch<React.SetStateAction<string>>;
-  }
+    setFeeling: React.Dispatch<React.SetStateAction<Feel[]>>;
+    setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
+    feeling: Feel[];
+}
 
-const Feeling = ({ setUploadPost, setFeeling }: FeelingProps) => {
-  return (
-    <div className='w-[100%] h-fit absolute left-0 bg-overlay-40 flex items-center 
+const Feeling = ({ setUploadPost, setFeeling, setSelectAddOn, feeling }: FeelingProps) => {
+    const [iconSearch, setIconSearch] = useState<Feel[]>([]);
+    const [message, setMessage] = useState("");
+    const handleAddDone = (item: Feel) => {
+        if (feeling.length > 0 && feeling[0].name === item.name) {
+            setFeeling([]);
+            setSelectAddOn(0);
+        } else {
+            setFeeling([item]);
+            setSelectAddOn(0);
+        }
+    };
+    const handleSearchIcon = (e: any) => {
+        const searchInput = e.target.value.trim().toLowerCase();
+        if (searchInput !== "") {
+            const findIcon = Icon.Feeling.filter(item => item.name.includes(searchInput));
+            if ((findIcon.length === 0)) {
+                setMessage("Nothing found");
+                setIconSearch([]);
+            } else {
+                setIconSearch(findIcon);
+            }
+        }else {
+            setMessage("");
+            setIconSearch([]);
+        }
+
+    }
+    console.log("iconSearch", iconSearch);
+
+    return (
+        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
     justify-center z-20'>
-        <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
+            <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
     justify-center z-21'
-            onClick={() => setUploadPost(false)}
-        >
-        </div>
-        <div
-            className='login_box w-[450px] top-3 bottom-3 bg-white pt-4 flex flex-col
+                onClick={() => setUploadPost(false)}
+            >
+            </div>
+            <div
+                className='login_box w-[450px] h-[80%] top-20 bottom-3 bg-white pt-4 flex flex-col
       fixed rounded-md z-25'
-        >
-            <div className='absolute top-2 right-2 cursor-pointer px-2'
-                onClick={() => setUploadPost(false)}>
-                <AiOutlineClose size={20} />
-            </div>
-            <p className='text-xl text-center font-semibold px-5 pt-1 pb-3'>
-                Create post
-            </p>
-            <hr className="text-fb-dark" />
-            <div className="w-full">
-            </div>
-            <div className="flex flex-row gap-3 m-3">
-                <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
-                    className="w-10 h-10 rounded-full cursor-pointer object-cover" />
-                <div className="flex flex-col "
-                    onClick={() => setUploadPost(true)}>
-
+            >
+                <div className='absolute top-2 right-2 cursor-pointer px-2'
+                    onClick={() => setUploadPost(false)}>
+                    <AiOutlineClose size={20} />
                 </div>
-            </div>
+                <div className="flex items-center mx-3 mt-1 mb-3">
+                    <div className="w-8 h-8 bg-fb-gray-light rounded-full flex items-center justify-center cursor-pointer"
+                        onClick={() => setSelectAddOn(0)}>
+                        <BiArrowBack size={20} style={{ color: "#606770" }} />
+                    </div>
+                    <p className='text-xl font-semibold flex flex-1 items-center justify-center'>
+                        How are you feeling?
+                    </p>
+                </div>
+
+                <hr className="text-fb-dark" />
+                <div className="w-full">
+                </div>
+                <div className="flex flex-row gap-3 m-3">
+                    <div className="w-full h-10 py-2 text-fb-gray-text bg-fb-gray-light hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
+                        <div className="mx-1 px-2">
+                            <HiMagnifyingGlass size={18} />
+                        </div>
+                        <input type="text"
+                            placeholder="Search"
+                            className="border-none outline-none bg-fb-gray-light h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
+                            onChange={handleSearchIcon} />
+                    </div>
+                </div>
+                <Scrollbars autoHide style={{ width: '100%', height: `350px`, overflow: 'hidden' }}>
+                    <div className="flex flex-row ml-3 my-1 flex-wrap items-center">
+                        {iconSearch.length === 0
+                            ? message.length > 0
+                                ? <span className="text-fb-gray-text m-auto mt-2 text-[15px]">{message}</span>
+                                : <>
+                                    {Icon.Feeling.map((item, index) => (
+                                        // <Link to={item.path} key={index}>
+                                        <div key={index}
+                                            onClick={() => handleAddDone(item)}
+                                            className={`flex w-1/2 gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
+                                ${feeling[0]?.name === item.name && "bg-fb-gray-light"}`}
+                                        >
+                                            <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
+                                                <span>{item.icon}</span>
+                                            </div>
+                                            <span className="">{item.name}</span>
+                                        </div>
+                                        // </Link>
+                                    ))}
+                                </>
+                            : <>
+                                {iconSearch.map((item, index) => (
+                                    // <Link to={item.path} key={index}>
+                                    <div key={index}
+                                        onClick={() => handleAddDone(item)}
+                                        className={`flex w-1/2 gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
+                                ${feeling[0]?.name === item.name && "bg-fb-gray-light"}`}
+                                    >
+                                        <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
+                                            <span>{item.icon}</span>
+                                        </div>
+                                        <span className="">{item.name}</span>
+                                    </div>
+                                    // </Link>
+                                ))}
+                            </>
+                        }
+                    </div>
+                </Scrollbars>
 
 
+            </div >
         </div >
-    </div >
-  )
+    )
 }
 
 export default Feeling

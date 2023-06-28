@@ -6,8 +6,10 @@ import { Link } from "react-router-dom";
 
 
 const Topbar = () => {
+
+
     return (
-        <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md my-1 pb-1 z-10 bg-white">
+        <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md py-7 z-30 bg-white">
             <div className="flex basis-1/4 ml-4">
             <Link to="/">
                 <img src="http://localhost:5173/assets/facebook-logo.png"

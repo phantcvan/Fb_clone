@@ -1,54 +1,70 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { TbPhotoFilled } from "react-icons/tb";
-import { GiCheckeredFlag } from "react-icons/gi";
+// import { GiCheckeredFlag } from "react-icons/gi";
 import { FaUserTag, } from "react-icons/fa";
 import { FaRegFaceLaugh, FaLocationDot } from "react-icons/fa6";
 import { BiSolidLockAlt, BiSolidDownArrow } from "react-icons/bi";
-import "../index.css";
+import Tippy from '@tippyjs/react/headless';
 import { useState } from "react";
 import SelectAudience from "./SelectAudience";
 import TagPeople from "./TagPeople";
 import Feeling from "./Feeling";
 import CheckIn from "./CheckIn";
 import { useNavigate } from "react-router";
+
 interface Tag {
     id: number;
+    username: string;
+}
+interface Feel {
+    icon: string;
     name: string;
+}
+interface Check {
+    checkIn: string;
+    city: string;
 }
 const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const [selectAudience, setSelectAudience] = useState(false);
     const [addOn, setAddOn] = useState(0);
     const [selectAddOn, setSelectAddOn] = useState(0);
+    const [media, setMedia] = useState("");
     const [newPost, setNewPost] = useState("");
-    const [tag, setTag] = useState<Tag[]>([{id:123,name:"a"}]);
-    const [feeling, setFeeling] = useState("");
-    const [location, setLocation] = useState("");
+    const [tag, setTag] = useState<Tag[]>([]);
+    const [feeling, setFeeling] = useState<Feel[]>([]);
+    const [location, setLocation] = useState<Check[]>([]);
     const navigate = useNavigate();
 
 
     console.log(newPost);
+    // Khi đóng cửa sổ Post
+    const handleClose = () => {
+        setUploadPost(false);
+    }
     const handleAddPost = () => {
 
     }
 
-    const handleClickTag = (id)=>{
+    const handleClickTag = (id: number) => {
         navigate(`/${id}`)
     }
+    console.log(feeling);
 
     return (
-        <div className='w-[100%] h-fit absolute left-0 bg-overlay-40 flex items-center 
+        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
         justify-center z-20'>
+
             <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
         justify-center z-21'
-                onClick={() => setUploadPost(false)}
+                onClick={handleClose}
             >
             </div>
             <div
-                className='login_box w-[450px] top-3 bottom-3 bg-white pt-4 flex flex-col
+                className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col
           fixed rounded-md z-25'
             >
                 <div className='absolute top-2 right-2 cursor-pointer px-2'
-                    onClick={() => setUploadPost(false)}>
+                    onClick={handleClose}>
                     <AiOutlineClose size={20} />
                 </div>
                 <p className='text-xl text-center font-semibold px-5 pt-1 pb-3'>
@@ -63,16 +79,16 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                     <div className="flex flex-col gap-1">
                         <div className="flex text-sm text-black font-semibold">
                             <span className="text-sm text-black">USERNAME
-                                {(feeling || tag.length > 0 || location) && <span> is </span>}
-                                {feeling && <span> feeling {feeling}</span>}
+                                {(feeling.length > 0 || tag.length > 0 || location.length > 0) && <span> is </span>}
+                                {feeling.length > 0 && <span>{feeling[0].icon} feeling {feeling[0].name} </span>}
                                 {tag.length > 0 && tag.length <= 3 && (
                                     <span>
                                         with {tag.map((item: Tag) => (
                                             <span key={item.id} onClick={() => handleClickTag(item.id)}
-                                            className="cursor-pointer hover:underline">
-                                                {item.name}
+                                                className="cursor-pointer hover:underline">
+                                                {item.username}
                                             </span>
-                                        )).reduce((prev, curr) => [prev, ', ', curr])}
+                                        )).reduce((prev, curr): any => [prev, ', ', curr])}
                                     </span>
                                 )}
 
@@ -80,16 +96,16 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                                     <span>
                                         with {tag.slice(0, 2).map((item: Tag) => (
                                             <span key={item.id} onClick={() => handleClickTag(item.id)}>
-                                                {item.name}
+                                                {item.username}
                                             </span>
-                                        )).reduce((prev, curr) => [prev, ', ', curr])} and {tag.length - 2} other people
+                                        )).reduce((prev, curr): any => [prev, ', ', curr])} and {tag.length - 2} other people
                                     </span>
                                 )}
 
 
-                                {(location && feeling) && <span> at {location}</span>}
-                                {(location && !feeling) && <span> in {location}</span>}
-                                {(feeling && tag.length > 0 && location) && <span>.</span>}
+                                {(location.length > 0 && feeling.length > 0) && <span> at {location[0].checkIn}</span>}
+                                {(location.length > 0 && feeling.length === 0) && <span> in {location[0].checkIn}</span>}
+                                {(feeling.length > 0 && tag.length > 0 && location.length > 0) && <span>.</span>}
                             </span>
                         </div>
                         <div className="bg-fb-gray flex items-center rounded-md cursor-pointer w-fit"
@@ -114,46 +130,54 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                         Add to your post
                     </span>
                     <div className="flex">
-                        <div className="w-9 h-9 relative rounded-full flex items-center justify-center hover:bg-fb-gray mx-1"
-                            onMouseEnter={() => setAddOn(1)}
-                            onMouseLeave={() => setAddOn(0)}
-                            onClick={() => setSelectAddOn(1)}>
-                            {addOn === 1
-                                && <span className="addOn-box absolute top-[-30px] bg-fb-dark-2 py-1 px-2 text-white rounded-lg cursor-pointer">
+                        <Tippy
+                            render={attrs => (
+                                <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                                    {...attrs}>
                                     Photo/video
-                                </span>}
-                            <TbPhotoFilled style={{ color: "#45BD62", cursor: "pointer" }} size={24} />
-                        </div>
-                        <div className={`w-9 h-9 relative rounded-full flex items-center justify-center hover:bg-fb-gray mx-1 ${tag.length !== 0 && "bg-[#CAEEF9]"}`}
-                            onMouseEnter={() => setAddOn(2)}
-                            onMouseLeave={() => setAddOn(0)}
-                            onClick={() => setSelectAddOn(2)}>
-                            {addOn === 2
-                                && <span className="addOn-box absolute top-[-30px] bg-fb-dark-2 py-1 px-2 text-white rounded-lg w-[85px] cursor-pointer">
+                                </div>)}>
+                            <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
+                            ${media ? "bg-[#D8E4CA] hover:bg-[#D8E4CA]" : "hover:bg-fb-gray"} `}
+                                onClick={() => setSelectAddOn(1)}>
+                                <TbPhotoFilled style={{ color: "#45BD62", cursor: "pointer" }} size={24} />
+                            </div>
+                        </Tippy>
+                        <Tippy
+                            render={attrs => (
+                                <div className={`box addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                                    {...attrs}>
                                     Tag people
-                                </span>}
-                            <FaUserTag style={{ color: "#1877F2", cursor: "pointer" }} size={24} />
-                        </div>
-                        <div className={`w-9 h-9 relative rounded-full flex items-center justify-center hover:bg-fb-gray mx-1 ${feeling && "bg-[#FEF2D1]"}`}
-                            onMouseEnter={() => setAddOn(3)}
-                            onMouseLeave={() => setAddOn(0)}
-                            onClick={() => setSelectAddOn(3)}>
-                            {addOn === 3
-                                && <span className="addOn-box absolute top-[-30px] bg-fb-dark-2 py-1 px-2 text-white rounded-lg cursor-pointer">
+                                </div>)}>
+                            <div className={`w-9 h-9 relative rounded-full  flex items-center justify-center mx-1
+                            ${tag.length > 0 ? "bg-[#CAEEF9] hover:bg-[#C0E2EC]" : "hover:bg-fb-gray"} `}
+                                onClick={() => setSelectAddOn(2)}>
+                                <FaUserTag style={{ color: "#1877F2", cursor: "pointer" }} size={24} />
+                            </div>
+                        </Tippy>
+                        <Tippy
+                            render={attrs => (
+                                <div className="box addOn-box bg-fb-dark-2 py-1 px-2 text-white rounded-lg cursor-pointer text-xs"  {...attrs}>
                                     Feeling/activity
-                                </span>}
-                            <FaRegFaceLaugh style={{ color: "#EAB026", cursor: "pointer" }} size={24} />
-                        </div>
-                        <div className={`w-9 h-9 relative rounded-full flex items-center justify-center hover:bg-fb-gray mx-1 ${location && "bg-[#FBCCD2]"}`}
-                            onMouseEnter={() => setAddOn(4)}
-                            onMouseLeave={() => setAddOn(0)}
-                            onClick={() => setSelectAddOn(4)}>
-                            {addOn === 4
-                                && <span className="addOn-box absolute top-[-30px] bg-fb-dark-2 py-1 px-2 text-white rounded-lg w-[72px] cursor-pointer">
+                                </div>)}>
+                            <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
+                            ${feeling.length > 0 ? "bg-[#FEF2D1] hover:bg-[#F1E6C6]" : "hover:bg-fb-gray"} `}
+                                onClick={() => setSelectAddOn(3)}>
+                                <FaRegFaceLaugh style={{ color: "#EAB026", cursor: "pointer" }} size={24} />
+                            </div>
+                        </Tippy>
+                        <Tippy
+                            render={attrs => (
+                                <div className="box addOn-box bg-fb-dark-2 py-1 px-2 text-white rounded-lg cursor-pointer text-xs"  {...attrs}>
                                     Check-in
-                                </span>}
-                            <FaLocationDot style={{ color: "#F5533D", cursor: "pointer" }} size={24} />
-                        </div>
+                                </div>)}>
+                            <div className={`w-9 h-9 relative rounded-full flex items-center justify-center
+                             ${location.length > 0 ? "bg-[#FBCCD2] hover:bg-[#EEC2C7]" : "hover:bg-fb-gray"} mx-1`}
+                                onClick={() => setSelectAddOn(4)}>
+                                <FaLocationDot style={{ color: "#F5533D", cursor: "pointer" }} size={24} />
+                            </div>
+                        </Tippy>
+
+
                         {/* <div className="w-9 h-9 relative rounded-full flex items-center justify-center hover:bg-fb-gray mx-1"
                             onMouseEnter={() => setAddOn(5)}
                             onMouseLeave={() => setAddOn(0)}
@@ -169,23 +193,26 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                     </div>
 
                 </div>
-                {newPost
-                    ? <button className={`mt-2 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}
+                {newPost || (feeling.length > 0 || tag.length > 0 || location)
+                    ? <button className={`mt-2 mb-3 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}
                         onClick={handleAddPost}>
                         Post
                     </button>
-                    : <button className={`mt-2 mx-3 py-[6px] rounded-md font-semibold bg-fb-gray-light text-fb-dark cursor-not-allowed`}>
+                    : <button className={`mt-2 mb-3 mx-3 py-[6px] rounded-md font-semibold bg-fb-gray-light text-fb-dark cursor-not-allowed`}>
                         Post
                     </button>}
 
             </div >
             {selectAudience && <SelectAudience setSelectAudience={setSelectAudience} setUploadPost={setUploadPost} />}
             {selectAddOn === 2
-                ? <TagPeople setUploadPost={setUploadPost} setTag={setTag} />
+                ? <TagPeople setUploadPost={setUploadPost} tag={tag} setTag={setTag}
+                    setSelectAddOn={setSelectAddOn} selectAddOn={selectAddOn} />
                 : selectAddOn === 3
-                    ? <Feeling setUploadPost={setUploadPost} setFeeling={setFeeling} />
+                    ? <Feeling setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
+                        setFeeling={setFeeling} feeling={feeling} />
                     : selectAddOn === 4
-                    && < CheckIn setUploadPost={setUploadPost} setLocation={setLocation} />}
+                    && < CheckIn setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
+                        setLocation={setLocation} location={location} />}
         </div >
 
     )
