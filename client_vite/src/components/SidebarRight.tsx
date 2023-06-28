@@ -22,10 +22,10 @@ const SidebarRight = () => {
                                     <span className="text-fb-gray-text">4d</span>
                                 </div>
                                 <div className="flex justify-between font-semibold">
-                                    <button className="bg-fb-blue text-white px-4 py-2 rounded-md">
+                                    <button className="bg-blue-400 text-white px-4 py-2 rounded-md">
                                         Confirm
                                     </button>
-                                    <button className="bg-fb-gray-light hover:bg-fb-gray px-5 py-2 rounded-md">
+                                    <button className="bg-gray-100 hover:bg-fb-gray px-5 py-2 rounded-md">
                                         Delete
                                     </button>
                                 </div>

@@ -5,7 +5,7 @@ const NotFound = () => {
   return (
     <div className="flex flex-col ">
       <Topbar />
-      <div className='bg-fb-gray-light min-h-[calc(100vh-50px)] flex flex-col justify-center items-center z-0'>
+      <div className='bg-gray-100 min-h-[calc(100vh-50px)] flex flex-col justify-center items-center z-0'>
         <div className="flex flex-col justify-center items-center mx-72">
           <div className='mb-3'>
             <img src={"http://localhost:5173/assets/not-found.png"} className="w-[112px] h-[112px]" />

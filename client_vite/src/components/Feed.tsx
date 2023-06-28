@@ -13,7 +13,7 @@ const Feed = () => {
 
     return (
         <div className="flex flex-col w-[45%] pl-20 text-sm gap-3 text-[#1D1D1D] my-2">
-            <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden",}}>
+            <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden", }}>
                 <>
                     <div className="content-box w-full h-[275px] flex flex-col my-3 bg-white border p-4
                      border-fb-gray rounded-lg">
@@ -21,19 +21,19 @@ const Feed = () => {
                             <div className={`w-1/2 flex items-center justify-center cursor-pointer
                              ${selectStory && "border-b-[3px] border-fb-blue"} gap-3 pb-2`}
                                 onClick={() => setSelectStory(true)}>
-                                    {selectStory
-                            ? <FaBookOpen size={22} style={{ color: "#1876F2" }} />
-                            : <FaBookOpen size={22} style={{ color: "#65676B" }} />}
-                                
+                                {selectStory
+                                    ? <FaBookOpen size={22} style={{ color: "#1876F2" }} />
+                                    : <FaBookOpen size={22} style={{ color: "#65676B" }} />}
+
                                 <span className={`${selectStory ? "text-fb-blue" : "text-fb-gray-text"}`}>Stories</span>
                             </div>
-                            <div className={`w-1/2 flex items-center justify-center ${!selectStory&&"border-b-[3px] border-fb-blue"} cursor-pointer gap-3 pb-2`}
-                    onClick={()=>setSelectStory(false)}>
-                        {selectStory
-                            ? <BiSolidMoviePlay size={22} style={{ color:"#65676B"  }} />
-                            : <BiSolidMoviePlay size={22} style={{ color: "#1876F2" }} />}
-                        <span className={`${selectStory ? "text-fb-gray-text" : "text-fb-blue"}`}>Reels</span>
-                    </div>
+                            <div className={`w-1/2 flex items-center justify-center ${!selectStory && "border-b-[3px] border-fb-blue"} cursor-pointer gap-3 pb-2`}
+                                onClick={() => setSelectStory(false)}>
+                                {selectStory
+                                    ? <BiSolidMoviePlay size={22} style={{ color: "#65676B" }} />
+                                    : <BiSolidMoviePlay size={22} style={{ color: "#1876F2" }} />}
+                                <span className={`${selectStory ? "text-fb-gray-text" : "text-fb-blue"}`}>Reels</span>
+                            </div>
                         </div>
                         <Slick />
                     </div>
@@ -42,7 +42,7 @@ const Feed = () => {
                             <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
                                 className="w-10 h-10 rounded-full cursor-pointer object-cover mr-4" />
                         </div>
-                        <div className="bg-fb-gray-light hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
+                        <div className="bg-gray-100 hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
                             onClick={() => setUploadPost(true)}>
                             <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, USERNAME?</span>
                         </div>

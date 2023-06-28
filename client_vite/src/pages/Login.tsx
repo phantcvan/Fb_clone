@@ -53,7 +53,7 @@ const Login = () => {
     console.log("user", user);
 
     return (
-        <div className="bg-fb-gray-light w-[100%] h-screen">
+        <div className="bg-gray-100 w-[100%] h-screen">
             <div className="flex px-[142px] gap-8">
                 <div className="w-[580px] flex flex-col items-start justify-start pt-[72px]">
                     <img src="http://localhost:5173/assets/fb-logo.png" alt=""
@@ -63,12 +63,12 @@ const Login = () => {
                 <div className="login_box w-[400px] my-28 rounded-md pb-6" >
                     <form action="" method="post" onSubmit={handleLogin}>
                         <div className={`mx-3 border mt-3 w-[calc(100%-24px)] rounded-md ${active === 1 ? "border-fb-blue" : "border-fb-gray"}`}>
-                            <input type="text" className="my-[14px] mx-4 w-[calc(100%-36px)] border-none outline-none bg-fb-gray-light"
+                            <input type="text" className="my-[14px] mx-4 w-[calc(100%-36px)] border-none outline-none bg-gray-100"
                                 placeholder="Email address" onChange={handleAddEmail}
                                 onClick={() => setActive(1)} />
                         </div>
                         <div className={`mx-3 border mt-3 w-[calc(100%-24px)] rounded-md ${active === 2 ? "border-fb-blue" : "border-fb-gray"}`}>
-                            <input type="text" className="my-[14px] mx-4 w-[calc(100%-36px)] border-none outline-none bg-fb-gray-light"
+                            <input type="text" className="my-[14px] mx-4 w-[calc(100%-36px)] border-none outline-none bg-gray-100"
                                 placeholder="Password" onChange={handleAddPassword}
                                 onClick={() => setActive(2)} />
                         </div>

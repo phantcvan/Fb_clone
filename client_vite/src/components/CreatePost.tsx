@@ -198,7 +198,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                         onClick={handleAddPost}>
                         Post
                     </button>
-                    : <button className={`mt-2 mb-3 mx-3 py-[6px] rounded-md font-semibold bg-fb-gray-light text-fb-dark cursor-not-allowed`}>
+                    : <button className={`mt-2 mb-3 mx-3 py-[6px] rounded-md font-semibold bg-gray-100 text-fb-dark cursor-not-allowed`}>
                         Post
                     </button>}
 

@@ -50,7 +50,7 @@ const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: 
                     <AiOutlineClose size={20} />
                 </div>
                 <div className="flex items-center mx-3 mt-1 mb-3">
-                    <div className="w-8 h-8 bg-fb-gray-light rounded-full flex items-center justify-center cursor-pointer"
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
                         onClick={handleAddDone}>
                         <BiArrowBack size={20} style={{ color: "#606770" }} />
                     </div>
@@ -63,16 +63,16 @@ const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: 
                     {/* <div className="w-full">
                     </div> */}
                     <div className="flex flex-row gap-3 my-3">
-                        <div className="w-[85%] h-10 py-2 text-fb-gray-text bg-fb-gray-light hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
+                        <div className="w-[85%] h-10 py-2 text-fb-gray-text bg-gray-100 hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
                             <div className="cursor-pointer mx-1 px-2">
                                 <HiMagnifyingGlass size={18} />
                             </div>
                             <input type="text"
                                 placeholder="Search for friends "
-                                className="border-none outline-none bg-fb-gray-light h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray" />
+                                className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray" />
                         </div>
                         <button className="ml-1 text-fb-blue font-semibold"
-                        onClick={handleAddDone}>
+                            onClick={handleAddDone}>
                             Done
                         </button>
                     </div>

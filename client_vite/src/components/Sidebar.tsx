@@ -38,7 +38,7 @@ const Sidebar = () => {
                             // </Link>
                         ))}
                         <div className="flex gap-4 my-5 cursor-pointer items-center">
-                            <div className="w-6 h-6 rounded-full bg-fb-gray-light flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
                                 <HiUserGroup size={18} />
                             </div>
                             <span>See all groups</span>
@@ -46,16 +46,16 @@ const Sidebar = () => {
 
                     </div>
                     <div className="flex flex-wrap gap-1">
-                    {CategoryItems.map((item,index) => (
-                        <div key={index}
+                        {CategoryItems.map((item, index) => (
+                            <div key={index}
                                 className={`text-xs items-center cursor-pointer text-fb-gray-text cursor-pointer`}
                             >
-                                {index===CategoryItems.length-1
-                                ?<span className="">{item}</span>
-                            :<span className="">{item} · </span>}
-                                
+                                {index === CategoryItems.length - 1
+                                    ? <span className="">{item}</span>
+                                    : <span className="">{item} · </span>}
+
                             </div>
-                    ))}
+                        ))}
                     </div>
                 </div>
             </Scrollbars>

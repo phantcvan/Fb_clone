@@ -24,13 +24,13 @@ const Topbar = () => {
                 </Link>
             </div>
             <div className="flex flex-1 items-center">
-                <div className="w-[100%] h-10 py-2 text-fb-gray-text bg-fb-gray-light hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
+                <div className="w-[100%] h-10 py-2 text-fb-gray-text bg-gray-100 hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
                     <div className="cursor-pointer mx-1 px-2">
                         <HiMagnifyingGlass size={18} />
                     </div>
                     <input type="text"
                         placeholder="Search for friend, post or video... "
-                        className="border-none outline-none bg-fb-gray-light h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray" />
+                        className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray" />
                 </div>
             </div>
             <div className="flex basis-1/4 text-red-500 flex-row items-center justify-end mr-4">
@@ -39,7 +39,7 @@ const Topbar = () => {
                     <span>Timeline</span>
                 </div> */}
                 <div className="flex flex-row">
-                    <div className="w-10 h-10 flex flex-row items-center justify-center rounded-full mr-4 cursor-pointer relative bg-fb-gray-light hover:bg-fb-gray">
+                    <div className="w-10 h-10 flex flex-row items-center justify-center rounded-full mr-4 cursor-pointer relative bg-gray-100 hover:bg-fb-gray">
                         <Tippy
                             render={attrs => (
                                 <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -53,7 +53,7 @@ const Topbar = () => {
                             </div>
                         </Tippy>
                     </div>
-                    <div className="w-10 h-10 flex flex-row items-center justify-center rounded-full mr-4 cursor-pointer relative bg-fb-gray-light hover:bg-fb-gray">
+                    <div className="w-10 h-10 flex flex-row items-center justify-center rounded-full mr-4 cursor-pointer relative bg-gray-100 hover:bg-fb-gray">
                         <Tippy
                             render={attrs => (
                                 <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -62,7 +62,7 @@ const Topbar = () => {
                                 </div>)}>
                             <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
                            hover:bg-fb-gray `} onClick={() => isChoose === 2 ? setIsChoose(0) : setIsChoose(2)}>
-                                <MdNotifications size={24} style={{position:"relative"}}/>
+                                <MdNotifications size={24} style={{ position: "relative" }} />
                                 <span className="w-4 h-4 text-xs text-center bg-red rounded-full text-white absolute top-[-5px] right-[-2px]">
                                     1
                                 </span>

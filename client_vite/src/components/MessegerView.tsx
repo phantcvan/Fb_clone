@@ -10,7 +10,7 @@ import { CategoryItems } from "../static/menu";
 const MessegerView = () => {
 
   return (
-    <div className="bg-white p-[16px] absolute top-14 right-0 login_box rounded-md z-40">
+    <div className="bg-white p-4 w-[330px] absolute top-14 right-0 login_box rounded-md z-40">
       <div className="addOn-box bg-white w-[338px] px-2 py-1 rounded-lg ">
         <Link to={'/user/1'} className="px-2 py-2 rounded-lg hover:bg-[rgba(0,0,0,0.05)] flex gap-2 items-center text-[15px] font-semibold cursor-pointer mb-1">
           <img src="http://localhost:5173/assets/person/1.jpeg"
@@ -24,7 +24,7 @@ const MessegerView = () => {
         </div>
       </div>
 
-      <div className="mt-4 p-2 hover:bg-fb-gray-light rounded-lg flex items-center justify-between cursor-pointer">
+      <div className="mt-4 p-2 hover:bg-gray-100 rounded-lg flex items-center justify-between cursor-pointer">
         <div className="font-semibold text-[15px] flex gap-3 items-center">
           <div className="w-9 h-9 rounded-full flex items-center justify-center bg-fb-gray ">
             <div style={{ backgroundPosition: "-88px -110px" }}>

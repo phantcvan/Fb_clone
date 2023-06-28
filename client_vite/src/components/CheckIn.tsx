@@ -19,11 +19,11 @@ interface LocationProps {
 }
 
 const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: LocationProps) => {
-    
+
     const [locationSearch, setLocationSearch] = useState<Check[]>([]);
     const [message, setMessage] = useState("");
     const handleAddDone = (item: Check) => {
-        
+
         if (location?.length !== 0 && location[0].city === item.city) {
             setLocation([]);
             setSelectAddOn(0);
@@ -70,7 +70,7 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
                     <AiOutlineClose size={20} />
                 </div>
                 <div className="flex items-center mx-3 mt-1 mb-3">
-                    <div className="w-8 h-8 bg-fb-gray-light rounded-full flex items-center justify-center cursor-pointer"
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
                         onClick={() => setSelectAddOn(0)}>
                         <BiArrowBack size={20} style={{ color: "#606770" }} />
                     </div>
@@ -83,13 +83,13 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
                 <div className="w-full">
                 </div>
                 <div className="flex flex-row gap-3 m-3">
-                    <div className="w-full h-10 py-2 text-fb-gray-text bg-fb-gray-light hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
+                    <div className="w-full h-10 py-2 text-fb-gray-text bg-gray-100 hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
                         <div className="mx-1 px-2">
                             <HiMagnifyingGlass size={18} />
                         </div>
                         <input type="text"
                             placeholder="Where are you"
-                            className="border-none outline-none bg-fb-gray-light h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
+                            className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
                             onChange={handleSearchIcon} />
                     </div>
                 </div>
@@ -103,7 +103,7 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
                                         <div key={index}
                                             onClick={() => handleAddDone(item)}
                                             className={`flex w-full gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
-                                            ${location[0]?.city === item.city && "bg-fb-gray-light"}`}
+                                            ${location[0]?.city === item.city && "bg-gray-100"}`}
                                         >
 
                                             <div className="bg-fb-gray-text w-8 h-8 rounded-md items-center justify-center">
@@ -123,7 +123,7 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
                                     <div key={index}
                                         onClick={() => handleAddDone(item)}
                                         className={`flex w-full gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
-                        ${location[0]?.city === item.city && "bg-fb-gray-light"}`}
+                        ${location[0]?.city === item.city && "bg-gray-100"}`}
                                     >
                                         <div className="bg-fb-gray-text w-8 h-8 rounded-md items-center justify-center">
                                             <span className="flex items-center justify-center pt-[2px]">

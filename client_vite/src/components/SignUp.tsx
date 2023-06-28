@@ -2,7 +2,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import "../index.css";
 import { useState } from "react";
 
-const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStateAction<boolean>>}) => {
+const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const [dayInput, setDayInput] = useState(1);
     const [monthInput, setMonthInput] = useState(1);
     const [yearInput, setYearInput] = useState(0);
@@ -81,50 +81,50 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                     //  onSubmit={handleAddVideo}
                     >
                         <div className="flex w-full gap-2 mt-2 mb-1">
-                            <div className="bg-fb-gray-light basis-1/2 rounded-md">
+                            <div className="bg-gray-100 basis-1/2 rounded-md">
                                 <input type="text"
-                                    className="bg-fb-gray-light pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
+                                    className="bg-gray-100 pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
                                     placeholder="First name" />
                             </div>
-                            <div className="bg-fb-gray-light basis-1/2  rounded-md">
+                            <div className="bg-gray-100 basis-1/2  rounded-md">
                                 <input type="text"
-                                    className="bg-fb-gray-light pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
+                                    className="bg-gray-100 pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
                                     placeholder="Surname" />
                             </div>
                         </div>
-                        <div className="bg-fb-gray-light w-full rounded-md my-1">
+                        <div className="bg-gray-100 w-full rounded-md my-1">
                             <input type="text"
-                                className="bg-fb-gray-light pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
+                                className="bg-gray-100 pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
                                 placeholder="Mobile number or email address" />
                         </div>
-                        <div className="bg-fb-gray-light w-full rounded-md my-1">
+                        <div className="bg-gray-100 w-full rounded-md my-1">
                             <input type="text"
-                                className="bg-fb-gray-light pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
+                                className="bg-gray-100 pl-1 py-2 w-full border border-fb-dark outline-none rounded-md"
                                 placeholder="New password" />
                         </div>
                         <span className="text-xs text-left">Date of birth</span>
                         <div className="flex w-full gap-2 mt-1 mb-2">
                             <select name="date" id="" value={dayInput} onChange={handleChangeDay}
-                                className="flex basis-1/3 outline-none bg-fb-gray-light py-2 border border-fb-dark rounded-md">
+                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
                                 {dayOptions}
                             </select>
                             <select name="month" id="" value={monthInput} onChange={handleChangeMonth}
-                                className="flex basis-1/3 outline-none bg-fb-gray-light py-2 border border-fb-dark rounded-md">
+                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
                                 {monthOptions}
                             </select>
                             <select name="year" id="" value={yearInput} onChange={handleChangeYear}
-                                className="flex basis-1/3 outline-none bg-fb-gray-light py-2 border border-fb-dark rounded-md">
+                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
                                 {yearOptions}
                             </select>
                         </div>
                         <span className="text-xs text-left">Gender</span>
                         <div className="flex w-full gap-2 mt-1 mb-1">
-                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-fb-gray-light border border-fb-dark rounded-md px-3 py-2 '>
+                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border border-fb-dark rounded-md px-3 py-2 '>
                                 <label htmlFor="gender">Female</label>
                                 <input type="radio" value="Female" name='gender' className='w-3 h-3'
                                     onChange={() => setGender(1)} />
                             </div>
-                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-fb-gray-light border border-fb-dark rounded-md px-3 py-2 '>
+                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border border-fb-dark rounded-md px-3 py-2 '>
                                 <label htmlFor="gender">Male</label>
                                 <input type="radio" value="Male" name='gender' className='w-3 h-3'
                                     onChange={() => setGender(0)} />
