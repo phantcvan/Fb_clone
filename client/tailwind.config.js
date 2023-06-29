@@ -12,6 +12,7 @@ export default {
       "fb-gray": "#E4E6E9",
       "fb-dark": "#DADDE1",
       "fb-dark-2": "#3C3C3C",
+      "fb-dark-3": "#202125",
       "fb-gray-text": "#65676B",
       white: "#FFFFFF",
       red: "#E41E3F",

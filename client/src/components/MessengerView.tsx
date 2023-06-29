@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 
-const MessengerView = () => {
+const MessengerView = ({ setPick }: { setPick: React.Dispatch<React.SetStateAction<number>> }) => {
   const showMess = useSelector(getShowMess);
   const dispatch = useDispatch();
   const handleShowMess = (id: number) => {
@@ -16,7 +16,10 @@ const MessengerView = () => {
   }
 
   return (
-    <div className="bg-white py-4 w-[330px] absolute top-14 right-0 login_box rounded-md z-40">
+    <div className="w-[100%] h-screen absolute top-[70px] right-0">
+      <div className="w-full h-full z-10" onClick={() => setPick(0)}>
+      </div>
+    <div className="bg-white py-4 w-[330px] absolute top-[-14px] right-0 login_box rounded-md z-40">
       <Scrollbars autoHide style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
         <div>
           <span className="text-2xl font-bold mx-4">Chats</span>
@@ -49,6 +52,7 @@ const MessengerView = () => {
           <span className="mt-2 text-fb-blue font-medium cursor-pointer hover:underline">See all in Messenger</span>
         </Link>
       </div>
+    </div>
     </div>
 
 

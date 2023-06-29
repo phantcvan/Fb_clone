@@ -7,10 +7,13 @@ import { BiSolidHelpCircle, BiSolidMoon, BiSolidCommentError } from 'react-icons
 import { Link } from 'react-router-dom';
 import { CategoryItems } from "../static/menu";
 
-const AccountSetting = () => {
+const AccountSetting = ({ setPick }: { setPick: React.Dispatch<React.SetStateAction<number>> }) => {
 
   return (
-    <div className="bg-white p-4 w-[330px] absolute top-14 right-0 login_box rounded-md z-40">
+    <div className="w-[100%] h-screen absolute top-[70px] right-0">
+      <div className="w-full h-full z-10" onClick={() => setPick(0)}>
+      </div>
+    <div className="bg-white p-4 w-[330px] absolute top-[-14px] right-0 login_box rounded-md z-40">
       <div className="addOn-box bg-white w-[304px] px-2 py-1 rounded-lg ">
         <Link to={'/user/1'} className="px-2 py-2 rounded-lg hover:bg-[rgba(0,0,0,0.05)] flex gap-2 items-center text-[15px] font-semibold cursor-pointer mb-1">
           <img src="http://localhost:5173/assets/person/1.jpeg"
@@ -93,6 +96,7 @@ const AccountSetting = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
 
 

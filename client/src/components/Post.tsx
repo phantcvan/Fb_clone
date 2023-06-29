@@ -3,11 +3,15 @@ import { FaEarthAmericas } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
 import { IoChatboxOutline, IoArrowRedoOutline } from "react-icons/io5";
 import { Icon } from "../static/icon";
+import Tippy from '@tippyjs/react/headless';
+import Reaction from "./Reaction";
 
 
 export default function Post() {
   const [showIcon, setShowIcon] = useState(false);
-
+  const [showReactionUser, setShowReactionUser] = useState(false);
+  const [showCommentUser, setShowCommentUser] = useState(false);
+  const [showShareUser, setShowShareUser] = useState(false);
 
 
   return (
@@ -38,7 +42,7 @@ export default function Post() {
       <div className="px-4 pt-1 pb-4 text-[15px]">dr dr dr</div>
       <div className="w-full overflow-hidden flex items-center object-cover">
         <img
-          className="object-cover"
+          className="object-cover w-full"
           src="https://i.pinimg.com/564x/d9/e1/39/d9e139e2d9d2b42c926df175e626110e.jpg"
         />
       </div>
@@ -55,15 +59,56 @@ export default function Post() {
               <img src={Icon.Reaction[2].static} />
             </div>
           </div>
-          <div className="text-sm text-fb-gray-text">3,8K</div>
+          <Tippy
+            placement="bottom"
+            render={attrs => (
+              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                {...attrs}>
+                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                  <p className='py-[2px]'>ViewReactionUser</p>
+                  <p className='py-[2px]'>ViewReactionUser</p>
+                  <p className='py-[2px]'>ViewReactionUser</p>
+                </div>
+              </div>)}>
+            <div className="text-sm text-fb-gray-text cursor-pointer relative">
+              3,8K
+            </div>
+          </Tippy>
+
         </div>
         <div className="flex items-center justify-center gap-4">
-          <div className="text-sm text-fb-gray-text mr-2">
-            <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
-          </div>
-          <div className="text-sm text-fb-gray-text">
-            <span className="flex gap-2">45 <IoArrowRedoOutline size={18} /></span>
-          </div>
+          <Tippy
+            placement="bottom"
+            render={attrs => (
+              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                {...attrs}>
+                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                  <p className='py-[2px]'>ViewCmtUser</p>
+                  <p className='py-[2px]'>ViewCmtUser</p>
+                  <p className='py-[2px]'>ViewCmtUser</p>
+                </div>
+              </div>)}>
+            <div className="text-sm text-fb-gray-text mr-2">
+              <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
+            </div>
+          </Tippy>
+
+          <Tippy
+            placement="bottom"
+            render={attrs => (
+              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                {...attrs}>
+                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                  <p className='py-[2px]'>ViewShareUser</p>
+                  <p className='py-[2px]'>ViewShareUser</p>
+                  <p className='py-[2px]'>ViewShareUser</p>
+                </div>
+              </div>)}>
+            <div className="text-sm text-fb-gray-text">
+              <span className="flex gap-2">45 <IoArrowRedoOutline size={18} /></span>
+            </div>
+          </Tippy>
+
         </div>
       </div>
       <div className="grid grid-cols-3 h-11 w-[90%] mx-auto border-t border-fb-dark relative">
@@ -74,24 +119,7 @@ export default function Post() {
             <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>
             <span>Like</span>
           </div>
-          {showIcon &&
-            <div className="absolute top-0 left-0 bg-white rounded-3xl shadow-xl">
-              {Icon.Reaction.map((item, index) => (
-                // <Link to={item.path} key={index}>
-                <div className={`hover:bg-fb-gray p-2 rounded-sm
-                           `}
-                  // onClick={() => setPick(index + 3)}
-                   key={index}>
-                    <div className="flex px-5 gap-4 cursor-pointer items-center ">
-                      <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
-                        <img src={item.iconURL} alt="" />
-                      </div>
-                      <span className="">{item.name}</span>
-                    </div>
-                </div>
-              ))}
-              
-            </div>}
+          {showIcon && <Reaction />}
         </div>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
           <div className="flex items-center gap-2">
