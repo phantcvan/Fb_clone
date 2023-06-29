@@ -187,7 +187,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                                     Life event
                                 </span>}
                             <GiCheckeredFlag
-                                style={{ color: "#009DE8", transform: "scaleX(-1)", cursor: "pointer" }}
+                                MessengerView color: "#009DE8", transform: "scaleX(-1)", cursor: "pointer" }}
                                 size={24} />
                         </div> */}
                     </div>

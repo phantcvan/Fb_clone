@@ -4,6 +4,9 @@ import Home from "./pages/Home"
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
+import User from "./pages/User";
+
+
 
 
 function App() {
@@ -28,6 +31,7 @@ function App() {
           <Route  path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home setNewNotifications={setNewNotifications} />} />
             <Route path="/:user" element={<Login />} />
+            <Route path="/user" element={<User />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />

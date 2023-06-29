@@ -6,7 +6,8 @@ import { Icon } from "../static/icon";
 
 
 export default function Post() {
-  const [showIcon, setShowIcon] = useState(false)
+  const [showIcon, setShowIcon] = useState(false);
+
 
 
   return (
@@ -73,9 +74,24 @@ export default function Post() {
             <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>
             <span>Like</span>
           </div>
-          {showIcon && <div className="absolute -top-[45px] left-0 bg-white rounded-3xl shadow-xl border border-gray-300">
-
-          </div>}
+          {showIcon &&
+            <div className="absolute top-0 left-0 bg-white rounded-3xl shadow-xl">
+              {Icon.Reaction.map((item, index) => (
+                // <Link to={item.path} key={index}>
+                <div className={`hover:bg-fb-gray p-2 rounded-sm
+                           `}
+                  // onClick={() => setPick(index + 3)}
+                   key={index}>
+                    <div className="flex px-5 gap-4 cursor-pointer items-center ">
+                      <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
+                        <img src={item.iconURL} alt="" />
+                      </div>
+                      <span className="">{item.name}</span>
+                    </div>
+                </div>
+              ))}
+              
+            </div>}
         </div>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
           <div className="flex items-center gap-2">

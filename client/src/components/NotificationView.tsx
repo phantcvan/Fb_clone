@@ -35,13 +35,13 @@ const NotificationView = () => {
           </button>
         </div>
       </div>
-
-      <div className='flex items-center justify-between pr-2 pl-2'>
+      {pick === "all" && <div className='flex items-center justify-between pr-2 pl-2'>
         <span className='font-semibold'>New</span>
         <span className='text-fb-blue py-1 px-2 hover:bg-gray-200 rounded cursor-pointer'>
           See all
         </span>
-      </div>
+      </div>}
+
       <Scrollbars autoHide style={{ width: '100%', height: 'calc(100vh - 200px)' }}>
         <div className="w-[100%] overflow-hidden">
           <div className='flex items-center justify-between p-2 cursor-pointer relative hover:bg-gray-100 rounded-md'>
@@ -117,13 +117,13 @@ const NotificationView = () => {
                     sent you a friend request.</span>
                   <span className="text-fb-blue text-xs font-semibold">3 hours ago</span>
                   <div className="flex justify-between font-semibold mt-1">
-                                    <button className="bg-blue-400 text-white px-5 py-2 rounded-md">
-                                        Confirm
-                                    </button>
-                                    <button className="bg-fb-gray hover:bg-fb-gray px-[22px] py-2 rounded-md">
-                                        Delete
-                                    </button>
-                                </div>
+                    <button className="bg-blue-400 text-white px-5 py-2 rounded-md">
+                      Confirm
+                    </button>
+                    <button className="bg-fb-gray hover:bg-fb-gray px-[22px] py-2 rounded-md">
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
               <span className='text-fb-blue'><RxDotFilled size={36} /></span>

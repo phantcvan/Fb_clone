@@ -6,10 +6,14 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useState } from "react";
 import CreatePost from "./CreatePost";
 import Post from "./Post";
+// import { setShowMess, getShowMess } from "../slices/appSlice";
+// import { useSelector } from 'react-redux';
+
 
 const Feed = () => {
     const [selectStory, setSelectStory] = useState(true);
     const [uploadPost, setUploadPost] = useState(false);
+
 
     return (
         <div className="flex flex-col w-[45%] pl-20 text-sm gap-3 text-[#1D1D1D] my-2">

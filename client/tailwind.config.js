@@ -4,8 +4,8 @@ export default {
   theme: {
     colors: {
       "fb-blue": "#1A6ED8",
-      "blue-100": "#E7F3FF",
-      "blue-200": "#DBE7F2",
+      "blue-100": "#E5F1FD",
+      "blue-200": "#D8E4EF",
       "blue-300": "#21ADFB",
       "blue-400": "#1B74E4",
       "gray-100": "#F0F2F5",
