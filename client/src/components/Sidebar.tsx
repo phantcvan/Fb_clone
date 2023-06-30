@@ -68,7 +68,7 @@ const Sidebar = () => {
                     <div className="flex flex-wrap gap-1 px-5 mt-2">
                         {CategoryItems.map((item, index) => (
                             <div key={index}
-                                className={`text-xs items-center cursor-pointer text-fb-gray-text cursor-pointer`}
+                                className={`text-xs items-center text-fb-gray-text cursor-pointer`}
                             >
                                 {index === CategoryItems.length - 1
                                     ? <span className="">{item}</span>

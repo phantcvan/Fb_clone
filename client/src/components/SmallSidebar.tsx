@@ -18,7 +18,7 @@ const SmallSidebar = () => {
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
             {...attrs} >
-            Messenger
+            Home
           </div>)}>
         <div className={`border-l-4 px-3 ${pickMenu === 1 ? "border-fb-blue" : "border-white"}`}
           onClick={() => setPickMenu(1)}>
@@ -107,7 +107,7 @@ const SmallSidebar = () => {
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
             {...attrs} >
-            See all post
+            See all groups
           </div>)}>
         <div className={`border-l-4 px-3 ${pickMenu === 12 ? "border-fb-blue" : "border-white"}`}
           onClick={() => setPickMenu(12)}>

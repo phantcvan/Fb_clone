@@ -12,7 +12,8 @@ const MessengerView = ({ setPick }: { setPick: React.Dispatch<React.SetStateActi
   const showMess = useSelector(getShowMess);
   const dispatch = useDispatch();
   const handleShowMess = (id: number) => {
-    dispatch(setShowMess(id))
+    dispatch(setShowMess(id)); 
+    setPick(0);
   }
 
   return (

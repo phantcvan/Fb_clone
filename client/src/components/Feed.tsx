@@ -13,6 +13,7 @@ import Post from "./Post";
 const Feed = () => {
     const [selectStory, setSelectStory] = useState(true);
     const [uploadPost, setUploadPost] = useState(false);
+    const [lastCmt, setLastCmt] = useState(true);
 
 
     return (
@@ -52,10 +53,10 @@ const Feed = () => {
                         </div>
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post />
+                        <Post lastCmt={lastCmt}/>
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post />
+                        <Post lastCmt={lastCmt}/>
                     </div>
                 </>
             </Scrollbars>

@@ -1,35 +1,69 @@
 import { useState } from "react";
 import { FaEarthAmericas } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
+import { PiArrowBendDownRightBold } from "react-icons/pi";
 import { IoChatboxOutline, IoArrowRedoOutline } from "react-icons/io5";
 import { Icon } from "../static/icon";
 import Tippy from '@tippyjs/react/headless';
 import Reaction from "./Reaction";
+import { setShowCmt, getShowCmt } from "../slices/appSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { IoMdSend } from "react-icons/io";
+import ViewMiniProfile from "./ViewMiniProfile";
 
 
-export default function Post() {
+export default function Post({ lastCmt }: { lastCmt: boolean }) {
   const [showIcon, setShowIcon] = useState(false);
-  const [showReactionUser, setShowReactionUser] = useState(false);
-  const [showCommentUser, setShowCommentUser] = useState(false);
-  const [showShareUser, setShowShareUser] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [showIconCmt, setShowIconCmt] = useState(false);
+  const [comment, setComment] = useState("");
+  const [userId, setUserId] = useState(123);
+  const showCmt = useSelector(getShowCmt);
+  const dispatch = useDispatch();
 
-
+  const handleTextareaChange = (event: any) => {
+    const { value } = event.target;
+    setComment(value);
+    event.target.style.height = 'auto';
+    event.target.style.height = `${event.target.scrollHeight}px`;
+    console.log(event.target.scrollHeight);
+    console.log(showProfile)
+  };
   return (
     <div className="rounded-xl mt-4 bg-white">
       <div className="px-4 pt-1 mb-3 flex gap-2">
-        <div
-          className={`w-10 h-10 border-[3px] box-content border-blue-500 rounded-full bg-gray-200 flex items-center
-          justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}
-        >
-          <img
-            className="object-cover w-full"
-            src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
-          />
-        </div>
-        <div>
-          <div className="font-semibold text-[15px]">
-            Username
+
+        <Tippy placement="bottom" interactive
+          render={attrs => (
+            <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
+              {...attrs} >
+              <ViewMiniProfile userId={userId} />
+            </div>)}>
+          <div
+            className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
+          justify-center cursor-pointer overflow-hidden`}
+          >
+            <div className={`w-9 h-9 box-content rounded-full flex items-center
+          justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
+              <img
+                className="object-cover w-full"
+                src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
+              />
+            </div>
           </div>
+        </Tippy>
+        <div className=" relative">
+          <Tippy placement="bottom" interactive
+            render={attrs => (
+              <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
+                {...attrs} >
+                <ViewMiniProfile userId={userId} />
+              </div>)}>
+            <div className="font-semibold text-[15px] cursor-pointer">
+              Username
+            </div>
+          </Tippy>
+
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
             {/* <div>Hoàng Hải Nam</div> */}
             <div>3 ngày</div>{" "}
@@ -111,7 +145,7 @@ export default function Post() {
 
         </div>
       </div>
-      <div className="grid grid-cols-3 h-11 w-[90%] mx-auto border-t border-fb-dark relative">
+      <div className="grid grid-cols-3 h-11 w-[90%] mx-auto border-y border-fb-dark relative">
         <div onMouseOver={() => setShowIcon(true)} onMouseLeave={() => setShowIcon(false)}
           className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto 
          rounded">
@@ -124,7 +158,7 @@ export default function Post() {
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
           <div className="flex items-center gap-2">
             <span className=""><IoChatboxOutline size={18} /></span>
-            <span>Comment</span>
+            <span onClick={() => dispatch(setShowCmt(123))}>Comment</span>
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
@@ -134,6 +168,73 @@ export default function Post() {
           </div>
         </div>
       </div>
+      {lastCmt &&
+        <div className=" mx-auto gap-2 m-2 m flex w-[90%] items-center">
+          
+          <div className={`w-8 h-8 box-content rounded-full flex items-center
+          justify-center cursor-pointer overflow-hidden`}>
+            <img
+              className="object-cover w-8 h-8"
+              src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
+            />
+          </div>
+
+          <div className="flex-1 h-fit text-fb-gray-text bg-gray-100 rounded-xl flex items-center">
+            <textarea onChange={handleTextareaChange} value={comment}
+              // onChange={handleInputKeyword} onKeyDown={(e) => handleKeyDown(e)}
+              placeholder="Write a comment... "
+              className="border-none outline-none bg-gray-100 text-black px-2 rounded-xl w-[93%]
+            resize-none pt-1" />
+            <p>
+              <IoMdSend size={20}
+                style={{
+                  color: comment ? '#0571ED' : '#BEC3C9',
+                  cursor: comment ? 'pointer' : 'not-allowed',
+                }} />
+            </p>
+          </div>
+        </div>}
+      {lastCmt ? <div>
+        <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
+          <Tippy placement="bottom"
+            render={attrs => (
+              <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
+                {...attrs} >
+                <ViewMiniProfile userId={userId} />
+              </div>)}>
+            <div className={`w-8 h-8 box-content rounded-full flex items-center
+          justify-center cursor-pointer overflow-hidden`}>
+              <img
+                className="object-cover w-8 h-8"
+                src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
+              />
+            </div>
+          </Tippy>
+
+          <span className="flex-1 h-fit text-fb-gray-text bg-gray-100 rounded-xl flex items-center p-2">
+            adsfdasdfsdafaafdfdfdfdfdfdfdfdfdfdfdfdfdef
+          </span>
+        </div>
+        <div className="flex gap-4 pl-10 mx-auto w-[90%] relative">
+          <span className="font-semibold text-xs text-fb-dark-1"
+            onMouseOver={() => setShowIconCmt(true)} onMouseLeave={() => setShowIconCmt(false)}>
+            Like
+          </span>
+          <span className="font-semibold text-xs text-fb-dark-1">Reply</span>
+          <span className="font-semibold text-xs text-fb-dark-1">2h</span>
+          {showIconCmt && <Reaction />}
+        </div>
+        <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
+          <span className="font-semibold text-xs text-fb-dark-1">
+            <PiArrowBendDownRightBold size={18} style={{ color: "#65676B" }} />
+          </span>
+          <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
+            onClick={() => dispatch(setShowCmt(123))}>
+            View more comments
+          </span>
+        </div>
+      </div>
+        : ""}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { AiOutlineClose } from "react-icons/ai";
+import { AiFillAppstore, AiOutlineClose, } from "react-icons/ai";
 import { TbPhotoFilled } from "react-icons/tb";
 // import { GiCheckeredFlag } from "react-icons/gi";
 import { FaUserTag, } from "react-icons/fa";
@@ -11,6 +11,8 @@ import TagPeople from "./TagPeople";
 import Feeling from "./Feeling";
 import CheckIn from "./CheckIn";
 import { useNavigate } from "react-router";
+import { MdArrowBackIosNew } from "react-icons/md";
+import { BgPost } from "../static/background";
 
 interface Tag {
     id: number;
@@ -34,6 +36,10 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
     const [feeling, setFeeling] = useState<Feel[]>([]);
     const [location, setLocation] = useState<Check[]>([]);
     const navigate = useNavigate();
+    const [showBgView, setShowBgView] = useState(false);
+    const [postBg, setPostBg] = useState(-1);
+    const [postBgUrl, setPostBgUrl] = useState("");
+    const [textColor, setTextColor] = useState("");
 
 
     console.log(newPost);
@@ -48,7 +54,9 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
     const handleClickTag = (id: number) => {
         navigate(`/${id}`)
     }
-    console.log(feeling);
+    console.log(`bg-[url('${postBgUrl}')]`);
+    console.log(postBgUrl);
+
 
     return (
         <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
@@ -60,7 +68,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
             >
             </div>
             <div
-                className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col
+                className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col 
           fixed rounded-md z-25'
             >
                 <div className='absolute top-2 right-2 cursor-pointer px-2'
@@ -119,11 +127,40 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                         </div>
                     </div>
                 </div>
-                <div className="gap-3 m-3">
-                    <textarea className="placeholder text-xl px-2 w-full outline-none resize-none"
-                        name="myTextarea" id="myTextarea"
-                        rows={3} placeholder="What's on your mind, USERNAME?"
+                <div className="gap-3 m-3 relative flex items-center justify-center">
+
+                    <textarea name="myTextarea" id="myTextarea" rows={7} placeholder="What's on your mind, USERNAME?"
+                        className={`text-xl px-2 w-full outline-none resize-none flex items-center justify-center
+                        ${postBgUrl !== "" && `bg-[url('${postBgUrl}')] text-[${textColor}]`}`}
                         onChange={(e) => setNewPost(e.target.value)}></textarea>
+
+                    <div className="absolute bottom-2 cursor-pointer">
+                        {showBgView
+                            ? <div className="flex items-center gap-[5px] ">
+                                <span className="w-[38px] h-[38px] bg-fb-gray rounded-lg p-2"
+                                    onClick={() => setShowBgView(false)}>
+                                    <MdArrowBackIosNew size={22} />
+                                </span>
+                                {BgPost.slice(0, 8).map((item, index) => (
+                                    <div key={index}
+                                        className={`cursor-pointer w-[38px] h-[38px] rounded-lg`}
+                                    >
+                                        <img src={item.thumbnail} className="w-[38px] h-[38px] rounded-lg"
+                                            onClick={() => {
+                                                setPostBgUrl(BgPost[index].bgURL);
+                                                setPostBg(index); setTextColor(BgPost[index].textColor)
+                                            }} />
+                                    </div>
+                                ))}
+                                <span className="w-[38px] h-[38px] bg-fb-gray rounded-lg p-2"
+                                    onClick={() => setSelectAddOn(5)}>
+                                    <AiFillAppstore size={22} />
+                                </span>
+                            </div>
+                            : <img src="https://www.facebook.com/images/composer/SATP_Aa_square-2x.png" alt=""
+                                onClick={() => setShowBgView(true)} className="w-10 h-10 " />}
+
+                    </div>
                 </div>
                 <div className="gap-3 m-3 border border-fb-gray flex rounded-md items-center">
                     <span className="p-3 font-semibold w-[53%]">

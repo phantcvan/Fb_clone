@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Icon } from "../static/icon";
 import Tippy from '@tippyjs/react/headless';
 
 const Reaction = () => {
+  const [reaction, setReaction] = useState(0);
+
   return (
-    <div className="absolute bottom-10 left-0 p-1 bg-white rounded-3xl shadow-xl flex z-40">
+    <div className="absolute bottom-10 left-0 p-[2px] bg-white rounded-3xl shadow-xl flex z-40">
       {Icon.Reaction.map((item, index) => (
         <Tippy
           render={attrs => (
@@ -12,9 +15,9 @@ const Reaction = () => {
               {item.name}
             </div>)}>
           <div className={``}
-            // onClick={() => setPick(index + 3)}
+            onClick={() => setReaction(index + 1)}
             key={index}>
-            <div className="flex p-1 cursor-pointer items-center relative">
+            <div className="flex p-[2px] cursor-pointer items-center relative">
               <div className="h-10 w-10 rounded-full overflow-hidden object-cover">
                 <img src={item.iconURL} alt="" />
               </div>
