@@ -24,13 +24,13 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
   return (
     <div>
       <Topbar />
-      <div className="flex w-[100%] relative">
+      <div className="flex w-[100%] relative Z-30">
         <Sidebar />
         <Feed />
         <SidebarRight />
-      </div>
       {showMess > 0 && <Conversation />}
       {showCmt > 0 && <Comment />}
+      </div>
     </div>
   )
 }

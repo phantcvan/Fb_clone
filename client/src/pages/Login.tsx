@@ -56,7 +56,7 @@ const Login = () => {
         <div className="bg-gray-100 w-[100%] h-screen">
             <div className="flex px-[142px] gap-8">
                 <div className="w-[580px] flex flex-col items-start justify-start pt-[72px]">
-                    <img src="http://localhost:5173/assets/fb-logo.png" alt=""
+                    <img src="/assets/fb-logo.png" alt=""
                         className="w-[300px] overflow-hidden object-cover mt-[90px]" />
                     <span className="text-[26px] pr-10 mt-1">Facebook helps you connect and share with the people in your life.</span>
                 </div>

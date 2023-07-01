@@ -27,7 +27,7 @@ const Sidebar = () => {
                             onClick={() => setPick(2)}>
                             <Link to="/user">
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
-                                    <img src="http://localhost:5173/assets/person/1.jpeg" alt="avatar"
+                                    <img src="/assets/person/1.jpeg" alt="avatar"
                                         className="w-6 h-6 rounded-full object-cover overflow-hidden " />
                                     <span>UserName</span>
                                 </div>

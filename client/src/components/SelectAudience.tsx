@@ -1,42 +1,109 @@
-import { AiOutlineClose } from "react-icons/ai";
+import { useState } from "react";
+import { BiArrowBack, BiSolidLockAlt } from "react-icons/bi";
+import { FaEarthAmericas, FaUserGroup } from "react-icons/fa6";
+
 
 interface SelectAudienceProps {
     setSelectAudience: React.Dispatch<React.SetStateAction<boolean>>;
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-  }
-const SelectAudience = ({ setSelectAudience, setUploadPost }: SelectAudienceProps) => {
-
+    setAudience: React.Dispatch<React.SetStateAction<string>>;
+    audience: string;
+}
+const SelectAudience = ({ setSelectAudience, setUploadPost, setAudience, audience }: SelectAudienceProps) => {
+    const [newAudience, setNewAudience] = useState("");
 
     return (
-        <div className='w-[100%] h-fit absolute left-0 bg-overlay-40 flex items-center 
+        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
         justify-center z-20'>
+
             <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
         justify-center z-21'
                 onClick={() => setUploadPost(false)}
             >
             </div>
-            <div
-                className='login_box w-[450px] top-3 bottom-3 bg-white pt-4 flex flex-col
-          fixed rounded-md z-25'
-            >
-                <div className='absolute top-2 right-2 cursor-pointer px-2'
-                    onClick={() => setUploadPost(false)}>
-                    <AiOutlineClose size={20} />
+
+            <div className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col 
+          fixed rounded-md z-25'>
+                <div className="flex items-center mx-3 mt-1 mb-3">
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
+                        onClick={() => setSelectAudience(false)}>
+                        <BiArrowBack size={20} style={{ color: "#606770" }} />
+                    </div>
+                    <p className='text-xl font-semibold flex flex-1 items-center justify-center'>
+                        Post Audience
+                    </p>
                 </div>
-                <p className='text-xl text-center font-semibold px-5 pt-1 pb-3'>
-                    Create post
-                </p>
                 <hr className="text-fb-dark" />
-                <div className="w-full">
-                </div>
-                <div className="flex flex-row gap-3 m-3">
-                    <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
-                        className="w-10 h-10 rounded-full cursor-pointer object-cover" />
-                    <div className="flex flex-col "
-                        onClick={() => setUploadPost(true)}>
+                <div className="m-2">
+                    <p className="px-2 text-[15px] font-semibold py-1">Who can see your post?</p>
+                    <p className="px-2 text-[15px] py-1">
+                        Your post will show up in Feed, on your profile and in search results.
+                    </p>
+                    <p className="px-2 text-[15px] py-1">
+                        Your default audience is set to <strong>{audience}</strong>, but you can change the audience of this specific post.
+                    </p>
+                    <div className='flex flex-col gap-2'>
+                        <div className='flex gap-2 items-center justify-between p-2 hover:bg-gray-100 rounded-md'
+                            onClick={() => setNewAudience("Public")} >
+                            <label htmlFor="public" className="flex gap-2 items-center">
+                                <div className="w-[60px] h-[60px] flex items-center justify-center bg-fb-gray rounded-full">
+                                    <FaEarthAmericas size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-[15px] font-semibold">
+                                        Public
+                                    </p>
+                                    <span>Anyone on or off Facebook</span>
+                                </div>
+                            </label>
+                            <input type="radio" value="public" name='audienceOption' className='w-5 h-5'
+                                id='public' />
+                        </div>
+                        <div className='flex gap-2 items-center justify-between p-2 hover:bg-gray-100 rounded-md'
+                            onClick={() => setNewAudience("Friends")} >
+                            <label htmlFor="friends" className="flex gap-2 items-center">
+                                <div className="w-[60px] h-[60px] flex items-center justify-center bg-fb-gray rounded-full">
+                                    <FaUserGroup size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-[15px] font-semibold">
+                                        Friends
+                                    </p>
+                                    <span>Your friends on Facebook</span>
+                                </div>
+                            </label>
+                            <input type="radio" value="friends" name='audienceOption' className='w-5 h-5'
+                                id='friends' />
+                        </div>
+                        <div className='flex gap-2 items-center justify-between p-2 hover:bg-gray-100 rounded-md'
+                            onClick={() => setNewAudience("Only me")} >
+                            <label htmlFor="onlyMe" className="flex gap-2 items-center">
+                                <div className="w-[60px] h-[60px] flex items-center justify-center bg-fb-gray rounded-full">
+                                    <BiSolidLockAlt size={24} />
+                                </div>
+                                <div>
+                                    <p className="text-[15px] font-semibold">
+                                        Only me
+                                    </p>
+                                </div>
+                            </label>
+                            <input type="radio" value="onlyMe" name='audienceOption' className='w-5 h-5'
+                                id='onlyMe' />
+                        </div>
 
                     </div>
                 </div>
+                <div className="flex justify-end gap-3 font-semibold mb-3 px-3">
+                    <button className=" hover:bg-gray-100 text-fb-blue px-5 py-2 rounded-md"
+                        onClick={() => { setSelectAudience(false) }}>
+                        Cancel
+                    </button>
+                    <button className="bg-blue-400 text-white px-7 py-2 rounded-md"
+                        onClick={() => { setSelectAudience(false); setAudience(newAudience) }}>
+                        Done
+                    </button>
+                </div>
+
 
 
             </div >

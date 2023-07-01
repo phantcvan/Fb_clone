@@ -29,9 +29,9 @@ const Topbar = () => {
         } else {
             console.log("456");
         }
-        
+
     }
-    
+
     const handleKeyDown = (e: any) => {
         if (e.keyCode === 13) {
             handleSearch();
@@ -42,7 +42,7 @@ const Topbar = () => {
         <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md py-7 z-30 bg-white">
             <div className="flex basis-1/4 ml-4">
                 <Link to="/">
-                    <img src="http://localhost:5173/assets/facebook-logo.png"
+                    <img src="/assets/facebook-logo.png"
                         className="w-[141px] h-[37px] cursor-pointer object-cover" onClick={() => setPick(0)} />
                 </Link>
             </div>
@@ -105,7 +105,7 @@ const Topbar = () => {
                         </div>)}>
                     <div className={`w-10 h-10 relative rounded-full flex items-center justify-center`}
                         onClick={() => pick === 3 ? setPick(0) : setPick(3)}>
-                        <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                        <img src="/assets/person/1.jpeg" alt=""
                             className="w-10 h-10 rounded-full cursor-pointer object-cover relative" />
                         <span className="w-4 h-4 text-xs flex items-center bg-fb-gray rounded-full absolute bottom-[-5px]
                         border-2 border-white right-[-2px]">

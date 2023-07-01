@@ -62,3 +62,15 @@ code {
   );
   background: linear-gradient(to bottom, #6de68b 0%, #44cf66 50%, #1eb844 100%);
 }
+/* Ẩn thanh cuộn dọc (phía bên phải) */
+::-webkit-scrollbar {
+  width: 0em;
+}
+
+/* ::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+} */

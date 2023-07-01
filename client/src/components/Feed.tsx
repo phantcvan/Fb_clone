@@ -44,7 +44,7 @@ const Feed = () => {
                     </div>
                     <div className="content-box w-full flex bg-white border border-fb-gray p-4 rounded-lg my-3">
                         <div>
-                            <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                            <img src="/assets/person/1.jpeg" alt=""
                                 className="w-10 h-10 rounded-full cursor-pointer object-cover mr-4" />
                         </div>
                         <div className="bg-gray-100 hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
@@ -53,10 +53,10 @@ const Feed = () => {
                         </div>
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post lastCmt={lastCmt}/>
+                        <Post lastCmt={lastCmt} />
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post lastCmt={lastCmt}/>
+                        <Post lastCmt={lastCmt} />
                     </div>
                 </>
             </Scrollbars>

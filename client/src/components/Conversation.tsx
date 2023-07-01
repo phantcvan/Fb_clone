@@ -43,7 +43,7 @@ const Conversation = () => {
   };
 
   return (
-    <div className='login_box absolute bottom-[-4px] right-20 w-[328px] h-[455px] rounded-md bg-white z-50'>
+    <div className='login_box absolute bottom-0 right-20 w-[328px] h-[455px] rounded-md bg-white z-20'>
       <div className=" flex w-full items-center border-b border-fb-dark content-box">
         <div className="basis-2/3 flex gap-2 hover:bg-fb-gray rounded-md p-2">
           <div className={`w-9 h-9 box-content rounded-full flex items-center
@@ -61,10 +61,10 @@ const Conversation = () => {
         <div className="flex flex-1"></div>
         <div className="flex items-center hover:bg-fb-gray rounded-full p-2 mr-1w-9 h-9"
           onClick={() => dispatch(setShowMess(0))}>
-          <AiOutlineClose size={19} />
+          <AiOutlineClose size={19}/>
         </div>
       </div>
-      <Scrollbars autoHide style={{ width: '100%', height: 'calc(100vh - 140px)' }}>
+      <Scrollbars autoHide style={{ width: '100%', height: 'calc(100vh - 230px)' }}>
         {cmtQuantity === 0
           ? <div className="flex flex-col items-center gap-1 justify-center mt-10">
             <div className={`w-16 h-16 box-content rounded-full flex items-center
@@ -92,9 +92,9 @@ const Conversation = () => {
                 adfjasdfjkasdfjksadfj sdafjhakjsdf
               </span>
               <div className="flex">
-
               </div>
             </div>
+
             <div className="flex justify-end items-end gap-2">
               <span className="p-2 rounded-lg bg-blue-500 w-2/3 text-white">
                 adfjasdfjkasdfjksa dfjksdajfsdak
@@ -119,7 +119,7 @@ const Conversation = () => {
             className="border-none outline-none bg-gray-100 text-black px-2 rounded-xl w-full
             resize-none pt-1 text-sm mx-1" />
         </div>
-        <div className="flex w-7 h-7 flex items-center justify-center rounded-full hover:bg-fb-gray"
+        <div className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-fb-gray"
           onClick={handleSend}>
           <AiFillLike size={22} style={{ color: messInput ? "#0084FF" : "#BCC0C4", cursor: "pointer" }} />
         </div>

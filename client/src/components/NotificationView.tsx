@@ -15,7 +15,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
   const cssPick = "text-fb-blue bg-blue-100 hover:bg-blue-200"
   const cssUnPick = "text-black hover:bg-gray-100"
   return (
-    <div className="w-[100%] h-screen absolute top-[70px] right-0">
+    <div className="w-[100%] h-screen absolute top-[70px] right-0 z-50">
       <div className="w-full h-full z-10" onClick={() => setPick(0)}>
       </div>
       <div className="bg-white py-4 pl-2 w-[330px] h-[calc(100vh-70px)] absolute top-[-14px] right-0 login_box rounded-md z-40 ">
@@ -50,7 +50,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
             <div className='flex items-center justify-between p-2 cursor-pointer relative hover:bg-gray-100 rounded-md'>
               <div className="flex gap-3">
                 <div className="w-14">
-                  <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                  <img src="/assets/person/1.jpeg" alt=""
                     className="w-full h-14 rounded-full cursor-pointer object-cover" />
                 </div>
                 <div className="flex flex-1 flex-col">
@@ -73,7 +73,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
             <div className='flex items-center justify-between p-2 cursor-pointer relative hover:bg-gray-100 rounded-md'>
               <div className="flex gap-3">
                 <div className="w-14">
-                  <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                  <img src="/assets/person/1.jpeg" alt=""
                     className="w-full h-14 rounded-full cursor-pointer object-cover" />
                 </div>
                 <div className="flex flex-1 flex-col">
@@ -94,7 +94,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
               </div>
               <span className='text-fb-blue'><RxDotFilled size={36} /></span>
             </div>
-{/* friend request */}
+            {/* friend request */}
             <div className="flex flex-col">
               <div className='flex items-center justify-between px-2 pt-2'>
                 <span className='font-semibold'>Friend requests</span>
@@ -105,7 +105,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
               <div className='flex items-center justify-between p-2 cursor-pointer relative hover:bg-gray-100 rounded-md'>
                 <div className="flex gap-3">
                   <div className="w-14">
-                    <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                    <img src="/assets/person/1.jpeg" alt=""
                       className="w-full h-14 rounded-full cursor-pointer object-cover" />
                   </div>
                   <div className="flex flex-1 flex-col">
@@ -140,7 +140,7 @@ const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateA
               <div className='flex items-center justify-between p-2 cursor-pointer relative hover:bg-gray-100 rounded-md'>
                 <div className="flex gap-3">
                   <div className="w-14">
-                    <img src="http://localhost:5173/assets/person/1.jpeg" alt=""
+                    <img src="/assets/person/1.jpeg" alt=""
                       className="w-full h-14 rounded-full cursor-pointer object-cover" />
                   </div>
                   <div className="flex flex-1 flex-col">

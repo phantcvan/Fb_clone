@@ -107,7 +107,7 @@ const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: 
                         <div >
                             <div className="flex gap-4 pb-2 pt-3 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md"
                                 onClick={() => handleAddTag('Tag 1')}>
-                                <img src="http://localhost:5173/assets/person/3.jpeg" alt="avatar"
+                                <img src="/assets/person/3.jpeg" alt="avatar"
                                     className="w-9 h-9 rounded-full object-cover overflow-hidden" />
                                 <span>UserName</span>
                             </div>

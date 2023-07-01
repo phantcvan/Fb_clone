@@ -30,12 +30,12 @@ const Comment = () => {
   };
 
   return (
-    <div className='w-[100%] h-[100%] absolute top-10 left-0 bg-overlay-40 flex items-center 
-    justify-center z-20'>
+    <div className='w-[100%] h-[100%] absolute top-0 left-0 bg-overlay-40 flex items-center 
+    justify-center z-50'>
       <div className='w-[100%] h-[100%] fixed top-0 left-0 bg-overlay-40 flex items-center 
     justify-center z-21' onClick={() => dispatch(setShowCmt(0))}>
       </div>
-      <div className='login_box w-[700px] top-16 bottom-3 bg-white py-2 flex flex-col
+      <div className='login_box w-[700px] top-6 bottom-3 bg-white py-2 flex flex-col
       fixed rounded-md z-25'
       >
         <div className="flex items-center justify-between border-b border-fb-dark pb-2">

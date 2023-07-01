@@ -11,7 +11,7 @@ const SidebarRight = () => {
                             <span className="text-fb-blue cursor-pointer">See all</span>
                         </div>
                         <div className="flex items-start rounded-md px-2">
-                            <img src="http://localhost:5173/assets/person/2.jpeg" alt=""
+                            <img src="/assets/person/2.jpeg" alt=""
                                 className="w-14 h-14 rounded-full object-cover overflow-hidden " />
                             <div className="flex flex-col gap-2 w-[calc(100%-68px)] ml-3">
                                 <div className="flex flex-row justify-between">
@@ -35,17 +35,17 @@ const SidebarRight = () => {
                     <div className="px-5 w-[100%] mt-5 mb-3 ">
                         <span className="text-base pb-3 font-semibold px-2 mb-2">Contacts</span>
                         <div className="flex gap-4 pb-2 pt-3 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md">
-                            <img src="http://localhost:5173/assets/person/3.jpeg" alt="avatar"
+                            <img src="/assets/person/3.jpeg" alt="avatar"
                                 className="w-6 h-6 rounded-full object-cover overflow-hidden " />
                             <span>UserName</span>
                         </div>
                         <div className="flex gap-4 py-2 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md">
-                            <img src="http://localhost:5173/assets/person/4.jpeg" alt="avatar"
+                            <img src="/assets/person/4.jpeg" alt="avatar"
                                 className="w-6 h-6 rounded-full object-cover overflow-hidden " />
                             <span>UserName</span>
                         </div>
                         <div className="flex gap-4 py-2 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md">
-                            <img src="http://localhost:5173/assets/person/5.jpeg" alt="avatar"
+                            <img src="/assets/person/5.jpeg" alt="avatar"
                                 className="w-6 h-6 rounded-full object-cover overflow-hidden " />
                             <span>UserName</span>
                         </div>

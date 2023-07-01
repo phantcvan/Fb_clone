@@ -27,11 +27,11 @@ export const Icon = {
     { icon: "🤓", name: "smart" },
   ],
   Reaction: [
-    { iconURL: "http://localhost:5173/assets/reactions/like.gif", name: "Like", static: "http://localhost:5173/assets/reactions/like_s.png" },
-    { iconURL: "http://localhost:5173/assets/reactions/love.gif", name: "Love", static: "http://localhost:5173/assets/reactions/love_s.png" },
-    { iconURL: "http://localhost:5173/assets/reactions/haha.gif", name: "Haha", static: "http://localhost:5173/assets/reactions/haha_s.png" },
-    { iconURL: "http://localhost:5173/assets/reactions/wow.gif", name: "Wow", static: "http://localhost:5173/assets/reactions/wow_s.png"},
-    { iconURL: "http://localhost:5173/assets/reactions/sad.gif", name: "Sad", static: "http://localhost:5173/assets/reactions/sad_s.png" },
-    { iconURL: "http://localhost:5173/assets/reactions/angry.gif", name: "Angry", static: "http://localhost:5173/assets/reactions/angry_s.png" },
+    { iconURL: "/assets/reactions/like.gif", name: "Like", static: "/assets/reactions/like_s.png" },
+    { iconURL: "/assets/reactions/love.gif", name: "Love", static: "/assets/reactions/love_s.png" },
+    { iconURL: "/assets/reactions/haha.gif", name: "Haha", static: "/assets/reactions/haha_s.png" },
+    { iconURL: "/assets/reactions/wow.gif", name: "Wow", static: "/assets/reactions/wow_s.png" },
+    { iconURL: "/assets/reactions/sad.gif", name: "Sad", static: "/assets/reactions/sad_s.png" },
+    { iconURL: "/assets/reactions/angry.gif", name: "Angry", static: "/assets/reactions/angry_s.png" },
   ]
 }

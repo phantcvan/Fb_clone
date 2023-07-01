@@ -212,7 +212,7 @@ export default function Post({ lastCmt }: { lastCmt: boolean }) {
           </Tippy>
 
           <span className="flex-1 h-fit text-fb-gray-text bg-gray-100 rounded-xl flex items-center p-2">
-            adsfdasdfsdafaafdfdfdfdfdfdfdfdfdfdfdfdfdef
+            adsfdasdfsdafaafdfdfdfdfdfdf dfdfdfdfdfdfdef
           </span>
         </div>
         <div className="flex gap-4 pl-10 mx-auto w-[90%] relative">
