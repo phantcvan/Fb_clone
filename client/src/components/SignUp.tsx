@@ -2,6 +2,13 @@ import { AiOutlineClose } from "react-icons/ai";
 import "../index.css";
 import { useEffect, useState } from "react";
 import Tippy from '@tippyjs/react/headless';
+import { getUser, setUser, getAllUsers, setAllUsers } from "../slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { UserType } from "../static/types"
+import axios from "axios";
+import { useNavigate } from "react-router";
+import { generateRandomId } from "../static/function"
+
 
 
 const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStateAction<boolean>> }) => {
@@ -14,24 +21,26 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
     const [last_name, setLast_name] = useState("");
     const [last_name_tippy, setLast_name_tippy] = useState(false);
     const [last_name_check, setLast_name_check] = useState(false);
-    const [email, setEmail] = useState("");
+    const [emailInput, setEmail] = useState("");
     const [email_tippy, setEmail_tippy] = useState(false);
     const [email_check, setEmail_check] = useState(false);
-    const [password, setPassword] = useState("");
+    const [passwordInput, setPassword] = useState("");
     const [password_tippy, setPassword_tippy] = useState(false);
     const [password_check, setPassword_check] = useState(false);
-    const [gender, setGender] = useState(-1);
+    const [gender, setGender] = useState("");
     const [gender_tippy, setGender_tippy] = useState(false);
     const [gender_check, setGender_check] = useState(false);
     const [birthday, setBirthday] = useState("");
     const [birthday_tippy, setBirthday_tippy] = useState(false);
     const [birthday_check, setBirthday_check] = useState(false);
+    const [message, setMessage] = useState("");
 
+    const allUsers = useSelector(getAllUsers);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-
+    // Hien thi ngay/thang/nam
     const currentDay = new Date().getDate();
-
-
     const days = Array.from({ length: 31 }, (_, index) => index + 1);
     const dayOptions = days.map((day) => (
         <option key={day} value={day}>{day}</option>
@@ -39,6 +48,8 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
     const handleChangeDay = (event: any) => {
         setDayInput(parseInt(event.target.value));
         setBirthday_check(false);
+        // const formattedDate = `${yearInput}-${monthInput.toString().padStart(2, '0')}-${dayInput.toString().padStart(2, '0')}`;
+        // setBirthday(formattedDate);
     };
     const months = [
         { label: 'Jan', value: 1 },
@@ -55,10 +66,11 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
         { label: 'Dec', value: 12 }
     ];
     const currentMonth = new Date().getMonth() + 1;
-    console.log("currentMonth", currentMonth);
     const handleChangeMonth = (event: any) => {
         setMonthInput(parseInt(event.target.value));
         setBirthday_check(false);
+        // const formattedDate = `${yearInput}-${monthInput.toString().padStart(2, '0')}-${dayInput.toString().padStart(2, '0')}`;
+        // setBirthday(formattedDate);
     };
 
     const monthOptions = months.map((month) => (
@@ -75,6 +87,8 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
     const handleChangeYear = (event: any) => {
         setYearInput(parseInt(event.target.value));
         setBirthday_check(false);
+        // const formattedDate = `${yearInput}-${monthInput.toString().padStart(2, '0')}-${dayInput.toString().padStart(2, '0')}`;
+        // setBirthday(formattedDate);
     };
 
     const yearOptions = years.map((year) => (
@@ -98,19 +112,13 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
         const passwordLength = password.trim().length;
         return passwordLength >= minLength && passwordLength <= maxLength;
     }
-    // validate birthday
-    console.log("check year", yearInput, currentYear);
-    console.log("check month", monthInput, currentMonth);
-    console.log("check day", dayInput, currentDay);
 
     function validateBirthday() {
-        if (yearInput === currentYear && monthInput === currentMonth && dayInput === currentDay) {
-            return false;
-        } else if (yearInput > currentYear) {
+        if (yearInput > currentYear) {
             return false;
         } else if (yearInput === currentYear && monthInput > currentMonth) {
             return false;
-        } else if (yearInput === currentYear && monthInput === currentMonth && dayInput > currentDay) {
+        } else if (yearInput === currentYear && monthInput === currentMonth && dayInput >= currentDay) {
             return false;
         } else return true;
 
@@ -124,35 +132,98 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
         setPassword_tippy(false);
         setGender_tippy(false);
         setBirthday_tippy(false);
+        setMessage("");
     }
+    // log-in neu ng dung nhap vao email da dang ky
+    const fetchDataLogin = async () => {
+        try {
+            await axios.post('http://localhost:8000/api/v1/users/login', {
+                email: emailInput,
+                password: passwordInput
+            })
+                .then(res => {
+                    console.log(res.data);
+                    if (res.data.status === 200) {
+                        console.log('Đăng nhập thành công');
+                        dispatch(setUser(res.data.data));
+                        navigate({
+                            pathname: `/`,
+                        })
+                    } else {
+                        setMessage("The email you entered had already been signed up, but password incorrect. Please try again.")
+                    }
+                })
+                .catch(error => console.log(error))
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    // sign-up neu ng dung nhap vao email chua dang ky
+    let newUser_id = Number(generateRandomId());
+    while (allUsers.some((u: UserType) => u.id === newUser_id)) {
+        newUser_id = Number(generateRandomId());
+    }
+    console.log("birthday", birthday);
+    const formattedDate = `${yearInput}-${monthInput.toString().padStart(2, '0')}-${dayInput.toString().padStart(2, '0')}`;
+
+    const fetchDataSignUp = async () => {
+        try {
+            await axios.post('http://localhost:8000/api/v1/users/register', {
+                id: newUser_id,
+                first_name: first_name,
+                last_name: last_name,
+                email: emailInput.toLowerCase(),
+                password: passwordInput,
+                gender: gender,
+                birthday: formattedDate
+            })
+                .then(res => {
+                    console.log(res.data);
+                    if (res.data.status === 200) {
+                        console.log('Đăng ký thành công');
+                        setOpenSignUp(false);
+                    }
+                })
+                .catch(error => console.log(error))
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
         // validate
 
         if (first_name.replace(/\s+/g, " ").trim() === "") setFirst_name_check(true);
         if (last_name.replace(/\s+/g, " ").trim() === "") setLast_name_check(true);
-        if (isValidEmail(email) === false) setEmail_check(true);
-        if (isValidPassword(password) === false) setPassword_check(true);
+        if (isValidEmail(emailInput) === false) setEmail_check(true);
+        if (isValidPassword(passwordInput) === false) setPassword_check(true);
         if (validateBirthday() === false) setBirthday_check(true);
-        if (gender < 0) setGender_check(true);
+        if (gender === "") setGender_check(true);
 
         if (first_name.replace(/\s+/g, " ").trim() === "") return setFirst_name_tippy(true);
         else if (last_name.replace(/\s+/g, " ").trim() === "") return setLast_name_tippy(true);
-        else if (isValidEmail(email) === false) return setEmail_tippy(true);
-        else if (isValidPassword(password) === false) return setPassword_tippy(true);
+        else if (isValidEmail(emailInput) === false) return setEmail_tippy(true);
+        else if (isValidPassword(passwordInput) === false) return setPassword_tippy(true);
         else if (validateBirthday() === false) return setBirthday_tippy(true);
-        else if (gender < 0) return setGender_tippy(true);
+        else if (gender === "") return setGender_tippy(true);
+
+        const findUser = allUsers.find((u: UserType) => u.email === emailInput)
+        if (findUser) {
+            fetchDataLogin();
+        } else {
+            const formattedDate = `${yearInput}-${monthInput.toString().padStart(2, '0')}-${dayInput.toString().padStart(2, '0')}`;
+            setBirthday(formattedDate);
+            console.log("birthday12", formattedDate);
+            fetchDataSignUp();
+        }
 
 
 
 
-        //     const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        //     return setBirthday(formattedDate);
+
 
     }
-    console.log("B-C", birthday_check);
-
-    console.log("first_name", first_name);
 
 
     return (
@@ -192,7 +263,7 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                                     ${first_name_check ? "border-red-1" : "border-fb-dark"}`}
                                     placeholder="First name" />
                                 {first_name_tippy
-                                    && <div className={`bg-alert py-2 px-3 h-fit rounded-md text-white absolute top-0 left-[-140px]`} >
+                                    && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute top-0 left-[-140px]`} >
                                         <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute right-[-12px] top-[6px] z-10"></div>
                                         <p className="text-xs z-20">What's your name?</p>
                                     </div>}
@@ -207,7 +278,7 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                                     ${last_name_check ? "border-red-1" : "border-fb-dark"}`}
                                     placeholder="Surname" />
                                 {last_name_tippy
-                                    && <div className={`bg-alert py-2 px-2 h-fit rounded-md text-white absolute bottom-[-52px] z-20`} >
+                                    && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute bottom-[-52px] z-20`} >
                                         <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute left-[25px] top-[-9px] z-10"></div>
                                         <p className="text-xs z-20">What's your name?</p>
                                     </div>}
@@ -223,15 +294,15 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                                 ${email_check ? "border-red-1" : "border-fb-dark"}`}
                                 placeholder="Email address" />
                             {email_tippy
-                                && <div className={`bg-alert py-2 px-2 h-fit rounded-md text-white absolute top-0 left-[-233px]`} >
+                                && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute top-0 left-[-233px]`} >
                                     <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute right-[-13px] top-[10px] z-10"></div>
                                     <p className="text-xs z-20">
-                                        You'll use this when you log in and if <br /> you ever need to reset your password.
+                                        Please enter a valid email address. <br /> You'll use this when you log in and if <br /> you ever need to reset your password.
                                     </p>
                                 </div>}
                         </div>
                         <div className="bg-gray-100 w-full rounded-md my-1 relative">
-                            <input type="text" onClick={handleAddInput}
+                            <input type="password" onClick={handleAddInput}
                                 onChange={(e: any) => {
                                     setPassword(e.target.value);
                                     setPassword_tippy(false); setPassword_check(false)
@@ -240,7 +311,7 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                                 ${password_check ? "border-red-1" : "border-fb-dark"}`}
                                 placeholder="New password" />
                             {password_tippy
-                                && <div className={`bg-alert py-2 px-2 h-fit rounded-md text-white absolute top-0 left-[-233px]`} >
+                                && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute top-0 left-[-233px]`} >
                                     <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute right-[-13px] top-[10px] z-10"></div>
                                     <p className="text-xs z-20">
                                         Password must be between 6 and 20 <br /> characters in length.
@@ -250,37 +321,62 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                         <span className="text-xs text-left">Date of birth</span>
                         <div className="flex w-full gap-2 mt-1 mb-2 relative">
                             <select name="date" id="" value={dayInput} onChange={handleChangeDay} onClick={handleAddInput}
-                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
+                                className={`flex basis-1/3 outline-none bg-gray-100 py-2 border rounded-md
+                                ${birthday_check ? "border-red-1" : "border-fb-dark"}`}>
                                 {dayOptions}
                             </select>
                             <select name="month" id="" value={monthInput} onChange={handleChangeMonth} onClick={handleAddInput}
-                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
+                                className={`flex basis-1/3 outline-none bg-gray-100 py-2 border rounded-md
+                                ${birthday_check ? "border-red-1" : "border-fb-dark"}`}>
                                 {monthOptions}
                             </select>
                             <select name="year" id="" value={yearInput} onChange={handleChangeYear} onClick={handleAddInput}
-                                className="flex basis-1/3 outline-none bg-gray-100 py-2 border border-fb-dark rounded-md">
+                                className={`flex basis-1/3 outline-none bg-gray-100 py-2 border rounded-md
+                                ${birthday_check ? "border-red-1" : "border-fb-dark"}`}>
                                 {yearOptions}
                             </select>
+                            {birthday_tippy
+                                && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute top-0 left-[-233px]`} >
+                                    <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute right-[-13px] top-[10px] z-10"></div>
+                                    <p className="text-xs z-20">
+                                        It looks like you've entered the wrong <br /> info. Please make sure that
+                                        you use <br /> your real date of birth.
+                                    </p>
+                                </div>}
                         </div>
                         <span className="text-xs text-left">Gender</span>
-                        <div className="flex w-full gap-2 mt-1 mb-1">
-                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border border-fb-dark rounded-md px-3 py-2 '>
+                        <div className="flex w-full gap-2 mt-1 mb-1 relative">
+                            <div className={`flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border rounded-md px-3 py-2
+                            ${gender_check ? "border-red-1" : "border-fb-dark"}`}>
                                 <label htmlFor="female">Female</label>
                                 <input type="radio" value="Female" name='gender' className='w-3 h-3'
-                                    onChange={() => setGender(1)} id="female" />
+                                    onChange={() => setGender("female")} id="female" />
                             </div>
-                            <div className='flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border border-fb-dark rounded-md px-3 py-2 '>
+                            <div className={`flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border rounded-md px-3 py-2
+                            ${gender_check ? "border-red-1" : "border-fb-dark"}`}>
                                 <label htmlFor="male">Male</label>
                                 <input type="radio" value="Male" name='gender' className='w-3 h-3'
-                                    onChange={() => setGender(0)} id="male" />
+                                    onChange={() => setGender("male")} id="male" />
                             </div>
+                            {gender_tippy
+                                && <div className={`bg-alert py-2 pl-2 pr-3 h-fit rounded-md text-white absolute top-0 left-[-309px]`} >
+                                    <div className="w-[14px] h-[14px] bg-alert transform rotate-45 origin-top-left absolute right-[-13px] top-[10px] z-10"></div>
+                                    <p className="text-xs z-20">
+                                        Please choose a gender. You can change who can <br /> see this later.
+                                    </p>
+                                </div>}
                         </div>
-                        <span className="text-xs text-fb-gray-text my-1">
-                            People who use our service may have uploaded your contact information to Facebook.
-                        </span>
-                        <span className="text-xs text-fb-gray-text my-1">
-                            By clicking Sign Up, you agree to our Terms, Privacy Policy and Cookies Policy. You may receive SMS notifications from us and can opt out at any time.
-                        </span>
+                        {message === ""
+                            ? <div className="flex flex-col mt-1">
+                                <span className="text-xs text-fb-gray-text my-1">
+                                    People who use our service may have uploaded your contact information to Facebook.
+                                </span>
+                                <span className="text-xs text-fb-gray-text my-1">
+                                    By clicking Sign Up, you agree to our Terms, Privacy Policy and Cookies Policy. You may receive SMS notifications from us and can opt out at any time.
+                                </span>
+                            </div>
+                            : <div className="text-red mt-1">{message}</div>}
+
                         <button className={`bg-green rounded-md text-white text-lg font-semibold w-fit m-auto py-2 px-20 my-3`}>
                             Sign Up
                         </button>

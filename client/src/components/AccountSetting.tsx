@@ -6,8 +6,12 @@ import { IoLogOut } from 'react-icons/io5';
 import { BiSolidHelpCircle, BiSolidMoon, BiSolidCommentError } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import { CategoryItems } from "../static/menu";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser, setUser } from "../slices/userSlice";
 
 const AccountSetting = ({ setPick }: { setPick: React.Dispatch<React.SetStateAction<number>> }) => {
+  const user = useSelector(getUser);
+  const dispatch = useDispatch();
 
   return (
     <div className="w-[100%] h-screen absolute top-[70px] right-0">
@@ -71,7 +75,8 @@ const AccountSetting = ({ setPick }: { setPick: React.Dispatch<React.SetStateAct
             <span><IoIosArrowForward size={30} style={{ color: "#606770" }} /></span>
           </div>
         </div>
-        <div className="p-2 hover:bg-gray-100 rounded-lg flex items-center justify-between cursor-pointer">
+        <div className="p-2 hover:bg-gray-100 rounded-lg flex items-center justify-between cursor-pointer"
+          onClick={() => dispatch(setUser(null))}>
           <div className="font-semibold text-[15px] flex gap-3 items-center">
             <div className="w-9 h-9 rounded-full flex items-center justify-center bg-fb-gray ">
               <IoLogOut size={24} />

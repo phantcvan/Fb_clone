@@ -1,4 +1,3 @@
-// import { useSelector } from "react-redux";
 import { Outlet, Navigate } from "react-router";
 import { useSelector } from 'react-redux';
 import { getUser} from "./slices/userSlice";

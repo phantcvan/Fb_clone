@@ -5,11 +5,13 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { getUser, setUser } from "../slices/userSlice";
 import { useDispatch, useSelector } from 'react-redux';
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [openSignUp, setOpenSignUp] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [active, setActive] = useState(1);
     const [message, setMessage] = useState("");
     const [emailInput, setEmail] = useState("");
@@ -67,10 +69,17 @@ const Login = () => {
                                 placeholder="Email address" onChange={handleAddEmail}
                                 onClick={() => setActive(1)} />
                         </div>
-                        <div className={`mx-3 border mt-3 w-[calc(100%-24px)] rounded-md ${active === 2 ? "border-fb-blue" : "border-fb-gray"}`}>
-                            <input type="text" className="my-[14px] mx-4 w-[calc(100%-36px)] border-none outline-none bg-gray-100"
+                        <div className={`mx-3 border mt-3 w-[calc(100%-24px)] rounded-md flex
+                        ${active === 2 ? "border-fb-blue" : "border-fb-gray"}`}>
+                            <input type={`${showPassword ? "text" : "password"}`} 
+                            className="my-[14px] mx-4 w-[calc(100%-48px)] border-none outline-none bg-gray-100"
                                 placeholder="Password" onChange={handleAddPassword}
                                 onClick={() => setActive(2)} />
+                                <div className="flex items-center mr-1" onClick={()=>setShowPassword((pre:boolean)=>!pre)}>
+                                    {showPassword
+                                ? <AiFillEye size={22} />
+                                : <AiFillEyeInvisible size={22} />}</div>
+                            
                         </div>
                         {message
                             && <div className="mx-3 w-[calc(100%-24px)] text-red mt-3 font-semibold text-xs">

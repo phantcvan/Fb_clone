@@ -5,13 +5,34 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
 import User from "./pages/User";
-
+import { getUser, getAllUsers, setAllUsers } from "./slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 
 
 function App() {
   const [newNotifications, setNewNotifications] = useState<number>(5);
   const [originalTitle, setOriginalTitle] = useState<string>('Clone Facebook');
+  const dispatch = useDispatch();
+  const allUsers = useSelector(getAllUsers);
+  const userNow = useSelector(getUser);
+
+  const fetchDataUsers = async () => {
+    try {
+      const [usersResponse] = await Promise.all([
+        axios.get(`http://localhost:8000/api/v1/users`),
+      ]);
+
+      dispatch(setAllUsers(usersResponse.data.users));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(()=>{
+    fetchDataUsers();
+  },[])
+console.log(allUsers);
 
   useEffect(() => {
     updateTitle();
@@ -28,7 +49,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route  path="" element={<PrivateRoute />}>
+          <Route path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home setNewNotifications={setNewNotifications} />} />
             <Route path="/:user" element={<Login />} />
             <Route path="/user" element={<User />} />

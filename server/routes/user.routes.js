@@ -13,11 +13,11 @@ const { generateToken } = require("../helpers/token");
 
 router.get("/", async (req, res) => {
     try {
-        // let data = await database.execute("SELECT * FROM `clone-yt`.comments");
-        // let [comments] = data;
+        let data = await database.execute("SELECT * FROM facebook.tbl_users");
+        let [users] = data;
         res.json({
             status: 200,
-            // comments,
+            users,
         });
     } catch (error) {
         res.json({ error });
@@ -45,36 +45,38 @@ router.get("/:id", async (req, res) => {
     }
 })
 
-router.post("/register", validateData, validateSignUpInput, checkExistUser, async (req, res) => {
+router.post("/register", async (req, res) => {
     const { id,
         first_name,
         last_name,
-        username,
         email,
         password,
         gender,
         birthday,
     } = req.body;
+    console.log(req.body)
+
     const avatar = process.env.DATABASE_URL + '/avatar_default.jpg';
     const cover = process.env.DATABASE_URL + '/cover_default.png';
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
     const verify = 0;
+    const isOnline = 0;
     const newUser = [
         id,
         first_name,
         last_name,
-        username,
         email.toLowerCase(),
         hash,
         avatar,
         cover,
         gender,
         birthday,
-        verify];
+        verify, 
+        isOnline];
     try {
         const query = `
-        INSERT INTO tbl_users (id,first_name,last_name,username,email,password,avatar,cover,gender,birthday,verify)
+        INSERT INTO tbl_users (id,first_name,last_name,email,password,avatar,cover,gender,birthday,verify, isOnline)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
         let data = await database.execute(query, newUser);
@@ -84,7 +86,7 @@ router.post("/register", validateData, validateSignUpInput, checkExistUser, asyn
             userId: id.toString(),
         }, "30m");
         const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
-        sendVerificationEmail(email, username, url);
+        sendVerificationEmail(email, first_name, url);
 
 
 
