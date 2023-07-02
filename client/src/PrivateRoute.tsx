@@ -7,8 +7,8 @@ import { getUser} from "./slices/userSlice";
 
 
 const PrivateRoute = ()=>{
-    // const user = useSelector(getUser);
-    const user = true;
+    const user = useSelector(getUser);
+    // const user = true;
 
   return (
     user?<Outlet/>:<Navigate to="/login"/>

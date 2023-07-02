@@ -18,6 +18,8 @@ export default {
       "fb-gray-text": "#65676B",
       white: "#FFFFFF",
       red: "#E41E3F",
+      "red-1": "#FF0000",
+      alert: "#BE4B49",
       green: "#42B72A",
       black: "#050505",
       "overlay-40": "rgba(252,252,253,0.4)",

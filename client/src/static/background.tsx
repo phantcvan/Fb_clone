@@ -14,6 +14,12 @@ export const BgPost = [
         bgURL: "/assets/background/orange_leaves.jpg"
   },
   {
+    name: "purple",
+    textColor: "#EEB3FF",
+    thumbnail: "/assets/background/purple-i.png",
+    bgURL: "/assets/background/purple-b.png"
+  },
+  {
     name: "in loved",
     textColor: "#483912",
     thumbnail: "/assets/background/in_loved_t.jpg",
