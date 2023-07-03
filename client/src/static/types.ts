@@ -29,6 +29,6 @@ export interface Relation {
   id: number;
   request_id: number;
   accept_id: number;
-  relation_type: number;
+  status: number;
   date_request: string;
 }

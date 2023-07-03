@@ -37,14 +37,15 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
     try {
       const [requestResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/relation/${userNow.id}`),
+
       ]);
       dispatch(setRelation(requestResponse.data.request));
-      const friend = requestResponse?.data?.request?.filter((item: Relation) => item.relation_type === 2);
+      const friend = requestResponse?.data?.request?.filter((item: Relation) => item.status === 2);
       const idsFromRelation = friend?.map((item: Relation) => [item.request_id, item.accept_id])
         .flat().filter((id: number) => id !== userNow.id);
       console.log("ids", idsFromRelation);
       setContact(allUsers.filter((user: UserType) => idsFromRelation.includes(user.id)));
-      const filteredObjects = requestResponse.data.request.filter((item: Relation) => item.relation_type === 1 && item.accept_id === userNow.id);
+      const filteredObjects = requestResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.accept_id === userNow.id);
       if (filteredObjects.length > 0) {
         const latestObject = filteredObjects.reduce((prev: Relation, current: Relation) => {
           return compareDate(prev, current) < 0 ? current : prev;

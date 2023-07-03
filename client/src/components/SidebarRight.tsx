@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { getShowMess, setShowMess } from "../slices/appSlice"
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
@@ -13,13 +13,13 @@ interface SideBarProps {
     contact: UserType[];
     lastRequest: UserType;
     lastRequestId: number;
-
 }
 const SidebarRight = ({ userNow, contact, lastRequest, lastRequestId }: SideBarProps) => {
     const showMess = useSelector(getShowMess);
     const dispatch = useDispatch();
     const [answer, setAnswer] = useState(false);
-    console.log("contact", lastRequestId);
+    const [mutualCount, setMutualCount] = useState(0);
+    // console.log("contact", lastRequestId);
     const handleAddFriend = () => {
         axios.put(`http://localhost:8000/api/v1/relation/accept/${lastRequestId}`)
             .then(response => {
@@ -32,6 +32,22 @@ const SidebarRight = ({ userNow, contact, lastRequest, lastRequestId }: SideBarP
             });
     };
 
+    const fetchMutual = async () => {
+        try {
+            const [mutualResponse] = await Promise.all([
+                axios.post(`http://localhost:8000/api/v1/relation/mutual-relations`, {
+                    user1: userNow.id,
+                    user2: lastRequestId
+                })
+            ])
+            console.log("mutual",mutualResponse);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    useEffect(() => {
+        fetchMutual()
+      }, [])
     return (
         <div className="flex flex-col flex-1 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D] pl-20">
             <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
