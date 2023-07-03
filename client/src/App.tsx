@@ -5,7 +5,8 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
 import User from "./pages/User";
-import { getUser, getAllUsers, setAllUsers } from "./slices/userSlice";
+import { getUser} from "./slices/whitelist";
+import { getAllUsers, setAllUsers } from "./slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -13,7 +14,6 @@ import axios from "axios";
 
 function App() {
   const [newNotifications, setNewNotifications] = useState<number>(5);
-  const [originalTitle, setOriginalTitle] = useState<string>('Clone Facebook');
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const userNow = useSelector(getUser);
@@ -23,8 +23,7 @@ function App() {
       const [usersResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users`),
       ]);
-
-      dispatch(setAllUsers(usersResponse.data.users));
+      dispatch(setAllUsers(usersResponse?.data.users));
     } catch (error) {
       console.error(error);
     }
@@ -40,9 +39,9 @@ console.log(allUsers);
 
   const updateTitle = () => {
     if (newNotifications > 0) {
-      document.title = `(${newNotifications}) ${originalTitle}`;
+      document.title = `(${newNotifications}) Clone Facebook`;
     } else {
-      document.title = originalTitle;
+      document.title = "Clone Facebook";
     }
   };
   return (

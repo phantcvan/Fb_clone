@@ -14,11 +14,8 @@ import { useNavigate } from "react-router";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { BgPost } from "../static/background";
 import ShowMoreBg from "./ShowMoreBg";
+import { UserType, Tag } from "../static/types";
 
-interface Tag {
-    id: number;
-    username: string;
-}
 interface Feel {
     icon: string;
     name: string;
@@ -27,7 +24,11 @@ interface Check {
     checkIn: string;
     city: string;
 }
-const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.SetStateAction<boolean>> }) => {
+interface CreatePost {
+    userNow: UserType;
+    setUploadPost: React.Dispatch<React.SetStateAction<boolean>>
+}
+const CreatePost = ({ setUploadPost, userNow }: CreatePost) => {
     const [selectAudience, setSelectAudience] = useState(false);
     const [addOn, setAddOn] = useState(0);
     const [selectAddOn, setSelectAddOn] = useState(0);
@@ -41,7 +42,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
     const [showBgView, setShowBgView] = useState(false);
     const [postBg, setPostBg] = useState(-1);
     const [postBgUrl, setPostBgUrl] = useState("");
-    const [textColor, setTextColor] = useState("");
+    const [textColor, setTextColor] = useState("black");
 
 
     console.log(newPost);
@@ -60,7 +61,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
     const styleBg = postBgUrl
         ? {
             background: `url(${postBgUrl}) no-repeat center center / cover`,
-            color: `${textColor}, `
+            color: `${textColor}`
         }
         : {};
 
@@ -90,11 +91,11 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                 <div className="w-full">
                 </div>
                 <div className="flex flex-row gap-3 mt-3 mb-2 mx-3">
-                    <img src="/assets/person/1.jpeg" alt=""
+                    <img src={userNow.avatar} alt=""
                         className="w-10 h-10 rounded-full cursor-pointer object-cover" />
                     <div className="flex flex-col gap-1">
                         <div className="flex text-sm text-black font-semibold">
-                            <span className="text-sm text-black">USERNAME
+                            <span className="text-sm text-black">{userNow.first_name} {userNow.last_name}
                                 {(feeling.length > 0 || tag.length > 0 || location.length > 0) && <span> is </span>}
                                 {feeling.length > 0 && <span>{feeling[0].icon} feeling {feeling[0].name} </span>}
                                 {tag.length > 0 && tag.length <= 3 && (
@@ -140,7 +141,7 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                 </div>
                 <div className="gap-3 m-3 relative flex items-center justify-center">
 
-                    <textarea name="myTextarea" id="myTextarea" rows={7} placeholder="What's on your mind, USERNAME?"
+                    <textarea name="myTextarea" id="myTextarea" rows={7} placeholder={`What's on your mind, ${userNow.first_name}?`}
                         className={`text-xl px-2 w-full outline-none resize-none flex items-center justify-center
                         `}
                         onChange={(e) => setNewPost(e.target.value)}
@@ -154,7 +155,18 @@ const CreatePost = ({ setUploadPost }: { setUploadPost: React.Dispatch<React.Set
                                     onClick={() => setShowBgView(false)}>
                                     <MdArrowBackIosNew size={22} />
                                 </span>
-                                {BgPost.slice(0, 8).map((item, index) => (
+                                <div
+                                    className={`cursor-pointer w-[38px] h-[38px] rounded-lg`}
+                                >
+                                    <div className="w-[38px] h-[38px] rounded-lg border-2 border-fb-gray bg-white"
+                                        onClick={() => {
+                                            setPostBgUrl("");
+                                            setPostBg(-1); setTextColor("black")
+                                        }} >
+                                        <div className="bg-fb-gray w-[34px] h-[34px] rounded-lg border-2 border-white "></div>
+                                    </div>
+                                </div>
+                                {BgPost.slice(0, 7).map((item, index) => (
                                     <div key={index}
                                         className={`cursor-pointer w-[38px] h-[38px] rounded-lg`}
                                     >

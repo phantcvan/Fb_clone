@@ -2,7 +2,8 @@ import { AiOutlineClose } from "react-icons/ai";
 import "../index.css";
 import { useEffect, useState } from "react";
 import Tippy from '@tippyjs/react/headless';
-import { getUser, setUser, getAllUsers, setAllUsers } from "../slices/userSlice";
+import { getUser, setUser} from "../slices/whitelist";
+import { getAllUsers, setAllUsers } from "../slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { UserType } from "../static/types"
 import axios from "axios";
@@ -345,9 +346,9 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                                 </div>}
                         </div>
                         <span className="text-xs text-left">Gender</span>
-                        <div className="flex w-full gap-2 mt-1 mb-1 relative">
+                        <div className="flex w-full gap-2 mt-1 mb-1 relative" onClick={handleAddInput}>
                             <div className={`flex basis-1/3 justify-between gap-2 items-center bg-gray-100 border rounded-md px-3 py-2
-                            ${gender_check ? "border-red-1" : "border-fb-dark"}`}>
+                            ${gender_check ? "border-red-1" : "border-fb-dark"}`} onClick={()=>setGender_check(false)}>
                                 <label htmlFor="female">Female</label>
                                 <input type="radio" value="Female" name='gender' className='w-3 h-3'
                                     onChange={() => setGender("female")} id="female" />

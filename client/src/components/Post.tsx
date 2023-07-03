@@ -10,9 +10,16 @@ import { setShowCmt, getShowCmt } from "../slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { IoMdSend } from "react-icons/io";
 import ViewMiniProfile from "./ViewMiniProfile";
+import { UserType } from "../static/types"
 
+interface PostProps {
+  userNow: UserType;
+  lastCmt: boolean;
+}
 
-export default function Post({ lastCmt }: { lastCmt: boolean }) {
+export default function Post({ userNow, lastCmt }: PostProps) {
+  console.log("avatar", userNow.avatar);
+  
   const [showIcon, setShowIcon] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showIconCmt, setShowIconCmt] = useState(false);
@@ -65,7 +72,6 @@ export default function Post({ lastCmt }: { lastCmt: boolean }) {
           </Tippy>
 
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
-            {/* <div>Hoàng Hải Nam</div> */}
             <div>3 ngày</div>{" "}
             <div className="w-3 h-3 overflow-hidden">
               <FaEarthAmericas size={12} />
@@ -170,12 +176,12 @@ export default function Post({ lastCmt }: { lastCmt: boolean }) {
       </div>
       {lastCmt &&
         <div className=" mx-auto gap-2 m-2 m flex w-[90%] items-center">
-          
+
           <div className={`w-8 h-8 box-content rounded-full flex items-center
           justify-center cursor-pointer overflow-hidden`}>
             <img
               className="object-cover w-8 h-8"
-              src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
+              src={userNow.avatar}
             />
           </div>
 

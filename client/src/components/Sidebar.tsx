@@ -4,11 +4,15 @@ import { SideBarGroup, CategoryItems } from "../static/menu";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { UserType } from "../static/types";
+import { getUser, setUser } from "../slices/whitelist";
+
 
 // import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ userNow }: { userNow: UserType }) => {
     const [pick, setPick] = useState(1);
+    const n=SideBarGroup.Group.length
     return (
         <div className="flex basis-1/4 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D]">
             <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
@@ -27,9 +31,9 @@ const Sidebar = () => {
                             onClick={() => setPick(2)}>
                             <Link to="/user">
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
-                                    <img src="/assets/person/1.jpeg" alt="avatar"
+                                    <img src={userNow.avatar} alt="avatar"
                                         className="w-6 h-6 rounded-full object-cover overflow-hidden " />
-                                    <span>UserName</span>
+                                    <span>{userNow.first_name} {userNow.last_name}</span>
                                 </div>
                             </Link>
                         </div>
@@ -51,8 +55,8 @@ const Sidebar = () => {
                                 </Link>
                             </div>
                         ))}
-                        <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === 1 ? "border-fb-blue" : "border-white"}`}
-                            onClick={() => setPick(1)}>
+                        <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === (n+4) ? "border-fb-blue" : "border-white"}`}
+                            onClick={() => setPick(n+4)}>
                             <Link to="/">
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
                                     <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">

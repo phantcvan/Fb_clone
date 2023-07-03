@@ -3,7 +3,7 @@ import "../index.css";
 import SignUp from "../components/SignUp";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { getUser, setUser } from "../slices/userSlice";
+import { getUser, setUser } from "../slices/whitelist";
 import { useDispatch, useSelector } from 'react-redux';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
@@ -40,8 +40,10 @@ const Login = () => {
             })
                 .then(res => {
                     console.log(res.data);
+
                     if (res.data.status === 200) {
                         console.log('Đăng nhập thành công');
+                        localStorage.setItem("authToken", res.data.token);
                         setMessage("");
                         dispatch(setUser(res.data.data));
                         navigate({
@@ -71,15 +73,15 @@ const Login = () => {
                         </div>
                         <div className={`mx-3 border mt-3 w-[calc(100%-24px)] rounded-md flex
                         ${active === 2 ? "border-fb-blue" : "border-fb-gray"}`}>
-                            <input type={`${showPassword ? "text" : "password"}`} 
-                            className="my-[14px] mx-4 w-[calc(100%-48px)] border-none outline-none bg-gray-100"
+                            <input type={`${showPassword ? "text" : "password"}`}
+                                className="my-[14px] mx-4 w-[calc(100%-48px)] border-none outline-none bg-gray-100"
                                 placeholder="Password" onChange={handleAddPassword}
                                 onClick={() => setActive(2)} />
-                                <div className="flex items-center mr-1" onClick={()=>setShowPassword((pre:boolean)=>!pre)}>
-                                    {showPassword
-                                ? <AiFillEye size={22} />
-                                : <AiFillEyeInvisible size={22} />}</div>
-                            
+                            <div className="flex items-center mr-1" onClick={() => setShowPassword((pre: boolean) => !pre)}>
+                                {showPassword
+                                    ? <AiFillEye size={22} style={{ color: "#65676B" }} />
+                                    : <AiFillEyeInvisible size={22} style={{ color: "#65676B" }} />}</div>
+
                         </div>
                         {message
                             && <div className="mx-3 w-[calc(100%-24px)] text-red mt-3 font-semibold text-xs">

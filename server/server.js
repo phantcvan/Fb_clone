@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
 const userRoutes = require("./routes/user.routes");
+const relationRoutes = require("./routes/relation.routes");
 require('dotenv').config();
 
 const server = express();
@@ -15,6 +16,7 @@ server.use(cors());
 server.use(express.static("public"));
 
 server.use("/api/v1/users", userRoutes);
+server.use("/api/v1/relation", relationRoutes);
 
 
 

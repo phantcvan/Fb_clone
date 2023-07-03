@@ -8,11 +8,14 @@ import { useState } from "react";
 import MessengerView from "./MessengerView";
 import NotificationView from "./NotificationView";
 import AccountSetting from "./AccountSetting";
+import { UserType } from "../static/types"
 
 
+interface TopProps {
+    userNow: UserType;
+}
 
-
-const Topbar = () => {
+const Topbar = ({ userNow }: TopProps) => {
     const [pick, setPick] = useState(0);
     const [keyword, setKeyword] = useState("");
 
@@ -106,7 +109,7 @@ const Topbar = () => {
                         </div>)}>
                     <div className={`w-10 h-10 relative rounded-full flex items-center justify-center`}
                         onClick={() => pick === 3 ? setPick(0) : setPick(3)}>
-                        <img src="/assets/person/1.jpeg" alt=""
+                        <img src={userNow.avatar} alt=""
                             className="w-10 h-10 rounded-full cursor-pointer object-cover relative" />
                         <span className="w-4 h-4 text-xs flex items-center bg-fb-gray rounded-full absolute bottom-[-5px]
                         border-2 border-white right-[-2px]">
@@ -117,9 +120,9 @@ const Topbar = () => {
                 {pick === 1
                     ? <MessengerView setPick={setPick} />
                     : pick === 2
-                        ? <NotificationView setPick={setPick} />
+                        ? <NotificationView setPick={setPick} userNow={userNow} />
                         : pick === 3
-                        && <AccountSetting setPick={setPick} />}
+                        && <AccountSetting setPick={setPick} userNow={userNow} />}
             </div>
         </div>
     )

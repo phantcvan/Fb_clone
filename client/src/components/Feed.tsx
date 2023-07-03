@@ -6,14 +6,22 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useState } from "react";
 import CreatePost from "./CreatePost";
 import Post from "./Post";
-// import { setShowMess, getShowMess } from "../slices/appSlice";
-// import { useSelector } from 'react-redux';
+import { UserType, Relation } from "../static/types"
 
 
-const Feed = () => {
+
+interface FeedProps {
+    userNow: UserType;
+    allUsers: UserType[];
+    relation: Relation[];
+}
+const Feed = ({ userNow, allUsers, relation }: FeedProps) => {
     const [selectStory, setSelectStory] = useState(true);
     const [uploadPost, setUploadPost] = useState(false);
     const [lastCmt, setLastCmt] = useState(true);
+
+    
+    
 
 
     return (
@@ -40,28 +48,28 @@ const Feed = () => {
                                 <span className={`${selectStory ? "text-fb-gray-text" : "text-fb-blue"}`}>Reels</span>
                             </div>
                         </div>
-                        <Slick />
+                        <Slick userNow={userNow}/>
                     </div>
                     <div className="content-box w-full flex bg-white border border-fb-gray p-4 rounded-lg my-3">
                         <div>
-                            <img src="/assets/person/1.jpeg" alt=""
+                            <img src={userNow.avatar} alt=""
                                 className="w-10 h-10 rounded-full cursor-pointer object-cover mr-4" />
                         </div>
                         <div className="bg-gray-100 hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
                             onClick={() => setUploadPost(true)}>
-                            <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, USERNAME?</span>
+                            <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, {userNow.first_name}?</span>
                         </div>
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post lastCmt={lastCmt} />
+                        <Post lastCmt={lastCmt} userNow={userNow}/>
                     </div>
                     <div className="content-box bg-white border border-fb-gray rounded-lg my-3">
-                        <Post lastCmt={lastCmt} />
+                        <Post lastCmt={lastCmt} userNow={userNow}/>
                     </div>
                 </>
             </Scrollbars>
 
-            {uploadPost && <CreatePost setUploadPost={setUploadPost} />}
+            {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow}/>}
         </div>
     )
 }

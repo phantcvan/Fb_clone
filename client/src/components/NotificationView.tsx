@@ -6,9 +6,13 @@ import { HiUserGroup } from "react-icons/hi2";
 import { IoChatbox } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import Scrollbars from "react-custom-scrollbars-2";
+import {UserType} from "../static/types"
 
-
-const NotificationView = ({ setPick }: { setPick: React.Dispatch<React.SetStateAction<number>> }) => {
+interface NotificationProp {
+  setPick: React.Dispatch<React.SetStateAction<number>>;
+  userNow: UserType
+}
+const NotificationView = ({ setPick, userNow }: NotificationProp) => {
   const [pickNotification, setPickNotification] = useState("all")
 
 
