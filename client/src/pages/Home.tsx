@@ -28,7 +28,6 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
   const [lastRequest, setLastRequest] = useState<UserType | null>(null);
   const [lastRequestId, setLastRequestId] = useState(0);
   const [mutualCount, setMutualCount] = useState(0);
-  const [bookmarkRef, setBookmarkRef] = useState(null);
 
 
 
@@ -68,7 +67,6 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
             })
           ])
           setMutualCount(mutualResponse?.data?.mutual.length)
-          // console.log("mutual", mutualResponse?.data?.mutual);
         } catch (error) {
           console.error(error);
         }
@@ -94,7 +92,7 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
       <div className="flex w-[100%] relative">
         <Sidebar userNow={userNow} />
         <Feed userNow={userNow} allUsers={allUsers} relation={relation} contactListId={contactListId} 
-         />
+        />
         <SidebarRight userNow={userNow} contact={contact} lastRequest={lastRequest}
           lastRequestId={lastRequestId} mutualCount={mutualCount} />
         {showMess > 0 && <Conversation />}

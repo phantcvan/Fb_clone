@@ -62,49 +62,69 @@ export default function Post({ lastCmt, post }: PostProps) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      fontSize: "30px",
-      fontWeight: "550"
     }
     : {};
   return (
     <div className="rounded-xl my-1 bg-white">
       <div className="px-4 pt-1 mb-2 flex gap-2">
-
-        <Tippy placement="bottom" interactive
-          render={attrs => (
-            <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
-              {...attrs} >
-              <ViewMiniProfile userView={userPost} />
-            </div>)}>
-          <Link to={`/${post.user_id}`}>
-            <div
-              className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
-          justify-center cursor-pointer overflow-hidden`}
-            >
-              <div className={`w-9 h-9 box-content rounded-full flex items-center
-          justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
-                <img
-                  className="object-cover w-full"
-                  src={userPost?.avatar}
-                />
-              </div>
-            </div>
-          </Link >
-        </Tippy >
-
-        <div className=" relative">
-          <Tippy placement="bottom" interactive
+        {userPost?.id !== userNow?.id
+          ? <Tippy placement="bottom" interactive
             render={attrs => (
               <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
                 {...attrs} >
                 <ViewMiniProfile userView={userPost} />
               </div>)}>
             <Link to={`/${post.user_id}`}>
+              <div
+                className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
+justify-center cursor-pointer overflow-hidden`}
+              >
+                <div className={`w-9 h-9 box-content rounded-full flex items-center
+justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
+                  <img
+                    className="object-cover w-full"
+                    src={userPost?.avatar}
+                  />
+                </div>
+              </div>
+            </Link >
+          </Tippy >
+          : <Link to={`/${post.user_id}`}>
+            <div
+              className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
+justify-center cursor-pointer overflow-hidden`}
+            >
+              <div className={`w-9 h-9 box-content rounded-full flex items-center
+justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
+                <img
+                  className="object-cover w-full"
+                  src={userPost?.avatar}
+                />
+              </div>
+            </div>
+          </Link >}
+
+
+        <div className=" relative">
+          {userPost?.id !== userNow?.id
+            ? <Tippy placement="bottom" interactive
+              render={attrs => (
+                <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
+                  {...attrs} >
+                  <ViewMiniProfile userView={userPost} />
+                </div>)}>
+              <Link to={`/${post.user_id}`}>
+                <div className="font-semibold text-[15px] cursor-pointer">
+                  {userPost?.first_name} {userPost?.last_name}
+                </div>
+              </Link >
+            </Tippy>
+            : <Link to={`/${post.user_id}`}>
               <div className="font-semibold text-[15px] cursor-pointer">
                 {userPost?.first_name} {userPost?.last_name}
               </div>
-            </Link >
-          </Tippy>
+            </Link >}
+
 
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
             <div>3 ngày</div>{" "}
@@ -123,9 +143,14 @@ export default function Post({ lastCmt, post }: PostProps) {
           </div>
         </div>
       </div >
-      <div className={`px-4 pt-1 pb-4 text-[15px]`} style={styleBg}>
-        {post?.content}
-      </div>
+      {post?.bgUrl
+        ? <div className={`px-4 pt-1 pb-4 text-3xl font-bold`} style={styleBg}>
+          {post?.content}
+        </div>
+        : <div className={`px-4 pt-1 pb-4 text-[15px]`} >
+          {post?.content}
+        </div>}
+
       {
         (post?.mediaUrl && post?.type === "picture")
         && <div className="w-full overflow-hidden flex items-center object-cover">
