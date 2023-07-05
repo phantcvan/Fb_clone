@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const userRoutes = require("./routes/user.routes");
 const relationRoutes = require("./routes/relation.routes");
+const postRoutes = require("./routes/post.routes");
 require('dotenv').config();
 
 const server = express();
@@ -17,6 +18,7 @@ server.use(express.static("public"));
 
 server.use("/api/v1/users", userRoutes);
 server.use("/api/v1/relation", relationRoutes);
+server.use("/api/v1/posts", postRoutes);
 
 
 

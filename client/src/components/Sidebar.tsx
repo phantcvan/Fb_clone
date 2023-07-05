@@ -6,22 +6,28 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { UserType } from "../static/types";
 import { getUser, setUser } from "../slices/whitelist";
+import { useDispatch, useSelector } from "react-redux";
+import { getGoHome, setGoHome } from "../slices/appSlice";
 
 
 // import { Link } from "react-router-dom";
 
 const Sidebar = ({ userNow }: { userNow: UserType }) => {
     const [pick, setPick] = useState(1);
-    const n=SideBarGroup.Group.length
+    const n = SideBarGroup.Group.length;
+    // const goHome = useSelector(getGoHome);
+    const dispatch = useDispatch();
+
     return (
-        <div className="flex basis-1/4 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D]">
+        <div className="flex basis-1/4 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D] sticky top-[60px] ">
             <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
                 <div className={`w-[100%] my-2`}>
                     <div className={`w-[100%] font-semibold `}>
                         <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === 1 ? "border-fb-blue" : "border-white"}`}
                             onClick={() => setPick(1)}>
                             <Link to="/">
-                                <div className="flex px-5 gap-4 cursor-pointer items-center ">
+                                <div className="flex px-5 gap-4 cursor-pointer items-center "
+                                    onClick={() => dispatch(setGoHome((pre: boolean) => !pre))}>
                                     <AiFillHome size={24} style={{ color: "#1A6ED8" }} />
                                     <span>Home</span>
                                 </div>
@@ -29,7 +35,7 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                         </div>
                         <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === 2 ? "border-fb-blue" : "border-white"}`}
                             onClick={() => setPick(2)}>
-                            <Link to="/user">
+                            <Link to={`/${userNow.id}`}>
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
                                     <img src={userNow.avatar} alt="avatar"
                                         className="w-6 h-6 rounded-full object-cover overflow-hidden " />
@@ -55,8 +61,8 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                                 </Link>
                             </div>
                         ))}
-                        <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === (n+4) ? "border-fb-blue" : "border-white"}`}
-                            onClick={() => setPick(n+4)}>
+                        <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === (n + 4) ? "border-fb-blue" : "border-white"}`}
+                            onClick={() => setPick(n + 4)}>
                             <Link to="/">
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
                                     <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
@@ -81,10 +87,10 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                             </div>
                         ))}
                     </div>
-                </div>
-            </Scrollbars>
+                </div >
+            </Scrollbars >
 
-        </div>
+        </div >
     )
 }
 

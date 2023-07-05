@@ -32,3 +32,18 @@ export interface Relation {
   status: number;
   date_request: string;
 }
+
+export interface PostType {
+  id: number;
+  user_id: number;
+  content: string;
+  audience: string;
+  feeling: string | null;
+  location: string | null;
+  bgUrl: string | null;
+  textColor: string | null;
+  date: string;
+  mediaUrl: string | null;
+  type: string | null;
+}
+

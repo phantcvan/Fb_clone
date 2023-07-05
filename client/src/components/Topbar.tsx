@@ -9,6 +9,8 @@ import MessengerView from "./MessengerView";
 import NotificationView from "./NotificationView";
 import AccountSetting from "./AccountSetting";
 import { UserType } from "../static/types"
+import { useDispatch } from "react-redux";
+import { setGoHome } from "../slices/appSlice";
 
 
 interface TopProps {
@@ -18,6 +20,7 @@ interface TopProps {
 const Topbar = ({ userNow }: TopProps) => {
     const [pick, setPick] = useState(0);
     const [keyword, setKeyword] = useState("");
+    const dispatch=useDispatch();
 
     const handleInputKeyword = (e: any) => {
         const inputSearch = e.target.value.trim().replace(/\s+/g, " ");
@@ -42,10 +45,11 @@ const Topbar = ({ userNow }: TopProps) => {
         }
     };
 
+
     return (
         <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md py-7 z-30 bg-white">
-            <div className="flex basis-1/4 ml-4">
-                <Link to="/">
+            <div className="flex basis-1/4 ml-4" onClick={()=>dispatch(setGoHome((pre:boolean)=>!pre))}>
+                <Link to="/" >
                     <img src="/assets/facebook-logo.png"
                         className="w-[141px] h-[37px] cursor-pointer object-cover" onClick={() => setPick(0)} />
                 </Link>

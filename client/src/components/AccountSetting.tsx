@@ -24,7 +24,7 @@ const AccountSetting = ({ setPick, userNow }: AccProps) => {
       </div>
       <div className="bg-white p-4 w-[330px] absolute top-[-14px] right-0 login_box rounded-md z-40">
         <div className="addOn-box bg-white w-[304px] px-2 py-1 rounded-lg ">
-          <Link to={'/user/1'} className="px-2 py-2 rounded-lg hover:bg-[rgba(0,0,0,0.05)] flex gap-2 items-center text-[15px] font-semibold cursor-pointer mb-1">
+          <Link to={`/${userNow.id}`} className="px-2 py-2 rounded-lg hover:bg-[rgba(0,0,0,0.05)] flex gap-2 items-center text-[15px] font-semibold cursor-pointer mb-1">
             <img src={userNow.avatar}
               className="w-10 h-10 object-cover overflow-hidden rounded-full" />
             <div><span>{userNow.first_name} {userNow.last_name}</span></div>

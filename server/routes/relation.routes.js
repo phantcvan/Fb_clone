@@ -21,6 +21,44 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
+// Thống kê số lượng bạn bè
+router.get("/friends/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    const query = `SELECT u.*
+    FROM tbl_users u
+    JOIN tbl_relation r ON u.id = r.request_id OR u.id = r.accept_id
+    WHERE ((r.request_id = ? OR r.accept_id = ?) AND r.status = 2)AND u.id != ? `;
+    let data = await database.execute(query, [id, id, id]);
+    let [friends] = data;
+    res.status(200).json({
+      friends,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+});
+
+router.post("/isFriend", async (req, res) => {
+  try {
+    let { userId1, userId2 } = req.body;
+    const query = `SELECT * FROM tbl_relation 
+    WHERE (request_id=${userId2} AND accept_id=${userId1} AND status=2) 
+    OR (request_id=${userId1} AND accept_id=${userId2} AND status=2);`;
+    let data = await database.execute(query);
+    let [checkFriend] = data;
+    res.status(200).json({
+      checkFriend,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+});
+
 router.post("/mutual-relations", async (req, res) => {
   try {
     let { user1, user2 } = req.body;

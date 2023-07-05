@@ -31,7 +31,7 @@ function App() {
   useEffect(()=>{
     fetchDataUsers();
   },[])
-console.log(allUsers);
+// console.log(allUsers);
 
   useEffect(() => {
     updateTitle();
@@ -50,7 +50,7 @@ console.log(allUsers);
         <Routes>
           <Route path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home setNewNotifications={setNewNotifications} />} />
-            <Route path="/:user" element={<Login />} />
+            <Route path="/:userId" element={<User />} />
             <Route path="/user" element={<User />} />
           </Route>
           <Route path="/login" element={<Login />} />

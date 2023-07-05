@@ -26,7 +26,20 @@ router.get("/", async (req, res) => {
     res.json({ error });
   }
 });
-
+router.get("/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    const query = `SELECT * FROM facebook.tbl_users WHERE id=? `;
+    let data = await database.execute(query, [id]);
+    let [user] = data;
+    res.json({
+      status: 200,
+      user,
+    });
+  } catch (error) {
+    res.json({ error });
+  }
+});
 
 router.post("/register", async (req, res) => {
   const { id, first_name, last_name, email, password, gender, birthday } =
