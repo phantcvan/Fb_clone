@@ -12,9 +12,9 @@ import { Link } from "react-router-dom";
 
 
 
-const ViewMiniProfile = ({ userView }: { userView: UserType }) => {
+const ViewMiniProfile = ({ userView }: { userView: UserType | null }) => {
   // console.log(userView);
-  
+
   const [isFriend, setIsFriend] = useState(false);
   const userNow = useSelector(getUser);
   const fetchDataUser = async () => {
@@ -40,19 +40,19 @@ const ViewMiniProfile = ({ userView }: { userView: UserType }) => {
     <div className='login_box z-40 bg-white w-[400px] mt-[-10px] rounded-md'>
       <div className='flex p-3 gap-3'>
         <Link to={`/${userView?.id}`}>
-        <div className={`w-20 h-20 box-content rounded-full flex items-center
+          <div className={`w-20 h-20 box-content rounded-full flex items-center
           justify-center cursor-pointer overflow-hidden`}>
-          <img
-            className="object-cover w-20 h-20"
-            src={userView?.avatar}
-          />
-        </div>
+            <img
+              className="object-cover w-20 h-20"
+              src={userView?.avatar}
+            />
+          </div>
         </Link>
         <div className='flex flex-col flex-1'>
-        <Link to={`/${userView?.id}`}>
-          <span className='cursor-pointer text-lg font-semibold'>
-            {userView?.first_name} {userView?.last_name}
-          </span>
+          <Link to={`/${userView?.id}`}>
+            <span className='cursor-pointer text-lg font-semibold'>
+              {userView?.first_name} {userView?.last_name}
+            </span>
           </Link>
           {/* <div className='flex gap-2 mt-3'>
             <span className='flex'><FaUserFriends size={20} style={{ color: "#616771" }} /> </span>

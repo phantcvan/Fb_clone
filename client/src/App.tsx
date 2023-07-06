@@ -13,10 +13,9 @@ import axios from "axios";
 
 
 function App() {
-  const [newNotifications, setNewNotifications] = useState<number>(5);
   const dispatch = useDispatch();
-  const allUsers = useSelector(getAllUsers);
-  const userNow = useSelector(getUser);
+  // const allUsers = useSelector(getAllUsers);
+  // const userNow = useSelector(getUser);
 
   const fetchDataUsers = async () => {
     try {
@@ -33,23 +32,13 @@ function App() {
   },[])
 // console.log(allUsers);
 
-  useEffect(() => {
-    updateTitle();
-  }, [newNotifications]);
 
-  const updateTitle = () => {
-    if (newNotifications > 0) {
-      document.title = `(${newNotifications}) Clone Facebook`;
-    } else {
-      document.title = "Clone Facebook";
-    }
-  };
   return (
     <>
       <BrowserRouter>
         <Routes>
           <Route path="" element={<PrivateRoute />}>
-            <Route path="/" element={<Home setNewNotifications={setNewNotifications} />} />
+            <Route path="/" element={<Home/>} />
             <Route path="/:userId" element={<User />} />
             <Route path="/user" element={<User />} />
           </Route>

@@ -23,7 +23,7 @@ interface Intro {
 export default function Introduction({ pageNow, relationship }: Intro) {
   const userNow = useSelector(getUser);
   const { userId } = useParams(); //id của page
-
+const follower = Math.floor(Math.random() *100)
 
 
   return (
@@ -90,14 +90,14 @@ export default function Introduction({ pageNow, relationship }: Intro) {
             {pageNow?.relationship && <span>{pageNow.relationship}
               {relationship?.relationship_to !== 0 ? (
                 pageNow?.relationship === "Married" ? (
-                  <span>to <strong>
+                  <span> to <strong>
                     <Link to={`/${relationship?.id}`}>
                       {relationship?.first_name} {relationship?.last_name}
                     </Link></strong>
                   </span>
                 ) : pageNow?.relationship === "In a relationship" && (
                   <span> with
-                    <Link to={`/${relationship.id}`}>
+                    <Link to={`/${relationship?.id}`}>
                       <strong className="cursor-pointer"> {relationship?.first_name} {relationship?.last_name}</strong>
                     </Link>
 
@@ -114,7 +114,7 @@ export default function Introduction({ pageNow, relationship }: Intro) {
           </span>
           <span>
             {" "}
-            Followed by <strong>94 people</strong>
+            Followed by <strong>{follower} people</strong>
           </span>
         </div>
       </div>

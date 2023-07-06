@@ -13,7 +13,7 @@ interface NotificationProp {
   userNow: UserType
 }
 const NotificationView = ({ setPick, userNow }: NotificationProp) => {
-  const [pickNotification, setPickNotification] = useState("all")
+  const [pickNotification, setPickNotification] = useState("all");
 
 
   const cssPick = "text-fb-blue bg-blue-100 hover:bg-blue-200"

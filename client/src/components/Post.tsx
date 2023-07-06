@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, } from "react";
 import { FaEarthAmericas, FaUserGroup } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
 import { PiArrowBendDownRightBold } from "react-icons/pi";
@@ -16,6 +16,9 @@ import axios from "axios";
 import { BiSolidLockAlt } from "react-icons/bi";
 import ReactPlayer from 'react-player';
 import { Link } from "react-router-dom";
+import moment from "moment";
+import { setPost } from "../slices/postSlice";
+import { setUserPost } from "../slices/userSlice";
 
 interface PostProps {
   lastCmt: boolean;
@@ -23,12 +26,12 @@ interface PostProps {
 }
 
 export default function Post({ lastCmt, post }: PostProps) {
-  // console.log("avatar", userNow.avatar);
+  const videoRef = useRef(null);
   const userNow = useSelector(getUser);
   const [showIcon, setShowIcon] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+  // const [showProfile, setShowProfile] = useState(false);
   const [showIconCmt, setShowIconCmt] = useState(false);
-  const [userPost, setUserPost] = useState<UserType | null>(null);
+  const [userPosted, setUserPosted] = useState<UserType | null>(null);
   const [comment, setComment] = useState("");
   const showCmt = useSelector(getShowCmt);
   const dispatch = useDispatch();
@@ -39,14 +42,13 @@ export default function Post({ lastCmt, post }: PostProps) {
     event.target.style.height = 'auto';
     event.target.style.height = `${event.target.scrollHeight}px`;
     console.log(event.target.scrollHeight);
-    console.log(showProfile)
   };
   const fetchDataUser = async () => {
     try {
       const [userResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post.user_id}`),
       ]);
-      setUserPost(userResponse?.data?.user[0]);
+      setUserPosted(userResponse?.data?.user[0]);
     } catch (error) {
       console.error(error);
     }
@@ -64,32 +66,40 @@ export default function Post({ lastCmt, post }: PostProps) {
       justifyContent: "center",
     }
     : {};
+
+  const handleShowCmt = () => {
+    dispatch(setShowCmt(post.id));
+    dispatch(setPost(post));
+    dispatch(setUserPost(userPosted));
+  };
+
+
   return (
     <div className="rounded-xl my-1 bg-white">
       <div className="px-4 pt-1 mb-2 flex gap-2">
-        {userPost?.id !== userNow?.id
+        {userPosted?.id !== userNow?.id
           ? <Tippy placement="bottom" interactive
             render={attrs => (
               <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
                 {...attrs} >
-                <ViewMiniProfile userView={userPost} />
+                <ViewMiniProfile userView={userPosted} />
               </div>)}>
-            <Link to={`/${post.user_id}`}>
+            <Link to={`/${post?.user_id}`}>
               <div
                 className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
 justify-center cursor-pointer overflow-hidden`}
               >
-                <div className={`w-9 h-9 box-content rounded-full flex items-center
-justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
+                <div className={`w-9 h-9 box-content rounded-full flex items-center justify-center 
+                hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                   <img
-                    className="object-cover w-full"
-                    src={userPost?.avatar}
+                    className="w-full h-full rounded-full object-cover overflow-hidden"
+                    src={userPosted?.avatar}
                   />
                 </div>
               </div>
             </Link >
           </Tippy >
-          : <Link to={`/${post.user_id}`}>
+          : <Link to={`/${post?.user_id}`}>
             <div
               className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
 justify-center cursor-pointer overflow-hidden`}
@@ -97,8 +107,8 @@ justify-center cursor-pointer overflow-hidden`}
               <div className={`w-9 h-9 box-content rounded-full flex items-center
 justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 <img
-                  className="object-cover w-full"
-                  src={userPost?.avatar}
+                  className="object-cover w-full h-full"
+                  src={userPosted?.avatar}
                 />
               </div>
             </div>
@@ -106,28 +116,28 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
 
 
         <div className=" relative">
-          {userPost?.id !== userNow?.id
+          {userPosted?.id !== userNow?.id
             ? <Tippy placement="bottom" interactive
               render={attrs => (
                 <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
                   {...attrs} >
-                  <ViewMiniProfile userView={userPost} />
+                  <ViewMiniProfile userView={userPosted} />
                 </div>)}>
-              <Link to={`/${post.user_id}`}>
+              <Link to={`/${post?.user_id}`}>
                 <div className="font-semibold text-[15px] cursor-pointer">
-                  {userPost?.first_name} {userPost?.last_name}
+                  {userPosted?.first_name} {userPosted?.last_name}
                 </div>
               </Link >
             </Tippy>
-            : <Link to={`/${post.user_id}`}>
+            : <Link to={`/${post?.user_id}`}>
               <div className="font-semibold text-[15px] cursor-pointer">
-                {userPost?.first_name} {userPost?.last_name}
+                {userPosted?.first_name} {userPosted?.last_name}
               </div>
             </Link >}
 
 
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
-            <div>3 ngày</div>{" "}
+            <div>{moment(post?.date).fromNow()}</div>{" "}
             {post?.audience === "public"
               ? <div className="w-3 h-3 overflow-hidden">
                 <FaEarthAmericas size={12} />
@@ -153,7 +163,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
 
       {
         (post?.mediaUrl && post?.type === "picture")
-        && <div className="w-full overflow-hidden flex items-center object-cover">
+        && <div className="w-full h-full overflow-hidden flex items-center object-cover">
           <img
             className="object-cover w-full"
             src={post?.mediaUrl}
@@ -162,10 +172,10 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
       }
       {
         (post?.mediaUrl && post?.type === "video")
-        && <div className="w-full overflow-hidden flex items-center object-cover">
+        && <div className="w-full overflow-hidden flex items-center object-cover" >
           <ReactPlayer url={post?.mediaUrl} controls
-            width="500px"
-            height="280px" />
+            width="100%"
+            height="100%" />
         </div>
       }
 
@@ -247,7 +257,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
           <div className="flex items-center gap-2">
             <span className=""><IoChatboxOutline size={18} /></span>
-            <span onClick={() => dispatch(setShowCmt(123))}>Comment</span>
+            <span onClick={handleShowCmt}>Comment</span>
           </div>
         </div>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
@@ -265,7 +275,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           justify-center cursor-pointer overflow-hidden`}>
             <img
               className="object-cover w-8 h-8"
-              src={userNow.avatar}
+              src={userNow?.avatar}
             />
           </div>
 
@@ -292,7 +302,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
               render={attrs => (
                 <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
                   {...attrs} >
-                  <ViewMiniProfile userView={userPost} />
+                  <ViewMiniProfile userView={userPosted} />
                 </div>)}>
               <div className={`w-8 h-8 box-content rounded-full flex items-center
           justify-center cursor-pointer overflow-hidden`}>
@@ -315,12 +325,18 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
             <span className="font-semibold text-xs text-fb-dark-1">2h</span>
             {showIconCmt && <Reaction />}
           </div>
-          <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
+          {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
             <span className="font-semibold text-xs text-fb-dark-1">
               <PiArrowBendDownRightBold size={18} style={{ color: "#65676B" }} />
             </span>
             <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
-              onClick={() => dispatch(setShowCmt(123))}>
+              onClick={handleShowCmt}>
+              View more comments
+            </span>
+          </div> */}
+          <div className="flex gap-2 mt-1 mb-3 mx-auto w-[90%] relative">
+            <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
+              onClick={handleShowCmt}>
               View more comments
             </span>
           </div>

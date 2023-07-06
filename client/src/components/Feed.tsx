@@ -11,6 +11,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getGoHome } from "../slices/appSlice";
 import { useLocation } from "react-router";
+import Loading from "./Loading";
 
 
 
@@ -27,9 +28,9 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
     const [posts, setPosts] = useState<PostType[]>([]);
     const goHome = useSelector(getGoHome);
     const [start, setStart] = useState(1);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    console.log("Start", start);
+    // console.log("Start", start);
 
     const fetchPosts = async () => {
         try {
@@ -40,7 +41,7 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
                     })
                 ]);
                 setPosts((prevPosts) => [...prevPosts, ...postResponse?.data?.posts]);
-                
+                setIsLoaded(true);
             }
         } catch (error) {
             console.error(error);
@@ -55,8 +56,8 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
 
     useEffect(() => {
         fetchPosts();
-        // setIsLoading(true);
     }, [start]);
+
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -68,17 +69,14 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [goHome])
-    console.log(posts);
-
-
-
-
-
+    // console.log(posts);
+    const left = 0;
 
     return (
-        <div className="flex flex-col w-[45%] pl-20 text-sm gap-1 text-[#1D1D1D]" >
-            {isLoading
-                ? <>
+        <div className="flex flex-col mt-3 w-[45%] pl-20 text-sm gap-1 text-[#1D1D1D]" >
+            {isLoaded
+                ?
+                <>
                     <div className="content-box w-full h-[275px] flex flex-col my-1 bg-white border p-4
                  border-fb-gray rounded-lg">
                         <div className="flex gap-2">
@@ -118,19 +116,19 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
                             <Post lastCmt={lastCmt} post={post} />
                         </div>
                     ))}
-                    {/* <div className="content-box bg-white border border-fb-gray rounded-lg my-2">
-                    <Post lastCmt={lastCmt} />
-                </div>
-                <div className="content-box bg-white border border-fb-gray rounded-lg my-2">
-                    <Post lastCmt={lastCmt} />
-                </div> */}
                 </>
-                : <div>
-                    <img src="/assets/loading.gif" alt="" />
-                </div>}
+                : <div className='absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center'>
+                    <Loading />
+                </div>
+
+                // <div className="mt-5 w-[200px] h-[200px] flex items-center justify-center">
+                //     <img src="/assets/loading.gif" alt="Loading" 
+                //      className="w-[200px] flex items-center justify-center"/>
+                // </div>
+            }
             {/* </Scrollbars> */}
 
-            {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} />}
+            {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left} />}
         </div>
     )
 }

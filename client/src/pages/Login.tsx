@@ -2,12 +2,14 @@ import { useState } from "react";
 import "../index.css";
 import SignUp from "../components/SignUp";
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getUser, setUser } from "../slices/whitelist";
 import { useDispatch, useSelector } from 'react-redux';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { setNotification } from "../slices/userSlice";
 
 const Login = () => {
+    const { userId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [openSignUp, setOpenSignUp] = useState(false);
@@ -16,8 +18,13 @@ const Login = () => {
     const [message, setMessage] = useState("");
     const [emailInput, setEmail] = useState("");
     const [passwordInput, setPassword] = useState("");
-    const user = useSelector(getUser);
-    if (user) navigate("/");
+    const userNow = useSelector(getUser);
+    if (userId) {
+        if (userNow) {
+            navigate(-1);
+            dispatch(setNotification(userNow.notification))
+        }
+    } else navigate("/");
     const handleAddEmail = (e: any) => {
         setEmail(e.target.value);
         setMessage("");
@@ -40,12 +47,12 @@ const Login = () => {
             })
                 .then(res => {
                     console.log(res.data);
-
                     if (res.data.status === 200) {
                         console.log('Đăng nhập thành công');
                         localStorage.setItem("authToken", res.data.token);
                         setMessage("");
-                        dispatch(setUser(res.data.data));
+                        dispatch(setUser(res?.data?.data));
+                        dispatch(setNotification(res?.data?.data?.notification))
                         navigate({
                             pathname: `/`,
                         })
@@ -54,7 +61,7 @@ const Login = () => {
                 .catch(error => console.log(error))
         }
     }
-    console.log("user", user);
+    // console.log("user", userNow);
 
     return (
         <div className="bg-gray-100 w-[100%] h-screen">

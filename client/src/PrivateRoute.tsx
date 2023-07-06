@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getUser, setUser } from "./slices/whitelist";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { setNotification } from "./slices/userSlice";
 
 const PrivateRoute = () => {
   const user = useSelector(getUser);
@@ -14,7 +15,8 @@ const PrivateRoute = () => {
         const [usersResponse, ] = await Promise.all([
           axios.post(`http://localhost:8000/api/v1/users/auth`, { token: token }),
         ]);
-        dispatch(setUser(usersResponse.data.findUser[0]));
+        dispatch(setUser(usersResponse?.data?.findUser[0]));
+        dispatch(setNotification(usersResponse?.data?.findUser[0]?.notification));
       }
     } catch (error) {
       console.error(error);

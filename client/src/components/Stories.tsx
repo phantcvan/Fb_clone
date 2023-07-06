@@ -106,7 +106,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
               className="object-cover w-full h-full cursor-pointer"
               src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
             />
-            <div className="absolute w-10 h-10 border-4 border-blue-600 top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="absolute w-10 h-10 border-4 border-fb-blue  top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
             </div>
             <div className="absolute bottom-1 left-1">
@@ -120,7 +120,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
               className="object-cover w-full h-full cursor-pointer"
               src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
             />
-            <div className="absolute w-10 h-10 border-4 border-blue-600 top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
             </div>
           </div>
@@ -131,7 +131,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
               className="object-cover w-full h-full cursor-pointer"
               src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
             />
-            <div className="absolute w-10 h-10 border-4 border-blue-600 top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
             </div>
           </div>
@@ -142,7 +142,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
               className="object-cover w-full h-full cursor-pointer"
               src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
             />
-            <div className="absolute w-10 h-10 border-4 border-blue-600 top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
             </div>
           </div>
@@ -153,7 +153,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
               className="object-cover w-full h-full cursor-pointer"
               src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
             />
-            <div className="absolute w-10 h-10 border-4 border-blue-600 top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
+            <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
             </div>
           </div>

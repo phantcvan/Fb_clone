@@ -10,7 +10,7 @@ import axios from 'axios';
 
 interface MainProp {
   pageNow: UserType;
-  posts: PostType
+  posts: PostType;
 }
 
 const MainUserPage = ({ pageNow, posts }: MainProp) => {
@@ -19,7 +19,7 @@ const MainUserPage = ({ pageNow, posts }: MainProp) => {
   const { userId } = useParams();
   const pageId = Number(userId);
   const [lastCmt, setLastCmt] = useState(true);
-
+  const left = -300;
 
   return (
     <div className=' mr-40'>
@@ -43,7 +43,7 @@ const MainUserPage = ({ pageNow, posts }: MainProp) => {
       ))}
 
 
-      {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} />}
+      {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left} />}
     </div>
   )
 }

@@ -9,8 +9,11 @@ import MessengerView from "./MessengerView";
 import NotificationView from "./NotificationView";
 import AccountSetting from "./AccountSetting";
 import { UserType } from "../static/types"
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setGoHome } from "../slices/appSlice";
+import { getNotification, setNotification } from "../slices/userSlice";
+import axios from "axios";
+
 
 
 interface TopProps {
@@ -20,7 +23,9 @@ interface TopProps {
 const Topbar = ({ userNow }: TopProps) => {
     const [pick, setPick] = useState(0);
     const [keyword, setKeyword] = useState("");
-    const dispatch=useDispatch();
+    const dispatch = useDispatch();
+    const notification = useSelector(getNotification);
+
 
     const handleInputKeyword = (e: any) => {
         const inputSearch = e.target.value.trim().replace(/\s+/g, " ");
@@ -44,11 +49,25 @@ const Topbar = ({ userNow }: TopProps) => {
             handleSearch();
         }
     };
+    const handleClickNotification = () => {
+        pick === 2 ? setPick(0) : setPick(2);
+        dispatch(setNotification(0));
+        axios.post(`http://localhost:8000/api/v1/users/notification`, {
+            id: userNow?.id,
+            notification: 0
+        })
+            .then(response => {
+
+            })
+            .catch(error => {
+                console.error('API call failed:', error);
+            });
+    }
 
 
     return (
         <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md py-7 z-30 bg-white">
-            <div className="flex basis-1/4 ml-4" onClick={()=>dispatch(setGoHome((pre:boolean)=>!pre))}>
+            <div className="flex basis-1/4 ml-4" onClick={() => dispatch(setGoHome((pre: boolean) => !pre))}>
                 <Link to="/" >
                     <img src="/assets/facebook-logo.png"
                         className="w-[141px] h-[37px] cursor-pointer object-cover" onClick={() => setPick(0)} />
@@ -96,11 +115,13 @@ const Topbar = ({ userNow }: TopProps) => {
                                 </div>)}>
                             <div className={`w-10 h-10 relative rounded-full flex items-center justify-center
                            ${pick === 2 ? "bg-blue-100 hover:bg-blue-200" : "bg-gray-100 hover:bg-fb-gray"}`}
-                                onClick={() => pick === 2 ? setPick(0) : setPick(2)}>
+                                onClick={handleClickNotification}>
                                 <MdNotifications size={24} style={{ position: "relative", color: pick === 2 && "#1A6ED8" }} />
-                                <span className="w-4 h-4 text-xs text-center bg-red rounded-full text-white absolute top-[-5px] right-[-2px]">
-                                    1
-                                </span>
+                                {notification > 0
+                                    && <span className="w-4 h-4 text-xs text-center bg-red rounded-full text-white absolute top-[-5px] right-[-2px]">
+                                        {notification}
+                                    </span>}
+
                             </div>
                         </Tippy>
                     </div>

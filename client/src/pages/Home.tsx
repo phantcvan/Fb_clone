@@ -5,7 +5,7 @@ import Topbar from "../components/Topbar";
 // import { useNavigate } from "react-router-dom";
 import { setShowMess, getShowMess, getShowCmt } from "../slices/appSlice";
 import { getUser, setUser } from "../slices/whitelist";
-import { getAllUsers, setAllUsers, setRelation, getRelation } from "../slices/userSlice";
+import { getAllUsers, setAllUsers, setRelation, getRelation, getNotification, setNotification } from "../slices/userSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import Conversation from "../components/Conversation";
 import Comment from "../components/Comment";
@@ -16,7 +16,7 @@ import { useLocation } from "react-router";
 
 
 
-const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<React.SetStateAction<number>> }) => {
+const Home = () => {
   const showMess = useSelector(getShowMess);
   const showCmt = useSelector(getShowCmt);
   const userNow = useSelector(getUser);
@@ -25,13 +25,21 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
   const dispatch = useDispatch();
   const [contact, setContact] = useState([]); //danh sách bạn bè
   const [contactListId, setContactListId] = useState([]); //danh sách id bạn bè
-  const [lastRequest, setLastRequest] = useState<UserType | null>(null);
-  const [lastRequestId, setLastRequestId] = useState(0);
+  const [lastRequest, setLastRequest] = useState<Relation | null>(null);
+  const [lastRequestUser, setLastRequestUser] = useState<UserType | null>(null);
   const [mutualCount, setMutualCount] = useState(0);
+  const notification = useSelector(getNotification);
+
+  const updateTitle = () => {
+    if (notification > 0) {
+      document.title = `(${notification}) Clone Facebook`;
+    } else {
+      document.title = "Clone Facebook";
+    }
+  };
 
 
-
-  // console.log("showMess", showMess);
+  console.log("showMess", notification);
   // Hàm so sánh hai thời gian
   function compareDate(a: Relation, b: Relation) {
     return new Date(a.date_request).getTime() - new Date(b.date_request).getTime();
@@ -44,21 +52,21 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
       const [requestResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/relation/${userNow.id}`),
       ]);
-      dispatch(setRelation(requestResponse.data.request));
       const friend = requestResponse?.data?.request?.filter((item: Relation) => item.status === 2);
       const idsFromRelation = friend?.map((item: Relation) => [item.request_id, item.accept_id])
         .flat().filter((id: number) => id !== userNow.id);
       setContactListId(idsFromRelation);
       // console.log("ids", idsFromRelation);
       setContact(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id)));
+      dispatch(setRelation(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id))));
       const filteredObjects = requestResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.accept_id === userNow.id);
       if (filteredObjects.length > 0) {
         const latestObject = filteredObjects.reduce((prev: Relation, current: Relation) => {
           return compareDate(prev, current) < 0 ? current : prev;
         });
-        setLastRequestId(latestObject.id);
-        const lastRequestUser = allUsers.find((user: UserType) => user.id === latestObject.request_id)
-        setLastRequest(lastRequestUser);
+        setLastRequest(latestObject);
+        const lastRequestUser = allUsers.find((user: UserType) => user.id === latestObject?.request_id)
+        setLastRequestUser(lastRequestUser);
         try {
           const [mutualResponse] = await Promise.all([
             axios.post(`http://localhost:8000/api/v1/relation/mutual-relations`, {
@@ -77,10 +85,11 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
   };
   useEffect(() => {
     if (userNow) fetchData()
+    updateTitle();
   }, [userNow])
   const location = useLocation();
 
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
@@ -91,10 +100,10 @@ const Home = ({ setNewNotifications }: { setNewNotifications: React.Dispatch<Rea
       <Topbar userNow={userNow} />
       <div className="flex w-[100%] relative">
         <Sidebar userNow={userNow} />
-        <Feed userNow={userNow} allUsers={allUsers} relation={relation} contactListId={contactListId} 
+        <Feed userNow={userNow} allUsers={allUsers} relation={relation} contactListId={contactListId}
         />
-        <SidebarRight userNow={userNow} contact={contact} lastRequest={lastRequest}
-          lastRequestId={lastRequestId} mutualCount={mutualCount} />
+        <SidebarRight userNow={userNow} contact={contact} lastRequestUser={lastRequestUser}
+          lastRequest={lastRequest} mutualCount={mutualCount} />
         {showMess > 0 && <Conversation />}
         {showCmt > 0 && <Comment />}
       </div>

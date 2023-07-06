@@ -4,29 +4,20 @@ import { FaEarthAmericas, FaUserGroup } from "react-icons/fa6";
 
 
 interface SelectAudienceProps {
-    setSelectAudience: React.Dispatch<React.SetStateAction<boolean>>;
+    setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
     setAudience: React.Dispatch<React.SetStateAction<string>>;
     audience: string;
 }
-const SelectAudience = ({ setSelectAudience, setUploadPost, setAudience, audience }: SelectAudienceProps) => {
+const SelectAudience = ({ setSelectAddOn, setUploadPost, setAudience, audience }: SelectAudienceProps) => {
     const [newAudience, setNewAudience] = useState("");
 
     return (
-        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
-        justify-center z-20'>
-
-            <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
-        justify-center z-21'
-                onClick={() => setUploadPost(false)}
-            >
-            </div>
-
             <div className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col 
-          fixed rounded-md z-25'>
+          fixed rounded-md z-[80]'>
                 <div className="flex items-center mx-3 mt-1 mb-3">
                     <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
-                        onClick={() => setSelectAudience(false)}>
+                        onClick={() => setSelectAddOn(0)}>
                         <BiArrowBack size={20} style={{ color: "#606770" }} />
                     </div>
                     <p className='text-xl font-semibold flex flex-1 items-center justify-center'>
@@ -95,19 +86,16 @@ const SelectAudience = ({ setSelectAudience, setUploadPost, setAudience, audienc
                 </div>
                 <div className="flex justify-end gap-3 font-semibold mb-3 px-3">
                     <button className=" hover:bg-gray-100 text-fb-blue px-5 py-2 rounded-md"
-                        onClick={() => { setSelectAudience(false) }}>
+                        onClick={() => { setSelectAddOn(0) }}>
                         Cancel
                     </button>
                     <button className="bg-blue-400 text-white px-7 py-2 rounded-md"
-                        onClick={() => { setSelectAudience(false); setAudience(newAudience) }}>
+                        onClick={() => { setSelectAddOn(0); setAudience(newAudience) }}>
                         Done
                     </button>
                 </div>
-
-
-
             </div >
-        </div >
+
     )
 }
 

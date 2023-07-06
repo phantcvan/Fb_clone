@@ -98,4 +98,17 @@ router.put("/accept/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  let { id } = req.params;
+  try {
+    await database.execute(`DELETE FROM tbl_relation WHERE id = ${id}`);
+    res.json({
+      status: "success",
+      message: "Delete successfully",
+    });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+
 module.exports = router;

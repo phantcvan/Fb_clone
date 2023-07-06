@@ -5,25 +5,26 @@ import axios from 'axios';
 import { getShowMess, setShowMess } from "../slices/appSlice"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 
 
 interface SideBarProps {
     userNow: UserType;
     contact: UserType[];
-    lastRequest: UserType;
-    lastRequestId: number;
+    lastRequestUser: UserType | null;
+    lastRequest: Relation | null;
     mutualCount: number
 }
-const SidebarRight = ({ userNow, contact, lastRequest, lastRequestId, mutualCount }: SideBarProps) => {
+const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCount }: SideBarProps) => {
     const showMess = useSelector(getShowMess);
     const dispatch = useDispatch();
     const [answer, setAnswer] = useState(false);
     // console.log("contact", contact);
     const handleAddFriend = () => {
-        axios.put(`http://localhost:8000/api/v1/relation/accept/${lastRequestId}`)
+        axios.put(`http://localhost:8000/api/v1/relation/accept/${lastRequest?.id}`)
             .then(response => {
-                dispatch(setShowMess(lastRequestId))
+                dispatch(setShowMess(lastRequest?.id))
                 console.log('API call successful:', response.data);
                 setAnswer(true);
             })
@@ -31,29 +32,41 @@ const SidebarRight = ({ userNow, contact, lastRequest, lastRequestId, mutualCoun
                 console.error('API call failed:', error);
             });
     };
+    const handleRejectFriend = () => {
+        axios.delete(`http://localhost:8000/api/v1/relation/${lastRequest?.id}`)
+            .then(response => {
+                console.log('API call successful:', response.data);
+                setAnswer(true);
+            })
+            .catch(error => {
+                console.error('API call failed:', error);
+            });
+    }
+    console.log(lastRequestUser);
+    const timeRequest = (moment(lastRequest?.date_request).diff(moment(), 'days')) * -1
 
 
     return (
         <div className="flex flex-col flex-1 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D] pl-20 sticky top-[60px] ">
             <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
                 <div>
-                    {(!answer && lastRequest) &&
+                    {(!answer && lastRequestUser) &&
                         <div className="px-5 w-[100%] my-2">
                             <div className="w-[100%] flex justify-between mt-3 mb-2 p-2">
                                 <span className="text-base font-semibold">Friend requests</span>
                                 <span className="text-fb-blue cursor-pointer">See all</span>
                             </div>
                             <div className="flex items-start rounded-md px-2">
-                                <Link to={`/${lastRequest.id}`}>
-                                    <img src={lastRequest.avatar} alt=""
+                                <Link to={`/${lastRequestUser.id}`}>
+                                    <img src={lastRequestUser.avatar} alt=""
                                         className="w-14 h-14 rounded-full object-cover overflow-hidden cursor-pointer" />
                                 </Link>
                                 <div className="flex flex-col gap-2 w-[calc(100%-68px)] ml-3">
                                     <div className="flex flex-row justify-between">
                                         <div className="flex flex-col">
-                                            <Link to={`/${lastRequest.id}`}>
+                                            <Link to={`/${lastRequestUser.id}`}>
                                                 <span className="font-semibold mb-1 cursor-pointer">
-                                                    {lastRequest.first_name} {lastRequest.last_name}
+                                                    {lastRequestUser.first_name} {lastRequestUser.last_name}
                                                 </span>
                                             </Link>
                                             {mutualCount > 0 && <span className="text-xs text-fb-gray-text">
@@ -61,14 +74,17 @@ const SidebarRight = ({ userNow, contact, lastRequest, lastRequestId, mutualCoun
                                             </span>}
 
                                         </div>
-                                        <span className="text-fb-gray-text">4d</span>
+                                        <span className="text-fb-gray-text">
+                                            {timeRequest}d ago
+                                        </span>
                                     </div>
                                     <div className="flex justify-between font-semibold">
                                         <button className="bg-blue-400 text-white px-4 py-2 rounded-md"
                                             onClick={handleAddFriend}>
                                             Confirm
                                         </button>
-                                        <button className="bg-gray-100 hover:bg-fb-gray px-5 py-2 rounded-md">
+                                        <button className="bg-gray-100 hover:bg-fb-gray px-5 py-2 rounded-md"
+                                            onClick={handleRejectFriend}>
                                             Delete
                                         </button>
                                     </div>

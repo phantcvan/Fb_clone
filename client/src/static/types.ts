@@ -18,7 +18,7 @@ export interface UserType {
   hometown: string | null;
   relationship: string | null;
   relationship_to: number | null;
-
+  notification: number;
 }
 
 export interface Tag {
@@ -38,12 +38,12 @@ export interface PostType {
   user_id: number;
   content: string;
   audience: string;
-  feeling: string | null;
-  location: string | null;
-  bgUrl: string | null;
-  textColor: string | null;
+  feeling?: string | null;
+  location?: string | null;
+  bgUrl?: string | null;
+  textColor?: string | null;
   date: string;
-  mediaUrl: string | null;
-  type: string | null;
+  mediaUrl?: string | null;
+  type?: string | null;
 }
 

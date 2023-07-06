@@ -52,6 +52,7 @@ router.post("/register", async (req, res) => {
   const hash = bcrypt.hashSync(password, salt);
   const verify = 0;
   const isOnline = 0;
+  const notification = 0;
   const newUser = [
     id,
     first_name,
@@ -64,11 +65,12 @@ router.post("/register", async (req, res) => {
     birthday,
     verify,
     isOnline,
+    notification,
   ];
   try {
     const query = `
-        INSERT INTO tbl_users (id,first_name,last_name,email,password,avatar,cover,gender,birthday,verify, isOnline)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO tbl_users (id,first_name,last_name,email,password,avatar,cover,gender,birthday,verify, isOnline, notification)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
     let data = await database.execute(query, newUser);
     let [users] = data;
@@ -180,6 +182,22 @@ router.post("/auth", async (req, res) => {
     res.json({
       error,
     });
+  }
+});
+
+// Update notification
+router.post("/notification", async (req, res) => {
+  const { id, notification } = req.body;
+  try {
+    const query = `
+    UPDATE tbl_users SET notification = ? WHERE id=?`;
+    let data = await database.execute(query, [notification, id]);
+    console.log("123");
+    res.json({
+      message: "Update notification successfully",
+    });
+  } catch (error) {
+    res.json({ error });
   }
 });
 
