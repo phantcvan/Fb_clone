@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
 import User from "./pages/User";
-import { getUser} from "./slices/whitelist";
+import { getUser } from "./slices/whitelist";
 import { getAllUsers, setAllUsers } from "./slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -27,10 +27,10 @@ function App() {
       console.error(error);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     fetchDataUsers();
-  },[])
-// console.log(allUsers);
+  }, [])
+  // console.log(allUsers);
 
 
   return (
@@ -38,11 +38,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="" element={<PrivateRoute />}>
-            <Route path="/" element={<Home/>} />
+            <Route path="/" element={<Home />} />
             <Route path="/:userId" element={<User />} />
             <Route path="/user" element={<User />} />
+            <Route path="/login" element={<Login />} />
           </Route>
-          <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

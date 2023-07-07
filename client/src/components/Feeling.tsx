@@ -4,6 +4,8 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Icon } from "../static/icon";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getFeeling, setFeeling } from "../slices/postSlice";
 
 
 interface Feel {
@@ -12,20 +14,21 @@ interface Feel {
 }
 interface FeelingProps {
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-    setFeeling: React.Dispatch<React.SetStateAction<Feel[]>>;
     setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
-    feeling: Feel[];
 }
 
-const Feeling = ({ setUploadPost, setFeeling, setSelectAddOn, feeling }: FeelingProps) => {
+const Feeling = ({ setUploadPost, setSelectAddOn, }: FeelingProps) => {
+    const feeling = useSelector(getFeeling);
+    const dispatch = useDispatch();
+
     const [iconSearch, setIconSearch] = useState<Feel[]>([]);
     const [message, setMessage] = useState("");
     const handleAddDone = (item: Feel) => {
         if (feeling.length > 0 && feeling[0].name === item.name) {
-            setFeeling([]);
+            dispatch(setFeeling([]));
             setSelectAddOn(0);
         } else {
-            setFeeling([item]);
+            dispatch(setFeeling([item]));
             setSelectAddOn(0);
         }
     };
@@ -48,68 +51,45 @@ const Feeling = ({ setUploadPost, setFeeling, setSelectAddOn, feeling }: Feeling
     console.log("iconSearch", iconSearch);
 
     return (
-        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
-    justify-center z-20'>
-            <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
-    justify-center z-21'
-                onClick={() => setUploadPost(false)}
-            >
+        <div
+            className='login_box w-[450px] top-20 bottom-3 bg-white pt-4 flex flex-col
+      fixed rounded-md z-[70] h-[470px]'
+        >
+            <div className='absolute top-2 right-2 cursor-pointer px-2'
+                onClick={() => setUploadPost(false)}>
+                <AiOutlineClose size={20} />
             </div>
-            <div
-                className='login_box w-[450px] h-[80%] top-20 bottom-3 bg-white pt-4 flex flex-col
-      fixed rounded-md z-25'
-            >
-                <div className='absolute top-2 right-2 cursor-pointer px-2'
-                    onClick={() => setUploadPost(false)}>
-                    <AiOutlineClose size={20} />
+            <div className="flex items-center mx-3 mt-1 mb-3">
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
+                    onClick={() => setSelectAddOn(0)}>
+                    <BiArrowBack size={20} style={{ color: "#606770" }} />
                 </div>
-                <div className="flex items-center mx-3 mt-1 mb-3">
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
-                        onClick={() => setSelectAddOn(0)}>
-                        <BiArrowBack size={20} style={{ color: "#606770" }} />
-                    </div>
-                    <p className='text-xl font-semibold flex flex-1 items-center justify-center'>
-                        How are you feeling?
-                    </p>
-                </div>
+                <p className='text-xl font-semibold flex flex-1 items-center justify-center'>
+                    How are you feeling?
+                </p>
+            </div>
 
-                <hr className="text-fb-dark" />
-                <div className="w-full">
-                </div>
-                <div className="flex flex-row gap-3 m-3">
-                    <div className="w-full h-10 py-2 text-fb-gray-text bg-gray-100 hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
-                        <div className="mx-1 px-2">
-                            <HiMagnifyingGlass size={18} />
-                        </div>
-                        <input type="text"
-                            placeholder="Search"
-                            className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
-                            onChange={handleSearchIcon} />
+            <hr className="text-fb-dark" />
+            <div className="w-full">
+            </div>
+            <div className="flex flex-row gap-3 m-3">
+                <div className="w-full h-10 py-2 text-fb-gray-text bg-gray-100 hover:bg-fb-gray rounded-l-full rounded-r-full flex items-center">
+                    <div className="mx-1 px-2">
+                        <HiMagnifyingGlass size={18} />
                     </div>
+                    <input type="text"
+                        placeholder="Search"
+                        className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
+                        onChange={handleSearchIcon} />
                 </div>
-                <Scrollbars autoHide style={{ width: '100%', height: `350px`, overflow: 'hidden' }}>
-                    <div className="flex flex-row ml-3 my-1 flex-wrap items-center">
-                        {iconSearch.length === 0
-                            ? message.length > 0
-                                ? <span className="text-fb-gray-text m-auto mt-2 text-[15px]">{message}</span>
-                                : <>
-                                    {Icon.Feeling.map((item, index) => (
-                                        // <Link to={item.path} key={index}>
-                                        <div key={index}
-                                            onClick={() => handleAddDone(item)}
-                                            className={`flex w-1/2 gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
-                                ${feeling[0]?.name === item.name && "bg-gray-100"}`}
-                                        >
-                                            <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
-                                                <span>{item.icon}</span>
-                                            </div>
-                                            <span className="">{item.name}</span>
-                                        </div>
-                                        // </Link>
-                                    ))}
-                                </>
+            </div>
+            <Scrollbars autoHide style={{ width: '100%', height: `350px`, overflow: 'hidden' }}>
+                <div className="flex flex-row ml-3 my-1 flex-wrap items-center">
+                    {iconSearch.length === 0
+                        ? message.length > 0
+                            ? <span className="text-fb-gray-text m-auto mt-2 text-[15px]">{message}</span>
                             : <>
-                                {iconSearch.map((item, index) => (
+                                {Icon.Feeling.map((item, index) => (
                                     // <Link to={item.path} key={index}>
                                     <div key={index}
                                         onClick={() => handleAddDone(item)}
@@ -124,12 +104,27 @@ const Feeling = ({ setUploadPost, setFeeling, setSelectAddOn, feeling }: Feeling
                                     // </Link>
                                 ))}
                             </>
-                        }
-                    </div>
-                </Scrollbars>
+                        : <>
+                            {iconSearch.map((item, index) => (
+                                // <Link to={item.path} key={index}>
+                                <div key={index}
+                                    onClick={() => handleAddDone(item)}
+                                    className={`flex w-1/2 gap-4 my-1 items-center cursor-pointer hover:bg-fb-gray p-1 rounded-md
+                                ${feeling[0]?.name === item.name && "bg-gray-100"}`}
+                                >
+                                    <div className="h-6 w-6 rounded-md overflow-hidden object-cover">
+                                        <span>{item.icon}</span>
+                                    </div>
+                                    <span className="">{item.name}</span>
+                                </div>
+                                // </Link>
+                            ))}
+                        </>
+                    }
+                </div>
+            </Scrollbars>
 
 
-            </div >
         </div >
     )
 }

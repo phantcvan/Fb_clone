@@ -9,8 +9,8 @@ import axios from 'axios';
 
 
 interface MainProp {
-  pageNow: UserType;
-  posts: PostType;
+  pageNow: UserType | null;
+  posts: PostType[];
 }
 
 const MainUserPage = ({ pageNow, posts }: MainProp) => {
@@ -20,6 +20,10 @@ const MainUserPage = ({ pageNow, posts }: MainProp) => {
   const pageId = Number(userId);
   const [lastCmt, setLastCmt] = useState(true);
   const left = -300;
+  const [newPost, setNewPost] = useState<PostType | null>(null);
+  console.log(pageNow);
+  
+
 
   return (
     <div className=' mr-40'>
@@ -36,6 +40,10 @@ const MainUserPage = ({ pageNow, posts }: MainProp) => {
 
         </div>
       </div>
+      {newPost
+        && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
+          <Post lastCmt={lastCmt} post={newPost} />
+        </div>}
       {posts?.map((post) => (
         <div className="content-box bg-white border border-fb-gray rounded-lg my-3" key={post?.id}>
           <Post lastCmt={lastCmt} post={post} />
@@ -43,7 +51,8 @@ const MainUserPage = ({ pageNow, posts }: MainProp) => {
       ))}
 
 
-      {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left} />}
+      {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left}
+        setNewPost={setNewPost} />}
     </div>
   )
 }

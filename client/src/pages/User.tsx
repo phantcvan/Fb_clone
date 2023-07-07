@@ -16,6 +16,9 @@ import { CategoryItems } from "../static/menu";
 import MainUserPage from '../components/MainUserPage';
 import Scrollbars from 'react-custom-scrollbars-2';
 import Loading from '../components/Loading';
+import EditPost from '../components/EditPost';
+import DeletePost from '../components/DeletePost';
+import { getActionPost } from '../slices/postSlice';
 
 
 const User = () => {
@@ -31,6 +34,8 @@ const User = () => {
   const [friends, setFriends] = useState([]);
   const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const action = useSelector(getActionPost);
+
 
 
 
@@ -111,12 +116,16 @@ const User = () => {
             </div>
           </div>
         </div>
-        : <div className='absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center'>
+        : <div className='absolute top-[260px] bottom-0 left-0 right-0 z-20 flex items-center justify-center'>
           <Loading />
         </div>
       }
       {showMess > 0 && <Conversation />}
       {showCmt > 0 && <Comment />}
+      {action === 1
+        ? <EditPost />
+        : action === 2
+        && <DeletePost />}
 
     </div>
   )

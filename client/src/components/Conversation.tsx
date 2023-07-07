@@ -43,7 +43,7 @@ const Conversation = () => {
   };
 
   return (
-    <div className='login_box absolute bottom-0 right-20 w-[328px] h-[455px] rounded-md bg-white z-20'>
+    <div className='login_box bottom-0 right-20 w-[328px] h-[455px] rounded-md z-50 bg-white'>
       <div className=" flex w-full items-center border-b border-fb-dark content-box">
         <div className="basis-2/3 flex gap-2 hover:bg-fb-gray rounded-md p-2">
           <div className={`w-9 h-9 box-content rounded-full flex items-center
@@ -61,7 +61,7 @@ const Conversation = () => {
         <div className="flex flex-1"></div>
         <div className="flex items-center hover:bg-fb-gray rounded-full p-2 mr-1w-9 h-9"
           onClick={() => dispatch(setShowMess(0))}>
-          <AiOutlineClose size={19}/>
+          <AiOutlineClose size={19} />
         </div>
       </div>
       <Scrollbars autoHide style={{ width: '100%', height: 'calc(100vh - 230px)' }}>

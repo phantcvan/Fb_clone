@@ -9,7 +9,6 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { setNotification } from "../slices/userSlice";
 
 const Login = () => {
-    const { userId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [openSignUp, setOpenSignUp] = useState(false);
@@ -19,12 +18,6 @@ const Login = () => {
     const [emailInput, setEmail] = useState("");
     const [passwordInput, setPassword] = useState("");
     const userNow = useSelector(getUser);
-    if (userId) {
-        if (userNow) {
-            navigate(-1);
-            dispatch(setNotification(userNow.notification))
-        }
-    } else navigate("/");
     const handleAddEmail = (e: any) => {
         setEmail(e.target.value);
         setMessage("");
@@ -33,7 +26,7 @@ const Login = () => {
         setPassword(e.target.value);
         setMessage("");
     };
-
+    if (userNow) navigate("/");
     const handleLogin = async (e: any) => {
         e.preventDefault();
         if (emailInput.trim() === "") {

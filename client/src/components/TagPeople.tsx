@@ -4,9 +4,10 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import CreatePost from "./CreatePost";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getRelation } from "../slices/userSlice";
 import { UserType } from "../static/types";
+import { getTag, setTag } from "../slices/postSlice";
 
 interface Tag {
     id: number;
@@ -14,46 +15,52 @@ interface Tag {
 }
 interface TagPeopleProps {
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-    setTag: React.Dispatch<React.SetStateAction<Tag[]>>;
     setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
-    selectAddOn: number;
-    tag: Tag[];
 }
 
-const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: TagPeopleProps) => {
-    const [newTag, setNewTag] = useState<Tag[]>([]);
+const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
+    const tag = useSelector(getTag);
+    const dispatch = useDispatch();
+    const [newTag, setNewTag] = useState<Tag[]>(tag);
     const relation = useSelector(getRelation);
     console.log("relation", relation);
 
 
-    const handleAddTag = (id: number) => {
-        const username = relation.filter((item: UserType, index: number) => item.id === id)
-        console.log("username", username);
-
-        // setNewTag((prevTags) => [...prevTags, id]);
-
+    const handleAddTag = (user: UserType) => {
+        const username = user.first_name + " " + user.last_name;
+        const selectedTag = {
+            id: user.id,
+            username: username
+        }
+        setNewTag((prevTags) => {
+            if (newTag.length === 0) {
+                return [...prevTags, selectedTag];
+            } else if (prevTags.some((tag) => tag.id === selectedTag.id)) {
+                return prevTags.filter((tag) => tag.id !== selectedTag.id);
+            } else {
+                return [...prevTags, selectedTag];
+            }
+        });
     };
+    const handleDeleteTag = (id: number) => {
+        setNewTag((pre) => pre.filter((tag) => tag.id !== id))
+    }
     const handleAddDone = () => {
-        setTag(newTag);
-        setSelectAddOn(0)
+        dispatch(setTag(newTag));
+        setSelectAddOn(0);
     };
+    console.log("newTag", newTag);
 
 
 
     return (
-    //     <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
-    // justify-center z-[60]'>
-    //         <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
-    // justify-center z-[60]'
-    //             onClick={() => setUploadPost(false)}
-    //         >
-    //         </div>
-            <div
-                className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col
-      fixed rounded-md z-[80]'
-            >
-                <div className='absolute top-2 right-2 cursor-pointer px-2'
-                    onClick={() => { setUploadPost(false)}}>
+
+        <div
+            className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col
+      fixed rounded-md z-[80] h-[470px]'
+        >
+            <div className='absolute top-2 right-2 cursor-pointer px-2'
+                onClick={() => { setUploadPost(false) }}>
                 <AiOutlineClose size={20} />
             </div>
             <div className="flex items-center mx-3 mt-1 mb-3">
@@ -84,29 +91,24 @@ const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: 
                     </button>
                 </div>
                 {/* Nếu có tag thì hiển thị những người đang tag */}
-                {tag.length > 0
-                    && <div className="mb-1">
+                {newTag?.length > 0 && (
+                    <div className="mb-1">
                         <span className="mt-2 text-fb-gray-text font-semibold">TAGGED</span>
                         <div className="border border-fb-dark flex gap-1 rounded-md">
-                            <div className="bg-[#E7F3FF] h-fit w-fit ml-2 my-2 rounded-md flex items-center">
-                                <span className="p-2 text-fb-blue font-semibold">{tag[0].username}</span>
-                                <span className="p-2 text-fb-blue cursor-pointer"><AiOutlineClose /></span>
-                            </div>
-                            <div className="bg-[#E7F3FF] h-fit w-fit my-2 rounded-md flex items-center">
-                                <span className="p-2 text-fb-blue font-semibold">{tag[1].username}</span>
-                                <span className="p-2 text-fb-blue cursor-pointer">
-                                    <AiOutlineClose />
-                                </span>
-                            </div>
-                            <div className="bg-[#E7F3FF] h-fit w-fit my-2 rounded-md flex items-center">
-                                <span className="p-2 text-fb-blue font-semibold">{tag[2].username}</span>
-                                <span className="p-2 text-fb-blue cursor-pointer">
-                                    <AiOutlineClose />
-                                </span>
-                            </div>
+                            {newTag?.map((item: Tag, index) => (
+                                <div className="bg-[#E7F3FF] h-fit w-fit ml-2 my-2 rounded-md flex items-center"
+                                    key={index}>
+                                    <span className="p-2 text-fb-blue font-semibold">{item.username}</span>
+                                    <span className="p-2 text-fb-blue cursor-pointer"
+                                        onClick={() => handleDeleteTag(item.id)}>
+                                        <AiOutlineClose />
+                                    </span>
+                                </div>
+                            ))}
                         </div>
+                    </div>
+                )}
 
-                    </div>}
 
                 {/* Danh sách gợi ý */}
                 <span className="mt-2 text-fb-gray-text font-semibold">SUGGESTIONS</span>
@@ -115,10 +117,10 @@ const TagPeople = ({ setUploadPost, tag, setTag, setSelectAddOn, selectAddOn }: 
                         {relation.length > 0 &&
                             relation.map((friend: UserType, index: number) => (
                                 <div className="flex gap-4 pb-2 pt-3 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md"
-                                    onClick={() => handleAddTag(friend?.id)} key={index}>
+                                    onClick={() => handleAddTag(friend)} key={index}>
                                     <img src={friend?.avatar} alt="avatar"
                                         className="w-9 h-9 rounded-full object-cover overflow-hidden" />
-                                    <span>{friend?.first_name}</span>
+                                    <span>{friend?.first_name} {friend?.last_name}</span>
                                 </div>
                             ))}
 

@@ -12,7 +12,7 @@ import ViewMiniProfile from "./ViewMiniProfile";
 
 
 interface HeaderProp {
-  pageNow: UserType;
+  pageNow: UserType|null;
   friends: UserType[];
   isFriend: boolean;
 }

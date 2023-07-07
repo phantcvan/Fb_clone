@@ -14,7 +14,7 @@ import { useNavigate } from "react-router";
 // import { MdArrowBackIosNew } from "react-icons/md";
 // import { BgPost } from "../static/background";
 import ShowMoreBg from "./ShowMoreBg";
-import { UserType, Tag } from "../static/types";
+import { UserType, PostType } from "../static/types";
 import CreateMain from "./CreateMain";
 import UploadPhoto from "./UploadPhoto";
 
@@ -29,26 +29,17 @@ interface Check {
 interface CreatePost {
     userNow: UserType;
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-    left: number
+    left: number;
+    setNewPost: React.Dispatch<React.SetStateAction<PostType | null>>;
 }
-const CreatePost = ({ setUploadPost, userNow, left }: CreatePost) => {
-    // const [selectAudience, setSelectAudience] = useState(false);
-    const [addOn, setAddOn] = useState(0);
+const CreatePost = ({ setUploadPost, userNow, left, setNewPost }: CreatePost) => {
     const [selectAddOn, setSelectAddOn] = useState(0);
-    const [media, setMedia] = useState("");
-    const [newPost, setNewPost] = useState("");
-    const [audience, setAudience] = useState("Only me");
-    const [tag, setTag] = useState<Tag[]>([]);
-    const [feeling, setFeeling] = useState<Feel[]>([]);
-    const [location, setLocation] = useState<Check[]>([]);
     const navigate = useNavigate();
-    const [showBgView, setShowBgView] = useState(false);
     const [postBg, setPostBg] = useState(-1);
     const [postBgUrl, setPostBgUrl] = useState("");
     const [textColor, setTextColor] = useState("black");
 
 
-    console.log(audience);
     // Khi đóng cửa sổ Post
     const handleClose = () => {
         setUploadPost(false);
@@ -85,25 +76,24 @@ const CreatePost = ({ setUploadPost, userNow, left }: CreatePost) => {
                 onClick={handleClose}
             >
             </div>
+            <CreateMain setUploadPost={setUploadPost}
+                setSelectAddOn={setSelectAddOn} setNewPost={setNewPost} />
 
             {selectAddOn === 1 && <SelectAudience setSelectAddOn={setSelectAddOn}
-                setUploadPost={setUploadPost} setAudience={setAudience} audience={audience} />}
-            {selectAddOn === 0
-                ? <CreateMain setUploadPost={setUploadPost} audience={audience} selectAddOn={selectAddOn}
+                setUploadPost={setUploadPost} />}
+            {selectAddOn === 2
+                ? <TagPeople setUploadPost={setUploadPost}
                     setSelectAddOn={setSelectAddOn} />
-                : selectAddOn === 2
-                    ? <TagPeople setUploadPost={setUploadPost} tag={tag} setTag={setTag}
-                        setSelectAddOn={setSelectAddOn} selectAddOn={selectAddOn} />
-                    : selectAddOn === 3
-                        ? <Feeling setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
-                            setFeeling={setFeeling} feeling={feeling} />
-                        : selectAddOn === 4
-                            ? < CheckIn setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
-                                setLocation={setLocation} location={location} />
-                            : selectAddOn === 5
-                                && < ShowMoreBg setUploadPost={setUploadPost} setPostBgUrl={setPostBgUrl}
-                                    setPostBg={setPostBg} setTextColor={setTextColor} setSelectAddOn={setSelectAddOn} />
-                                }
+                : selectAddOn === 3
+                    ? <Feeling setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
+                    />
+                    : selectAddOn === 4
+                        ? < CheckIn setUploadPost={setUploadPost} setSelectAddOn={setSelectAddOn}
+                        />
+                        : selectAddOn === 5
+                        && < ShowMoreBg setUploadPost={setUploadPost} setPostBgUrl={setPostBgUrl}
+                            setPostBg={setPostBg} setTextColor={setTextColor} setSelectAddOn={setSelectAddOn} />
+            }
         </div >
 
     )

@@ -47,3 +47,4 @@ export interface PostType {
   type?: string | null;
 }
 
+

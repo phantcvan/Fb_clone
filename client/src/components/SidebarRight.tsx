@@ -42,7 +42,7 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
                 console.error('API call failed:', error);
             });
     }
-    console.log(lastRequestUser);
+    // console.log(lastRequestUser);
     const timeRequest = (moment(lastRequest?.date_request).diff(moment(), 'days')) * -1
 
 

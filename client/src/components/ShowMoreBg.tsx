@@ -26,18 +26,9 @@ const ShowMoreBg = ({ setUploadPost, setPostBgUrl, setPostBg, setTextColor, setS
 
 
     return (
-        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
-        justify-center z-20'>
-
-            <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
-        justify-center z-21'
-                onClick={() => setUploadPost(false)}
-            >
-            </div>
-
             <div
                 className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col 
-          fixed rounded-md z-25'
+          fixed rounded-md z-[70]'
             >            <div className="flex items-center mx-3 mt-1 mb-3">
                     <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer"
                         onClick={() => setSelectAddOn(0)}>
@@ -66,9 +57,7 @@ const ShowMoreBg = ({ setUploadPost, setPostBgUrl, setPostBg, setTextColor, setS
                         </div >
                     </Scrollbars>
                 </div>
-
             </div >
-        </div >
 
     )
 }

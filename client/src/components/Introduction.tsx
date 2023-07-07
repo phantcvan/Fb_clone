@@ -16,8 +16,8 @@ import { PiBagFill } from "react-icons/pi";
 
 
 interface Intro {
-  pageNow: UserType;
-  relationship: UserType;
+  pageNow: UserType|null;
+  relationship: UserType|null;
 }
 
 export default function Introduction({ pageNow, relationship }: Intro) {

@@ -13,6 +13,9 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { UserType, Relation } from "../static/types"
 import { useLocation } from "react-router";
+import { getActionPost } from "../slices/postSlice";
+import EditPost from "../components/EditPost";
+import DeletePost from "../components/DeletePost";
 
 
 
@@ -29,6 +32,7 @@ const Home = () => {
   const [lastRequestUser, setLastRequestUser] = useState<UserType | null>(null);
   const [mutualCount, setMutualCount] = useState(0);
   const notification = useSelector(getNotification);
+  const action = useSelector(getActionPost);
 
   const updateTitle = () => {
     if (notification > 0) {
@@ -104,8 +108,12 @@ const Home = () => {
         />
         <SidebarRight userNow={userNow} contact={contact} lastRequestUser={lastRequestUser}
           lastRequest={lastRequest} mutualCount={mutualCount} />
-        {showMess > 0 && <Conversation />}
+        {showMess > 0 && <div className="fixed bottom-0 right-16 "><Conversation /></div>}
         {showCmt > 0 && <Comment />}
+        {action === 1
+        ? <EditPost />
+        : action === 2
+        && <DeletePost />}
       </div>
     </div>
   )

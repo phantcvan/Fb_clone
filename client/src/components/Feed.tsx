@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getGoHome } from "../slices/appSlice";
 import { useLocation } from "react-router";
 import Loading from "./Loading";
+import { getCreatedPost } from "../slices/postSlice";
 
 
 
@@ -29,14 +30,14 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
     const goHome = useSelector(getGoHome);
     const [start, setStart] = useState(1);
     const [isLoaded, setIsLoaded] = useState(false);
-
-    // console.log("Start", start);
+    // const createdPost = useSelector(getCreatedPost);
+    const [newPost, setNewPost] = useState<PostType | null>(null);
 
     const fetchPosts = async () => {
         try {
             if (userNow) {
                 const [postResponse] = await Promise.all([
-                    axios.post(`http://localhost:8000/api/v1/posts/${userNow.id}`, {
+                    axios.post(`http://localhost:8000/api/v1/posts/load/${userNow.id}`, {
                         start,
                     })
                 ]);
@@ -59,6 +60,8 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
     }, [start]);
 
 
+
+
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
@@ -71,6 +74,7 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
     }, [goHome])
     // console.log(posts);
     const left = 0;
+    console.log("post", newPost);
 
     return (
         <div className="flex flex-col mt-3 w-[45%] pl-20 text-sm gap-1 text-[#1D1D1D]" >
@@ -110,6 +114,10 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
                             <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, {userNow.first_name}?</span>
                         </div>
                     </div>
+                    {newPost
+                        && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
+                            <Post lastCmt={lastCmt} post={newPost} />
+                        </div>}
                     {posts.map((post) => (
                         <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
                             key={post.id}>
@@ -128,7 +136,8 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
             }
             {/* </Scrollbars> */}
 
-            {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left} />}
+            {uploadPost && <CreatePost setUploadPost={setUploadPost} userNow={userNow} left={left}
+                setNewPost={setNewPost} />}
         </div>
     )
 }

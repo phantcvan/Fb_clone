@@ -5,6 +5,8 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { Location } from "../static/location";
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getLocation, setLocation } from "../slices/postSlice";
 
 
 interface Check {
@@ -13,36 +15,35 @@ interface Check {
 }
 interface LocationProps {
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
-    setLocation: React.Dispatch<React.SetStateAction<Check[]>>;
     setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
-    location: Check[];
 }
 
-const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: LocationProps) => {
-
+const CheckIn = ({ setUploadPost, setSelectAddOn }: LocationProps) => {
+    const location = useSelector(getLocation);
+    const dispatch = useDispatch();
     const [locationSearch, setLocationSearch] = useState<Check[]>([]);
     const [message, setMessage] = useState("");
     const handleAddDone = (item: Check) => {
+        console.log("item", item);
 
         if (location?.length !== 0 && location[0].city === item.city) {
-            setLocation([]);
+            dispatch(setLocation([]));
             setSelectAddOn(0);
         } else {
-            setLocation([item]);
+            dispatch(setLocation([item]));
             setSelectAddOn(0);
         }
     };
     const handleSearchIcon = (e: any) => {
         const searchInput = e.target.value.trim().toLowerCase();
         if (searchInput !== "") {
-            // Icon.Feeling.filter(item => item.name.includes(searchInput))
-            const findIcon = Location.City.filter(item => item.city.toLowerCase().includes(searchInput) ||
+            const find = Location.City.filter(item => item.city.toLowerCase().includes(searchInput) ||
                 item.checkIn.toLowerCase().includes(searchInput));
-            if ((findIcon.length === 0)) {
+            if ((find.length === 0)) {
                 setMessage("No locations to show");
                 setLocationSearch([]);
             } else {
-                setLocationSearch(findIcon);
+                setLocationSearch(find);
             }
         } else {
             setMessage("");
@@ -50,20 +51,13 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
         }
 
     }
-    console.log("location", location);
-    console.log("locationCity", Location.City);
+    // console.log("location", location[0].city);
+    // console.log("locationCity", Location.City);
 
     return (
-        <div className='w-[100%] h-full absolute left-0 bg-overlay-40 flex items-center 
-    justify-center z-20'>
-            <div className='w-[100%] h-[100%] fixed left-0 bg-overlay-40 flex items-center 
-    justify-center z-21'
-                onClick={() => setUploadPost(false)}
-            >
-            </div>
             <div
-                className='login_box w-[450px] h-[80%] top-20 bottom-3 bg-white pt-4 flex flex-col
-      fixed rounded-md z-25'
+                className='login_box w-[450px] h-[470px] top-20 bottom-3 bg-white pt-4 flex flex-col
+      fixed rounded-md z-[70]'
             >
                 <div className='absolute top-2 right-2 cursor-pointer px-2'
                     onClick={() => setUploadPost(false)}>
@@ -143,7 +137,6 @@ const CheckIn = ({ setUploadPost, setLocation, setSelectAddOn, location }: Locat
 
 
             </div >
-        </div >
     )
 }
 

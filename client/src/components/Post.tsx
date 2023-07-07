@@ -1,28 +1,36 @@
 import { useState, useEffect, useRef, } from "react";
+import "../index.css"
 import { FaEarthAmericas, FaUserGroup } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
-import { PiArrowBendDownRightBold } from "react-icons/pi";
+// import { PiArrowBendDownRightBold } from "react-icons/pi";
 import { IoChatboxOutline, IoArrowRedoOutline } from "react-icons/io5";
 import { Icon } from "../static/icon";
 import Tippy from '@tippyjs/react/headless';
 import Reaction from "./Reaction";
 import { setShowCmt, getShowCmt } from "../slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { IoMdSend } from "react-icons/io";
+// import { IoMdSend } from "react-icons/io";
 import ViewMiniProfile from "./ViewMiniProfile";
 import { UserType, PostType } from "../static/types";
-import { getUser, setUser } from "../slices/whitelist";
+import { getUser } from "../slices/whitelist";
 import axios from "axios";
-import { BiSolidLockAlt } from "react-icons/bi";
+import { BiPencil, BiSolidLockAlt } from "react-icons/bi";
 import ReactPlayer from 'react-player';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
-import { setPost } from "../slices/postSlice";
+import { setPost, setActionPost, setEditPostId } from "../slices/postSlice";
 import { setUserPost } from "../slices/userSlice";
+import AddComment from "./AddComment";
+import { BsFillTrashFill, BsThreeDots } from "react-icons/bs";
 
 interface PostProps {
   lastCmt: boolean;
   post: PostType;
+}
+interface Tag {
+  id: number;
+  first_name: string;
+  last_name: string;
 }
 
 export default function Post({ lastCmt, post }: PostProps) {
@@ -31,30 +39,28 @@ export default function Post({ lastCmt, post }: PostProps) {
   const [showIcon, setShowIcon] = useState(false);
   // const [showProfile, setShowProfile] = useState(false);
   const [showIconCmt, setShowIconCmt] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [userPosted, setUserPosted] = useState<UserType | null>(null);
-  const [comment, setComment] = useState("");
   const showCmt = useSelector(getShowCmt);
   const dispatch = useDispatch();
+  const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
 
-  const handleTextareaChange = (event: any) => {
-    const { value } = event.target;
-    setComment(value);
-    event.target.style.height = 'auto';
-    event.target.style.height = `${event.target.scrollHeight}px`;
-    console.log(event.target.scrollHeight);
-  };
-  const fetchDataUser = async () => {
+
+  const fetchData = async () => {
     try {
-      const [userResponse] = await Promise.all([
-        axios.get(`http://localhost:8000/api/v1/users/${post.user_id}`),
+      const [userResponse, tagsResponse] = await Promise.all([
+        axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
+        axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
       ]);
       setUserPosted(userResponse?.data?.user[0]);
+      setTags(tagsResponse?.data?.tags);
     } catch (error) {
       console.error(error);
     }
   }
   useEffect(() => {
-    fetchDataUser()
+    fetchData()
   }, [post?.user_id]);
   const styleBg = post?.bgUrl
     ? {
@@ -72,7 +78,22 @@ export default function Post({ lastCmt, post }: PostProps) {
     dispatch(setPost(post));
     dispatch(setUserPost(userPosted));
   };
+  let icon = "";
+  if (post?.feeling) {
+    const foundFeeling = Icon.Feeling.find((item) => item.name === post.feeling);
+    if (foundFeeling) {
+      icon = foundFeeling.icon;
+    }
+  }
+  const handleClickTag = (id: number) => {
+    navigate(`/${id}`)
+  }
+  // console.log("tags", tags);
+  // Xoá bài post
+  const handleDelete = (id: number) => {
 
+    // confirm("Do you want to delete this post?")
+  }
 
   return (
     <div className="rounded-xl my-1 bg-white">
@@ -115,26 +136,72 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </Link >}
 
 
-        <div className=" relative">
-          {userPosted?.id !== userNow?.id
-            ? <Tippy placement="bottom" interactive
-              render={attrs => (
-                <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
-                  {...attrs} >
-                  <ViewMiniProfile userView={userPosted} />
-                </div>)}>
-              <Link to={`/${post?.user_id}`}>
-                <div className="font-semibold text-[15px] cursor-pointer">
-                  {userPosted?.first_name} {userPosted?.last_name}
-                </div>
-              </Link >
-            </Tippy>
-            : <Link to={`/${post?.user_id}`}>
-              <div className="font-semibold text-[15px] cursor-pointer">
-                {userPosted?.first_name} {userPosted?.last_name}
-              </div>
-            </Link >}
+        <div className="relative flex flex-col">
+          <div className="flex flex-row justify-between w-full">
+            <div className="flex">
+              {userPosted?.id !== userNow?.id
+                ? <Tippy placement="bottom" interactive
+                  render={attrs => (
+                    <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
+                      {...attrs} >
+                      <ViewMiniProfile userView={userPosted} />
+                    </div>)}>
+                  <Link to={`/${post?.user_id}`}>
+                    <span className="font-semibold text-[15px] cursor-pointer">
+                      {userPosted?.first_name} {userPosted?.last_name}
+                    </span>
+                  </Link >
+                </Tippy>
+                : <Link to={`/${post?.user_id}`}>
+                  <div className="font-semibold text-[15px] cursor-pointer">
+                    <span>{userPosted?.first_name} {userPosted?.last_name} </span>
+                  </div>
+                </Link >}
 
+              {(post?.feeling)
+                && <span>&nbsp;is {icon} feeling {post?.feeling} </span>}
+              {(tags.length > 0 && tags.length <= 3) && (
+                <span>
+                  &nbsp;with{" "}
+                  {tags?.map((item: Tag) => (
+                    <Link to={`/${item?.id}`}>
+                      <span key={item?.id} onClick={() => handleClickTag(item.id)} className="cursor-pointer hover:underline font-semibold">
+                        {item.first_name} {item.last_name}
+                      </span>
+                    </Link>
+                  )).reduce((prev: any, curr: any): any => [prev, ', ', curr])}
+                </span>
+              )}
+              {(post?.feeling && post?.location)
+                && <span>&nbsp;at {post?.location} </span>}
+              {(!post?.feeling && post?.location)
+                && <span>&nbsp;in {post?.location} </span>}
+            </div>
+            {userNow.id === post.user_id
+              && <Tippy placement="bottom" interactive
+                render={attrs => (
+                  <div className={`box h-fit rounded-lg bg-fb-gray content_box`}
+                    {...attrs} >
+                    <div className="flex flex-col">
+                      <span className="hover:bg-fb-dark p-2 rounded-lg cursor-pointer flex gap-2"
+                        onClick={() => {dispatch(setActionPost(1)); dispatch(setEditPostId(post?.id))}}>
+                        <BiPencil size={20} /> Edit post
+                      </span>
+                      <span className="hover:bg-fb-dark p-2 rounded-lg cursor-pointer flex gap-2"
+                        onClick={() => {dispatch(setActionPost(2)); dispatch(setEditPostId(post?.id))}}>
+                        <BsFillTrashFill size={20} /> Delete post
+                      </span>
+                    </div>
+                  </div>)}>
+                <div className="absolute right-[-80px] p-2 rounded-full hover:bg-fb-gray"
+                  onClick={() => setShowEdit(true)}>
+                  <BsThreeDots />
+                </div>
+              </Tippy>
+            }
+
+
+          </div>
 
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
             <div>{moment(post?.date).fromNow()}</div>{" "}
@@ -174,8 +241,8 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         (post?.mediaUrl && post?.type === "video")
         && <div className="w-full overflow-hidden flex items-center object-cover" >
           <ReactPlayer url={post?.mediaUrl} controls
-            width="100%"
-            height="100%" />
+            width="500px"
+            height="278px" />
         </div>
       }
 
@@ -267,34 +334,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </div>
         </div>
       </div>
-      {
-        lastCmt &&
-        <div className=" mx-auto gap-2 m-2 m flex w-[90%] items-center">
-
-          <div className={`w-8 h-8 box-content rounded-full flex items-center
-          justify-center cursor-pointer overflow-hidden`}>
-            <img
-              className="object-cover w-8 h-8"
-              src={userNow?.avatar}
-            />
-          </div>
-
-          <div className="flex-1 h-fit text-fb-gray-text bg-gray-100 rounded-xl flex items-center">
-            <textarea onChange={handleTextareaChange} value={comment}
-              // onChange={handleInputKeyword} onKeyDown={(e) => handleKeyDown(e)}
-              placeholder="Write a comment... "
-              className="border-none outline-none bg-gray-100 text-black px-2 rounded-xl w-[93%]
-            resize-none pt-1" />
-            <p>
-              <IoMdSend size={20}
-                style={{
-                  color: comment ? '#0571ED' : '#BEC3C9',
-                  cursor: comment ? 'pointer' : 'not-allowed',
-                }} />
-            </p>
-          </div>
-        </div>
-      }
+      <AddComment />
       {
         lastCmt ? <div>
           <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
@@ -343,6 +383,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         </div>
           : ""
       }
+
     </div >
   );
 }
