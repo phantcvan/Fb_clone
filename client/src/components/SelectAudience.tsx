@@ -13,6 +13,9 @@ const SelectAudience = ({ setSelectAddOn, setUploadPost }: SelectAudienceProps) 
     const [newAudience, setNewAudience] = useState("");
     const audience = useSelector(getAudience);
     const dispatch = useDispatch();
+    const handleChangeAudience = (event: any) => {
+        setAudience(event.target.value);
+    };
 
 
     return (
@@ -67,7 +70,7 @@ const SelectAudience = ({ setSelectAddOn, setUploadPost }: SelectAudienceProps) 
                             </div>
                         </label>
                         <input type="radio" value="friends" name='audienceOption' className='w-5 h-5'
-                            id='friends' />
+                            id='friends'/>
                     </div>
                     <div className='flex gap-2 items-center justify-between p-2 hover:bg-gray-100 rounded-md'
                         onClick={() => setNewAudience("only me")} >

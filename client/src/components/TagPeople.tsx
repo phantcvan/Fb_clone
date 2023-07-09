@@ -11,7 +11,8 @@ import { getTag, setTag } from "../slices/postSlice";
 
 interface Tag {
     id: number;
-    username: string;
+    first_name: string;
+    last_name: string;
 }
 interface TagPeopleProps {
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,14 +24,15 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
     const dispatch = useDispatch();
     const [newTag, setNewTag] = useState<Tag[]>(tag);
     const relation = useSelector(getRelation);
-    console.log("relation", relation);
+    console.log("relation", newTag);
 
 
     const handleAddTag = (user: UserType) => {
         const username = user.first_name + " " + user.last_name;
         const selectedTag = {
             id: user.id,
-            username: username
+            first_name: user.first_name,
+            last_name: user.last_name,
         }
         setNewTag((prevTags) => {
             if (newTag.length === 0) {
@@ -98,7 +100,9 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
                             {newTag?.map((item: Tag, index) => (
                                 <div className="bg-[#E7F3FF] h-fit w-fit ml-2 my-2 rounded-md flex items-center"
                                     key={index}>
-                                    <span className="p-2 text-fb-blue font-semibold">{item.username}</span>
+                                    <span className="p-2 text-fb-blue font-semibold">
+                                    {item.first_name} {item.last_name}
+                                    </span>
                                     <span className="p-2 text-fb-blue cursor-pointer"
                                         onClick={() => handleDeleteTag(item.id)}>
                                         <AiOutlineClose />

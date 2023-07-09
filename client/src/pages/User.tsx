@@ -2,7 +2,7 @@ import Topbar from '../components/Topbar'
 import SmallSidebar from '../components/SmallSidebar';
 import { setShowMess, getShowMess, getShowCmt } from "../slices/appSlice";
 import { getUser } from "../slices/whitelist";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Conversation from '../components/Conversation';
 import Comment from '../components/Comment';
 import HeaderUser from '../components/HeaderUser';
@@ -10,7 +10,7 @@ import Introduction from '../components/Introduction';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router';
-import { UserType } from "../static/types"
+import { Relation, UserType } from "../static/types"
 import UserPhoto from '../components/UserPhoto';
 import { CategoryItems } from "../static/menu";
 import MainUserPage from '../components/MainUserPage';
@@ -18,7 +18,8 @@ import Scrollbars from 'react-custom-scrollbars-2';
 import Loading from '../components/Loading';
 import EditPost from '../components/EditPost';
 import DeletePost from '../components/DeletePost';
-import { getActionPost } from '../slices/postSlice';
+import { getActionPost, getEditPostId } from '../slices/postSlice';
+import { getAllUsers, setRelation } from '../slices/userSlice';
 
 
 const User = () => {
@@ -35,23 +36,33 @@ const User = () => {
   const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const action = useSelector(getActionPost);
-
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const editPostId = useSelector(getEditPostId);
+  const dispatch = useDispatch();
+  const allUsers = useSelector(getAllUsers);
 
 
 
   const fetchDataUser = async () => {
     try {
-      const [userResponse, friendsCountResponse, checkFriendResponse, postResponse] = await Promise.all([
+      const [userResponse, listFriendsResponse, checkFriendResponse, postResponse, relationResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${pageId}`),
         axios.get(`http://localhost:8000/api/v1/relation/friends/${pageId}`),
         axios.post(`http://localhost:8000/api/v1/relation/isFriend`, {
           userId1: pageId,
           userId2: userNow?.id,
         }),
-        axios.get(`http://localhost:8000/api/v1/posts/${pageId}`)
+        axios.get(`http://localhost:8000/api/v1/posts/loadPostsBelongToUser/${pageId}`),
+        axios.get(`http://localhost:8000/api/v1/relation/${userNow.id}`),
+
       ]);
+      const friend = relationResponse?.data?.request?.filter((item: Relation) => item.status === 2);
+      const idsFromRelation = friend?.map((item: Relation) => [item.request_id, item.accept_id])
+        .flat().filter((id: number) => id !== userNow.id);
+      dispatch(setRelation(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id))));
       setPageNow(userResponse?.data?.user[0]);
-      setFriends(friendsCountResponse?.data?.friends);
+      setFriends(listFriendsResponse?.data?.friends);
       setIsLoaded(true);
       if (pageId !== userNow?.id) {
         if (checkFriendResponse?.data?.checkFriend.length > 0) setIsFriend(true)
@@ -73,7 +84,12 @@ const User = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     fetchDataUser();
-  }, [userId, userNow]);
+  }, [userId, userNow, isDeleted]);
+  useEffect(() => {
+    if (isDeleted && editPostId !== 0) {
+      setDeleted(pre => !pre)
+    }
+  }, [isDeleted])
 
 
   return (
@@ -109,7 +125,8 @@ const User = () => {
                 </div>
                 <div className="flex-1 ml-3 flex flex-col mr-16 pb-2">
                   <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
-                    <MainUserPage pageNow={pageNow} posts={posts} />
+                    <MainUserPage pageNow={pageNow} posts={posts} isLoaded={isLoaded} deleted={deleted}
+                      setIsLoaded={setIsLoaded} />
                   </Scrollbars >
                 </div>
               </div>
@@ -125,7 +142,7 @@ const User = () => {
       {action === 1
         ? <EditPost />
         : action === 2
-        && <DeletePost />}
+        && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded} />}
 
     </div>
   )

@@ -1,7 +1,7 @@
 import { BsFillPersonCheckFill, BsFillPersonPlusFill, BsMessenger } from "react-icons/bs";
 import "../index.css";
 import { HiHome } from 'react-icons/hi2';
-import { UserType, } from "../static/types";
+import { Relation, UserType, } from "../static/types";
 import { PiBagFill } from "react-icons/pi";
 import { IoLocationSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { getUser } from "../slices/whitelist"
 import { Link } from "react-router-dom";
+import { getRelation } from "../slices/userSlice";
 
 
 
@@ -17,25 +18,30 @@ const ViewMiniProfile = ({ userView }: { userView: UserType | null }) => {
 
   const [isFriend, setIsFriend] = useState(false);
   const userNow = useSelector(getUser);
-  const fetchDataUser = async () => {
-    try {
-      const [checkFriendResponse] = await Promise.all([
-        axios.post(`http://localhost:8000/api/v1/relation/isFriend`, {
-          userId1: userView?.id,
-          userId2: userNow?.id,
-        }),
-      ]);
-      if (checkFriendResponse?.data?.checkFriend?.length > 0) setIsFriend(true)
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const relation = useSelector(getRelation);
+  // const fetchDataUser = async () => {
+  //   try {
+  //     const [checkFriendResponse] = await Promise.all([
+  //       axios.post(`http://localhost:8000/api/v1/relation/isFriend`, {
+  //         userId1: userView?.id,
+  //         userId2: userNow?.id,
+  //       }),
+  //     ]);
+  //     if (checkFriendResponse?.data?.checkFriend?.length > 0) setIsFriend(true)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
   useEffect(() => {
-    fetchDataUser()
+    // const friend = 
+    // if ()
+    setIsFriend(relation.some((item:Relation)=>item.id===userView?.id));
   }, [userView]);
-  useEffect(() => {
-    fetchDataUser()
-  }, []);
+  // useEffect(() => {
+  //   fetchDataUser()
+  // }, []);
+  console.log("isFriend", isFriend);
+  
   return (
     <div className='login_box z-40 bg-white w-[400px] mt-[-10px] rounded-md'>
       <div className='flex p-3 gap-3'>
@@ -80,7 +86,7 @@ const ViewMiniProfile = ({ userView }: { userView: UserType | null }) => {
 
         </div>
       </div>
-      {isFriend
+      {!isFriend
         ? <div className='flex p-3 gap-3 ml-5'>
           <button className="flex items-center justify-center p-2 gap-2 bg-fb-gray w-[45%] rounded-md">
             <span><BsMessenger size={20} /> </span>

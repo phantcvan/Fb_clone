@@ -9,72 +9,49 @@ import Post from "./Post";
 import { UserType, Relation, PostType } from "../static/types";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getGoHome } from "../slices/appSlice";
-import { useLocation } from "react-router";
+import { getGoHome, getHadNew, setHadNew } from "../slices/appSlice";
+import { useLocation, useNavigate } from "react-router";
 import Loading from "./Loading";
-import { getCreatedPost } from "../slices/postSlice";
+import { getAllPosts, getCreatedPost, getEditPostId, setAllPosts } from "../slices/postSlice";
+import { getUser } from "../slices/whitelist";
 
 
 
 interface FeedProps {
-    userNow: UserType;
-    allUsers: UserType[];
-    relation: Relation[];
-    contactListId: number[];
+    posts: PostType[];
+    isLoaded: boolean;
+    deleted: boolean;
+    setIsLoaded:React.Dispatch<React.SetStateAction<boolean>>;
 }
-const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
+const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
+    const userNow = useSelector(getUser);
     const [selectStory, setSelectStory] = useState(true);
     const [uploadPost, setUploadPost] = useState(false);
     const [lastCmt, setLastCmt] = useState(true);
-    const [posts, setPosts] = useState<PostType[]>([]);
+    const [updatedPosts, setUpdatedPosts] = useState<PostType[]>([]);
     const goHome = useSelector(getGoHome);
-    const [start, setStart] = useState(1);
-    const [isLoaded, setIsLoaded] = useState(false);
-    // const createdPost = useSelector(getCreatedPost);
     const [newPost, setNewPost] = useState<PostType | null>(null);
-
-    const fetchPosts = async () => {
-        try {
-            if (userNow) {
-                const [postResponse] = await Promise.all([
-                    axios.post(`http://localhost:8000/api/v1/posts/load/${userNow.id}`, {
-                        start,
-                    })
-                ]);
-                setPosts((prevPosts) => [...prevPosts, ...postResponse?.data?.posts]);
-                setIsLoaded(true);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    const handleScroll = () => {
-        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-        if (scrollTop + clientHeight >= scrollHeight - 20) {
-            setStart((prev) => prev + 1);
-        }
-    };
-
-    useEffect(() => {
-        fetchPosts();
-    }, [start]);
+    const editPostId = useSelector(getEditPostId);
 
 
 
 
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
     // chuyển về đầu trang khi biến goHome thay đổi
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [goHome])
-    // console.log(posts);
+    useEffect(() => {
+        if (editPostId) {
+            if (newPost?.id === editPostId) setNewPost(null)
+            // else {
+                setUpdatedPosts(posts?.filter((post) => post.id !== editPostId));
+            // }
+            setIsLoaded(true);
+            console.log("123", updatedPosts);
+
+        }
+    }, [deleted])
     const left = 0;
-    console.log("post", newPost);
 
     return (
         <div className="flex flex-col mt-3 w-[45%] pl-20 text-sm gap-1 text-[#1D1D1D]" >
@@ -118,12 +95,25 @@ const Feed = ({ userNow, allUsers, relation, contactListId }: FeedProps) => {
                         && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
                             <Post lastCmt={lastCmt} post={newPost} />
                         </div>}
-                    {posts.map((post) => (
-                        <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
-                            key={post.id}>
-                            <Post lastCmt={lastCmt} post={post} />
+                    {deleted
+                        ? <div>
+                            {updatedPosts?.map((post: PostType) => (
+                                <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
+                                    key={post.id}>
+                                    <Post lastCmt={lastCmt} post={post} />
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                        : <div>
+                            {posts?.map((post: PostType) => (
+                                <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
+                                    key={post.id}>
+                                    <Post lastCmt={lastCmt} post={post} />
+                                </div>
+                            ))}
+                        </div>
+                    }
+
                 </>
                 : <div className='absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center'>
                     <Loading />

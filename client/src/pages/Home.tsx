@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import SidebarRight from "../components/SidebarRight";
 import Topbar from "../components/Topbar";
 // import { useNavigate } from "react-router-dom";
-import { setShowMess, getShowMess, getShowCmt } from "../slices/appSlice";
+import { setShowMess, getShowMess, getShowCmt, setGoHome } from "../slices/appSlice";
 import { getUser, setUser } from "../slices/whitelist";
 import { getAllUsers, setAllUsers, setRelation, getRelation, getNotification, setNotification } from "../slices/userSlice";
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,9 +11,9 @@ import Conversation from "../components/Conversation";
 import Comment from "../components/Comment";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { UserType, Relation } from "../static/types"
+import { UserType, Relation, PostType } from "../static/types"
 import { useLocation } from "react-router";
-import { getActionPost } from "../slices/postSlice";
+import { getActionPost, getEditPostId } from "../slices/postSlice";
 import EditPost from "../components/EditPost";
 import DeletePost from "../components/DeletePost";
 
@@ -33,6 +33,16 @@ const Home = () => {
   const [mutualCount, setMutualCount] = useState(0);
   const notification = useSelector(getNotification);
   const action = useSelector(getActionPost);
+  // const [isEdited, setIsEdited] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const [start, setStart] = useState(1);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const editPostId = useSelector(getEditPostId);
+
+
+
 
   const updateTitle = () => {
     if (notification > 0) {
@@ -43,19 +53,23 @@ const Home = () => {
   };
 
 
-  console.log("showMess", notification);
   // Hàm so sánh hai thời gian
   function compareDate(a: Relation, b: Relation) {
     return new Date(a.date_request).getTime() - new Date(b.date_request).getTime();
   }
 
-  // console.log("user",userNow);
 
   const fetchData = async () => {
     try {
-      const [requestResponse] = await Promise.all([
+      const [requestResponse, postResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/relation/${userNow.id}`),
+        axios.post(`http://localhost:8000/api/v1/posts/loadAll/${userNow.id}`, {
+          start,
+        })
       ]);
+      setPosts((prevPosts: PostType[]) => [...prevPosts, ...postResponse?.data?.posts])
+      setIsLoaded(true);
+
       const friend = requestResponse?.data?.request?.filter((item: Relation) => item.status === 2);
       const idsFromRelation = friend?.map((item: Relation) => [item.request_id, item.accept_id])
         .flat().filter((id: number) => id !== userNow.id);
@@ -69,7 +83,7 @@ const Home = () => {
           return compareDate(prev, current) < 0 ? current : prev;
         });
         setLastRequest(latestObject);
-        const lastRequestUser = allUsers.find((user: UserType) => user.id === latestObject?.request_id)
+        const lastRequestUser = allUsers?.find((user: UserType) => user.id === latestObject?.request_id)
         setLastRequestUser(lastRequestUser);
         try {
           const [mutualResponse] = await Promise.all([
@@ -87,15 +101,32 @@ const Home = () => {
       console.error(error);
     }
   };
+  const handleScroll = () => {
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 20) {
+      setStart((prev) => prev + 1);
+    }
+  };
   useEffect(() => {
-    if (userNow) fetchData()
-    updateTitle();
-  }, [userNow])
-  const location = useLocation();
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isDeleted]);
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+    if (userNow) {
+      fetchData()
+      updateTitle();
+    }
+  }, [start])
+  useEffect(() => {
+    if (isDeleted && editPostId!==0) {
+      setDeleted(pre=>!pre)
+    }
+  }, [isDeleted])
+
+
 
 
 
@@ -104,16 +135,16 @@ const Home = () => {
       <Topbar userNow={userNow} />
       <div className="flex w-[100%] relative">
         <Sidebar userNow={userNow} />
-        <Feed userNow={userNow} allUsers={allUsers} relation={relation} contactListId={contactListId}
+        <Feed posts={posts} isLoaded={isLoaded} deleted={deleted} setIsLoaded={setIsLoaded}
         />
         <SidebarRight userNow={userNow} contact={contact} lastRequestUser={lastRequestUser}
           lastRequest={lastRequest} mutualCount={mutualCount} />
         {showMess > 0 && <div className="fixed bottom-0 right-16 "><Conversation /></div>}
         {showCmt > 0 && <Comment />}
         {action === 1
-        ? <EditPost />
-        : action === 2
-        && <DeletePost />}
+          ? <EditPost />
+          : action === 2
+          && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded}/>}
       </div>
     </div>
   )

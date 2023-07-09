@@ -9,6 +9,7 @@ import { getUser } from "./slices/whitelist";
 import { getAllUsers, setAllUsers } from "./slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Search from "./pages/Search";
 
 
 
@@ -40,8 +41,9 @@ function App() {
           <Route path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/:userId" element={<User />} />
-            <Route path="/user" element={<User />} />
+            {/* <Route path="/user" element={<User />} /> */}
             <Route path="/login" element={<Login />} />
+            <Route path="/search" element={<Search />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

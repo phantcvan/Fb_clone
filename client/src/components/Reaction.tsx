@@ -8,7 +8,7 @@ const Reaction = () => {
   return (
     <div className="absolute bottom-10 left-0 p-[2px] bg-white rounded-3xl shadow-xl flex z-40">
       {Icon.Reaction.map((item, index) => (
-        <Tippy
+        <Tippy key={index}
           render={attrs => (
             <div className={`box addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
               {...attrs}>

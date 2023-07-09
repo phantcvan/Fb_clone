@@ -46,5 +46,15 @@ export interface PostType {
   mediaUrl?: string | null;
   type?: string | null;
 }
+export interface EditPostType {
+  content: string;
+  audience: string;
+  feeling?: string | null;
+  location?: string | null;
+  bgUrl?: string | null;
+  textColor?: string | null;
+  mediaUrl?: string | null;
+  type?: string | null;
+}
 
 

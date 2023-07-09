@@ -6,9 +6,10 @@ import { FaUserCheck, FaUserPlus } from "react-icons/fa";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { BiPlus, BiSolidPencil } from "react-icons/bi";
-import { UserType, } from "../static/types";
+import { Relation, UserType, } from "../static/types";
 import Tippy from '@tippyjs/react/headless';
 import ViewMiniProfile from "./ViewMiniProfile";
+import { getRelation } from "../slices/userSlice";
 
 
 interface HeaderProp {
@@ -20,6 +21,9 @@ const HeaderUser = ({ pageNow, friends, isFriend }: HeaderProp) => {
   console.log("friends", friends);
 
   const userNow = useSelector(getUser);
+  const relation = useSelector(getRelation);
+  console.log(relation);
+  
   // const { userId } = useParams(); //id của page
   // const pageId = Number(userId)//id của page
   const [pickNav, setPickNav] = useState<string>("Post");
@@ -64,9 +68,15 @@ const HeaderUser = ({ pageNow, friends, isFriend }: HeaderProp) => {
                   : <span className="text-sm text-fb-gray-text">{friends.length} friend</span>}
                 {friends.length > 0
                   ? <div className="mb-3 relative flex">
-                    {friends.slice(0, 10).map((item, index) => {
+                    {friends.filter(item => item.id === userNow.id).map((item, index) => {
                       return (
-                        <Tippy placement="bottom" interactive
+                          <img src={item.avatar} alt="" key={index}
+                            className={`w-[34px] h-[34px] object-cover rounded-full border-2 border-white`} />
+                      )
+                    })}
+                    {friends.slice(0, 10).filter(item => item.id !== userNow.id).map((item, index) => {
+                      return (
+                        <Tippy placement="bottom" interactive  key={index}
                           render={attrs => (
                             <div className={`box py-1 px-2 h-fit rounded-lg text-xs`}
                               {...attrs} >
@@ -75,7 +85,6 @@ const HeaderUser = ({ pageNow, friends, isFriend }: HeaderProp) => {
                           <img src={item.avatar} alt="" key={index}
                             className={`w-[34px] h-[34px] object-cover rounded-full border-2 border-white`} />
                         </Tippy>
-
                       )
                     })}
 
@@ -92,26 +101,26 @@ const HeaderUser = ({ pageNow, friends, isFriend }: HeaderProp) => {
                   ? <button className="flex items-center gap-2 bg-fb-blue rounded-md px-2 py-1 text-white">
                     <BiPlus size={20} /> Add to story
                   </button>
-                  : !isFriend
-                    ? <button className="flex items-center gap-2 bg-fb-blue rounded-md px-2 py-1 text-white">
-                      <FaUserPlus size={20} style={{ color: "white" }} /> Add friend
-                    </button>
-                    : <button className="flex items-center gap-2 bg-fb-gray rounded-md px-2 py-1">
-                      <FaUserCheck size={20} /> Friends
-                    </button>}
+                  : relation.find((item:Relation)=>item.id===pageNow?.id)
+                    ? <button className="flex items-center gap-2 bg-fb-gray rounded-md px-2 py-1">
+                    <FaUserCheck size={20} /> Friends
+                  </button>
+                    : <button className="flex items-center gap-2 bg-fb-blue rounded-md px-2 py-1 text-white">
+                    <FaUserPlus size={20} style={{ color: "white" }} /> Add friend
+                  </button>}
               </div>
               <div className="flex">
                 {pageNow?.id === userNow?.id
                   ? <button className="flex items-center gap-2 bg-fb-gray rounded-md px-2 py-1">
                     <BiSolidPencil /> Edit profile
                   </button>
-                  : !isFriend
+                  : relation.find((item:Relation)=>item.id===pageNow?.id)
                     ? <button className="flex items-center gap-2 bg-fb-blue rounded-md px-2 py-1 text-white">
-                      <BsMessenger /> Message
-                    </button>
+                    <BsMessenger /> Message
+                  </button>
                     : <button className="flex items-center gap-2 bg-fb-blue rounded-md px-2 py-1 text-white">
-                      <BsMessenger /> Message
-                    </button>}
+                    <BsMessenger /> Message
+                  </button>}
               </div>
               <div>
                 <button className="flex items-center gap-2 bg-fb-gray rounded-md p-2">

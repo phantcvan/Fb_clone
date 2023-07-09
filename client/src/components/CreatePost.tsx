@@ -18,14 +18,7 @@ import { UserType, PostType } from "../static/types";
 import CreateMain from "./CreateMain";
 import UploadPhoto from "./UploadPhoto";
 
-interface Feel {
-    icon: string;
-    name: string;
-}
-interface Check {
-    checkIn: string;
-    city: string;
-}
+
 interface CreatePost {
     userNow: UserType;
     setUploadPost: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,16 +36,8 @@ const CreatePost = ({ setUploadPost, userNow, left, setNewPost }: CreatePost) =>
     // Khi đóng cửa sổ Post
     const handleClose = () => {
         setUploadPost(false);
-        console.log("12");
-
-    }
-    const handleAddPost = () => {
-
     }
 
-    const handleClickTag = (id: number) => {
-        navigate(`/${id}`)
-    }
     // Nếu người dùng chọn background
     const styleBg = postBgUrl
         ? {

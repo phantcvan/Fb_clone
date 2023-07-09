@@ -7,7 +7,7 @@ import { SideBarGroup } from "../static/menu";
 import { HiUserGroup } from "react-icons/hi2";
 import CreatePost from './CreatePost';
 import { Link, useParams } from 'react-router-dom';
-import { UserType } from "../static/types";
+import { PostType, UserType } from "../static/types";
 
 interface SidebarProp {
   userNow: UserType;
@@ -17,6 +17,8 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
   const [pickMenu, setPickMenu] = useState(2);
   const [uploadPost, setUploadPost] = useState(false);
   const { userId } = useParams();
+  const left = 0;
+  const [newPost, setNewPost] = useState<PostType | null>(null);
   let pageId = 0;//id của page
   if (userId) {
     pageId = Number(userId);
@@ -31,7 +33,7 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
 
 
   return (
-    <div className='w-[60px] flex flex-col mt-2 border-r border-fb-dark fixed bg-white'>
+    <div className='w-[60px] flex flex-col border-r border-fb-dark fixed bg-white'>
       <Tippy placement="right"
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -166,7 +168,8 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
         </div>
       </Tippy>
 
-      {(pickMenu === 4 && uploadPost === true) && <CreatePost userNow={userNow} setUploadPost={setUploadPost} />}
+      {(pickMenu === 4 && uploadPost === true) && 
+      <CreatePost userNow={userNow} setUploadPost={setUploadPost} left={left} setNewPost={setNewPost}/>}
     </div>
   )
 }

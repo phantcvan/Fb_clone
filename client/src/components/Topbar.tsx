@@ -2,7 +2,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { MdNotifications } from "react-icons/md";
 import { BsMessenger } from "react-icons/bs";
 import { FiChevronDown } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import Tippy from '@tippyjs/react/headless';
 import { useState } from "react";
 import MessengerView from "./MessengerView";
@@ -10,9 +10,10 @@ import NotificationView from "./NotificationView";
 import AccountSetting from "./AccountSetting";
 import { UserType } from "../static/types"
 import { useSelector, useDispatch } from "react-redux";
-import { setGoHome } from "../slices/appSlice";
-import { getNotification, setNotification } from "../slices/userSlice";
+import { setGoHome, setSearchQuery } from "../slices/appSlice";
+import { getAllUsers, getNotification, setNotification } from "../slices/userSlice";
 import axios from "axios";
+// import { Tooltip } from "react-tippy";
 
 
 
@@ -25,22 +26,40 @@ const Topbar = ({ userNow }: TopProps) => {
     const [keyword, setKeyword] = useState("");
     const dispatch = useDispatch();
     const notification = useSelector(getNotification);
+    const navigate = useNavigate();
+    const allUsers = useSelector(getAllUsers);
+    const [matchedUsers, setMatchedUsers] = useState<UserType[] | null>(null);
+    const [showTooltip, setShowTooltip] = useState(false);
 
 
     const handleInputKeyword = (e: any) => {
-        const inputSearch = e.target.value.trim().replace(/\s+/g, " ");
+        const inputSearch = e.target.value.trim().replace(/\s+/g, " ").toLowerCase();
         console.log(inputSearch);
         setKeyword(inputSearch);
-
+        setMatchedUsers(allUsers?.filter(
+            (user: UserType) =>
+            (user.first_name.toLowerCase().includes(e.target.value.trim().replace(/\s+/g, " ").toLowerCase()) ||
+                user.last_name.toLowerCase().includes(e.target.value.trim().replace(/\s+/g, " ").toLowerCase()))
+        ));
+        if (e.target.value.trim().replace(/\s+/g, " ").length > 0) {
+            setShowTooltip(true);
+        } else {
+            setShowTooltip(false);
+        }
     }
 
     const handleSearch = () => {
         setPick(0);
-        if (keyword) {
-            console.log("123");
-        } else {
-            console.log("456");
+        if (keyword.replace(/\s/g, '')) {
+            dispatch(setSearchQuery(keyword.replace(/\s/g, '')));
+            navigate({
+                pathname: `/search`,
+                search: createSearchParams({
+                    q: keyword
+                }).toString()
+            })
         }
+        setShowTooltip(false);
 
     }
 
@@ -63,8 +82,14 @@ const Topbar = ({ userNow }: TopProps) => {
                 console.error('API call failed:', error);
             });
     }
+    const handleClickUser = (id: number) => {
+        console.log("123");
 
+        navigate(`/${id}`)
+    }
 
+    // console.log("matchedUsers", matchedUsers)
+    // console.log("allUsers", allUsers)
     return (
         <div className="h-[50px] w-[100%] flex items-center sticky top-0 shadow-md py-7 z-30 bg-white">
             <div className="flex basis-1/4 ml-4" onClick={() => dispatch(setGoHome((pre: boolean) => !pre))}>
@@ -78,9 +103,47 @@ const Topbar = ({ userNow }: TopProps) => {
                     <div className="cursor-pointer mx-1 px-2" onClick={handleSearch}>
                         <HiMagnifyingGlass size={18} />
                     </div>
-                    <input type="text" onChange={handleInputKeyword} onKeyDown={(e) => handleKeyDown(e)}
-                        placeholder="Search for friend, post or video... "
-                        className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray" />
+                    <Tippy interactive
+                        render={() => (
+                            <div className="box addOn-box py-1 px-2 bg-white rounded-lg w-[608px] flex gap-2 flex-col mt-[-2px] ml-[-43px]">
+                                {matchedUsers?.map((user) => (
+                                    <div
+                                        key={user.id}
+                                        className="flex items-center gap-3 mx-1 hover:bg-gray-100 cursor-pointer p-2 rounded-md"
+                                        onClick={() => handleClickUser(user.id)}
+                                    >
+                                        <div className="w-8 h-8 rounded-full">
+                                            <img
+                                                src={user?.avatar}
+                                                alt=""
+                                                className="w-8 h-8 rounded-full overflow-hidden object-cover"
+                                            />
+                                        </div>
+                                        {`${user.first_name} ${user.last_name}`}
+                                    </div>
+                                ))}
+                                <span className="flex items-center gap-3 mx-1 hover:bg-gray-100 cursor-pointer p-2 rounded-md"
+                                onClick={handleSearch}>
+                                    <div className="w-8 h-8 rounded-full bg-fb-blue flex items-center justify-center">
+                                        <HiMagnifyingGlass size={18} style={{color:"#ffffff"}}/>
+                                    </div>
+                                    <span className="text-fb-blue">Search for <strong>{keyword}</strong></span>
+                                </span>
+                            </div>
+                        )}
+                        visible={showTooltip}
+                    >
+                        <input
+                            type="text"
+                            onChange={handleInputKeyword}
+                            onKeyDown={(e) => handleKeyDown(e)}
+                            placeholder="Search Facebook"
+                            className="border-none outline-none bg-gray-100 h-10 ml-2 w-[100%] pl-2 rounded-r-full hover:bg-fb-gray"
+                        />
+                    </Tippy>
+
+
+
                 </div>
             </div>
             <div className="flex basis-1/4 text-red-500 flex-row items-center justify-end mr-4">

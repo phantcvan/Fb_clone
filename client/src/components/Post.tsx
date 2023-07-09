@@ -89,14 +89,10 @@ export default function Post({ lastCmt, post }: PostProps) {
     navigate(`/${id}`)
   }
   // console.log("tags", tags);
-  // Xoá bài post
-  const handleDelete = (id: number) => {
 
-    // confirm("Do you want to delete this post?")
-  }
 
   return (
-    <div className="rounded-xl my-1 bg-white">
+    <div className="rounded-xl my-1 bg-white relative">
       <div className="px-4 pt-1 mb-2 flex gap-2">
         {userPosted?.id !== userNow?.id
           ? <Tippy placement="bottom" interactive
@@ -136,7 +132,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </Link >}
 
 
-        <div className="relative flex flex-col">
+        <div className=" flex flex-col">
           <div className="flex flex-row justify-between w-full">
             <div className="flex">
               {userPosted?.id !== userNow?.id
@@ -193,7 +189,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                       </span>
                     </div>
                   </div>)}>
-                <div className="absolute right-[-80px] p-2 rounded-full hover:bg-fb-gray"
+                <div className="absolute right-2 p-2 rounded-full hover:bg-fb-gray"
                   onClick={() => setShowEdit(true)}>
                   <BsThreeDots />
                 </div>
