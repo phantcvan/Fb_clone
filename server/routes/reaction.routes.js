@@ -7,11 +7,11 @@ require("dotenv").config();
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const query = `SELECT * FROM tbl_cmt WHERE id = ?`;
+    const query = `SELECT * FROM tbl_reaction WHERE post_id = ?`;
     let data = await database.execute(query, [id]);
-    let [comments] = data;
+    let [reactions] = data;
     res.status(200).json({
-      comments,
+      reactions,
       // postQuantity: post.length,
     });
   } catch (error) {

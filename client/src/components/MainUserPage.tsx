@@ -16,10 +16,10 @@ interface MainProp {
   isLoaded: boolean;
   deleted: boolean;
   setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
-
+  edited: boolean;
 }
 
-const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded }: MainProp) => {
+const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }: MainProp) => {
   const userNow = useSelector(getUser);
   const [uploadPost, setUploadPost] = useState(false);
   const { userId } = useParams();
@@ -27,9 +27,10 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded }: MainPr
   const [lastCmt, setLastCmt] = useState(true);
   const left = -300;
   const [newPost, setNewPost] = useState<PostType | null>(null);
-  console.log(pageNow);
   const editPostId = useSelector(getEditPostId);
   const [updatedPosts, setUpdatedPosts] = useState<PostType[]>([]);
+  const [editedPost, setEditedPost] = useState<PostType | {}>({});
+
 
 
   useEffect(() => {
@@ -39,6 +40,26 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded }: MainPr
       setIsLoaded(true);
     }
   }, [deleted])
+  const fetchData = async () => {
+    try {
+      const [updatePostsResponse] = await Promise.all([
+        axios.get(`http://localhost:8000/api/v1/posts/loadPostsBelongToUser/${userNow.id}`)
+      ]);
+      setUpdatedPosts(updatePostsResponse?.data?.posts);
+      setIsLoaded(true);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  // console.log("edited MAIN", edited);
+  // console.log("updatedPosts", updatedPosts);
+
+  useEffect(() => {
+    // if (editPostId) {
+      fetchData();
+      setIsLoaded(true);
+    // }
+  }, [edited]);
 
   return (
     <div className=' mr-40'>
@@ -61,7 +82,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded }: MainPr
             && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
               <Post lastCmt={lastCmt} post={newPost} />
             </div>}
-          {deleted
+          {(deleted||edited)
             ? <div>
               {updatedPosts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-1"

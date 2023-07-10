@@ -10,7 +10,7 @@ import Introduction from '../components/Introduction';
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router';
-import { Relation, UserType } from "../static/types"
+import { PostType, Relation, UserType } from "../static/types"
 import UserPhoto from '../components/UserPhoto';
 import { CategoryItems } from "../static/menu";
 import MainUserPage from '../components/MainUserPage';
@@ -20,6 +20,7 @@ import EditPost from '../components/EditPost';
 import DeletePost from '../components/DeletePost';
 import { getActionPost, getEditPostId } from '../slices/postSlice';
 import { getAllUsers, setRelation } from '../slices/userSlice';
+import EditProfile from '../components/EditProfile/EditProfile';
 
 
 const User = () => {
@@ -41,6 +42,12 @@ const User = () => {
   const editPostId = useSelector(getEditPostId);
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
+  const [isEdited, setIsEdited] = useState(false);
+  const [edited, setEdited] = useState(false);
+  const [editedPost, setEditedPost] = useState<PostType | []>([]);
+  const [isEditProfile, setIsEditProfile] = useState(false);
+  const [editedProfile, setEditedProfile] = useState(false);
+
 
 
 
@@ -82,14 +89,21 @@ const User = () => {
   }
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
     fetchDataUser();
-  }, [userId, userNow, isDeleted]);
+  }, [userId, userNow, isDeleted, isEdited, editedProfile]);
   useEffect(() => {
     if (isDeleted && editPostId !== 0) {
       setDeleted(pre => !pre)
     }
   }, [isDeleted])
+
+  useEffect(() => {
+    if (isEdited && editPostId !== 0) {
+      setEdited(true);
+    }
+  }, [isEdited])
+  // console.log("isEdited",isEdited);
 
 
   return (
@@ -99,7 +113,7 @@ const User = () => {
         ? <div className="flex w-[100%] bg-white">
           <SmallSidebar userNow={userNow} />
           <div className='flex flex-col'>
-            <HeaderUser pageNow={pageNow} friends={friends} isFriend={isFriend} />
+            <HeaderUser pageNow={pageNow} friends={friends} isFriend={isFriend} setIsEditProfile={setIsEditProfile} />
             <div className="bg-gray-100 relative ml-[60px] w-full">
               <div className="flex ml-[170px] mx-auto pt-5 ">
                 <div className=" w-[360px] mt-3 h-fit top-[60px] bottom-0 left-0 inset-0 sticky">
@@ -126,7 +140,7 @@ const User = () => {
                 <div className="flex-1 ml-3 flex flex-col mr-16 pb-2">
                   <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
                     <MainUserPage pageNow={pageNow} posts={posts} isLoaded={isLoaded} deleted={deleted}
-                      setIsLoaded={setIsLoaded} />
+                      setIsLoaded={setIsLoaded} edited={edited} />
                   </Scrollbars >
                 </div>
               </div>
@@ -140,10 +154,10 @@ const User = () => {
       {showMess > 0 && <Conversation />}
       {showCmt > 0 && <Comment />}
       {action === 1
-        ? <EditPost />
+        ? <EditPost setIsEdited={setIsEdited} setEditedPost={setEditedPost} isEdited={isEdited} />
         : action === 2
         && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded} />}
-
+      {isEditProfile && <EditProfile setIsEditProfile={setIsEditProfile} setEditedProfile={setEditedProfile}/>}
     </div>
   )
 }

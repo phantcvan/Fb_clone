@@ -53,7 +53,7 @@ const Feeling = ({ setUploadPost, setSelectAddOn, }: FeelingProps) => {
     return (
         <div
             className='login_box w-[450px] top-20 bottom-3 bg-white pt-4 flex flex-col
-      fixed rounded-md z-[70] h-[470px]'
+      fixed rounded-md z-[70] h-[492px]'
         >
             <div className='absolute top-2 right-2 cursor-pointer px-2'
                 onClick={() => setUploadPost(false)}>

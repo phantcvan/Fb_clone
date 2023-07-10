@@ -192,12 +192,86 @@ router.post("/notification", async (req, res) => {
     const query = `
     UPDATE tbl_users SET notification = ? WHERE id=?`;
     let data = await database.execute(query, [notification, id]);
-    console.log("123");
     res.json({
       message: "Update notification successfully",
     });
   } catch (error) {
     res.json({ error });
+  }
+});
+// Update avatar
+router.put("/updateAvatar", async (req, res) => {
+  const { id, img } = req.body;
+  console.log("id, avatar -->>", id, img);
+  try {
+    const query = `
+    UPDATE tbl_users SET avatar = ? WHERE id=?`;
+    let data = await database.execute(query, [img, id]);
+    res.json({
+      status: 200,
+      message: "Update avatar successfully",
+    });
+  } catch (error) {
+    status: 400, res.json({ error });
+  }
+});
+// Update cover
+router.put("/updateCover", async (req, res) => {
+  const { id, img } = req.body;
+  console.log("id, cover -->>", id, img);
+  try {
+    const query = `
+    UPDATE tbl_users SET cover = ? WHERE id=?`;
+    let data = await database.execute(query, [img, id]);
+    res.json({
+      status: 200,
+      message: "Update cover successfully",
+    });
+  } catch (error) {
+    status: 400, res.json({ error });
+  }
+});
+// Update user info
+router.put("/updateUser/:id", async (req, res) => {
+  console.log("req.body", req.body);
+  try {
+    const { id } = req.params;
+    const {
+      bio,
+      job,
+      highSchool,
+      college,
+      currentCity,
+      hometown,
+      relationship,
+      relationship_to,
+    } = req.body;
+
+    console.log("id, job -->>", id, job);
+
+    const query = `UPDATE tbl_users SET bio=?, job=?, highSchool=?, college=?, currentCity=?, hometown=?, relationship=?, relationship_to=? WHERE id=?`;
+
+    const data = await database.execute(query, [
+      bio,
+      job,
+      highSchool,
+      college,
+      currentCity,
+      hometown,
+      relationship,
+      relationship_to,
+      id,
+    ]);
+
+    console.log("data", data);
+
+    res.json({
+      status: 200,
+      message: "Update info successfully",
+      data,
+    });
+  } catch (error) {
+    res.json({ status: 400, error });
   }
 });
 

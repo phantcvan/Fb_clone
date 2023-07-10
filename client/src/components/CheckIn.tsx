@@ -56,7 +56,7 @@ const CheckIn = ({ setUploadPost, setSelectAddOn }: LocationProps) => {
 
     return (
             <div
-                className='login_box w-[450px] h-[470px] top-20 bottom-3 bg-white pt-4 flex flex-col
+                className='login_box w-[450px] h-[472px] top-20 bottom-3 bg-white pt-4 flex flex-col
       fixed rounded-md z-[70]'
             >
                 <div className='absolute top-2 right-2 cursor-pointer px-2'

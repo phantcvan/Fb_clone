@@ -139,6 +139,46 @@ router.post("/uploadMedia", async (req, res) => {
     res.json({ error });
   }
 });
+// Update media
+router.put("/updateMedia", async (req, res) => {
+  const id = req.params.post_id;
+
+  // const { mediaPost } = req.body;
+  // console.log("mediaPost", mediaPost);
+  try {
+    const query = `
+    SELECT * FROM tbl_media_post WHERE post_id=?`;
+    let findMedia = await database.execute(query, [req.body.post_id]);
+    console.log("findMedia", findMedia[0]);
+    if (findMedia[0].length > 0) {
+      console.log("Update Media");
+      const query = `
+      UPDATE tbl_media_post SET mediaUrl = ?, type=? WHERE post_id =?`;
+      await database.execute(query, [
+        req.body.mediaUrl,
+        req.body.type,
+        req.body.post_id,
+      ]);
+      res.json({
+        message: "Update Media successfully",
+      });
+    } else {
+      console.log("Upload Media");
+      const query = `
+      INSERT INTO tbl_media_post(post_id, mediaUrl, type) VALUES (?, ?, ?)`;
+      await database.execute(query, [
+        req.body.post_id,
+        req.body.mediaUrl,
+        req.body.type,
+      ]);
+      res.json({
+        message: "Upload Media successfully",
+      });
+    }
+  } catch (error) {
+    res.json({ error });
+  }
+});
 // Upload post
 router.post("/createPost", async (req, res) => {
   console.log("postData ID", req.body.id);

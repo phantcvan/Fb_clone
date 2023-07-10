@@ -32,13 +32,15 @@ const Home = () => {
   const [lastRequestUser, setLastRequestUser] = useState<UserType | null>(null);
   const [mutualCount, setMutualCount] = useState(0);
   const notification = useSelector(getNotification);
-  const action = useSelector(getActionPost);
+  const action: number = useSelector(getActionPost);
   // const [isEdited, setIsEdited] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
   const [posts, setPosts] = useState<PostType[]>([]);
   const [start, setStart] = useState(1);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
+  const [edited, setEdited] = useState(false);
   const editPostId = useSelector(getEditPostId);
 
 
@@ -67,7 +69,9 @@ const Home = () => {
           start,
         })
       ]);
-      setPosts((prevPosts: PostType[]) => [...prevPosts, ...postResponse?.data?.posts])
+      setPosts((prevPosts: PostType[]) => [...prevPosts, ...postResponse?.data?.posts.
+        filter((post: PostType) => post.user_id !== userNow.id)]);
+
       setIsLoaded(true);
 
       const friend = requestResponse?.data?.request?.filter((item: Relation) => item.status === 2);
@@ -141,10 +145,10 @@ const Home = () => {
           lastRequest={lastRequest} mutualCount={mutualCount} />
         {showMess > 0 && <div className="fixed bottom-0 right-16 "><Conversation /></div>}
         {showCmt > 0 && <Comment />}
-        {action === 1
-          ? <EditPost />
+        {/* {action === 1
+          ? <EditPost setIsEdited={setIsEdited} />
           : action === 2
-          && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded}/>}
+          && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded}/>} */}
       </div>
     </div>
   )

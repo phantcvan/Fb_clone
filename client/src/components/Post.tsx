@@ -11,7 +11,7 @@ import { setShowCmt, getShowCmt } from "../slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import { IoMdSend } from "react-icons/io";
 import ViewMiniProfile from "./ViewMiniProfile";
-import { UserType, PostType } from "../static/types";
+import { UserType, PostType, ReactionType } from "../static/types";
 import { getUser } from "../slices/whitelist";
 import axios from "axios";
 import { BiPencil, BiSolidLockAlt } from "react-icons/bi";
@@ -19,7 +19,7 @@ import ReactPlayer from 'react-player';
 import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { setPost, setActionPost, setEditPostId } from "../slices/postSlice";
-import { setUserPost } from "../slices/userSlice";
+import { getAllUsers, setUserPost } from "../slices/userSlice";
 import AddComment from "./AddComment";
 import { BsFillTrashFill, BsThreeDots } from "react-icons/bs";
 
@@ -33,8 +33,8 @@ interface Tag {
   last_name: string;
 }
 
+
 export default function Post({ lastCmt, post }: PostProps) {
-  const videoRef = useRef(null);
   const userNow = useSelector(getUser);
   const [showIcon, setShowIcon] = useState(false);
   // const [showProfile, setShowProfile] = useState(false);
@@ -44,17 +44,38 @@ export default function Post({ lastCmt, post }: PostProps) {
   const showCmt = useSelector(getShowCmt);
   const dispatch = useDispatch();
   const [tags, setTags] = useState([]);
+  const [reactions, setReactions] = useState<ReactionType[] | []>([]);
+  const [reactionUsers, setReactionUsers] = useState([]);
+  const [reactionsExist, setReactionsExist] = useState<string[] | []>([]);
   const navigate = useNavigate();
+  const allUsers = useSelector(getAllUsers);
+  const [userNowReaction, setUserNowReaction] = useState<ReactionType[] | []>([]);
+  const [userNowReactionImg, setUserNowReactionImg] = useState("");
 
 
   const fetchData = async () => {
     try {
-      const [userResponse, tagsResponse] = await Promise.all([
+      const [userResponse, tagsResponse, reactionResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
         axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
+        axios.get(`http://localhost:8000/api/v1/reaction/${post?.id}`)
       ]);
       setUserPosted(userResponse?.data?.user[0]);
       setTags(tagsResponse?.data?.tags);
+      setReactions(reactionResponse?.data?.reactions);
+      const uniqueReactionTypes: string[] = [...new Set((reactionResponse?.data?.reactions as ReactionType[])
+        .map(reaction => reaction.reaction_type))];
+      setReactionsExist(uniqueReactionTypes);
+      setReactionUsers(allUsers.filter((user: UserType) =>
+        reactions?.some((reaction: ReactionType) => reaction.user_id === user.id)
+      ));
+      const userReaction = reactionResponse?.data?.reactions.filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
+      if (userReaction.length > 0) {
+        setUserNowReaction(userReaction);
+        setUserNowReactionImg(Icon.Reaction
+          .find(item => item.name.toLowerCase() === userNowReaction[0]?.reaction_type.toLowerCase()).static);
+
+      }
     } catch (error) {
       console.error(error);
     }
@@ -62,6 +83,10 @@ export default function Post({ lastCmt, post }: PostProps) {
   useEffect(() => {
     fetchData()
   }, [post?.user_id]);
+  console.log("reactions", reactions)
+  console.log("userNowReaction", userNowReaction)
+  console.log("userNowReactionImg", userNowReactionImg)
+
   const styleBg = post?.bgUrl
     ? {
       background: `url(${post?.bgUrl}) no-repeat center center / cover`,
@@ -134,7 +159,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
 
         <div className=" flex flex-col">
           <div className="flex flex-row justify-between w-full">
-            <div className="flex">
+            <div className="flex flex-wrap">
               {userPosted?.id !== userNow?.id
                 ? <Tippy placement="bottom" interactive
                   render={attrs => (
@@ -180,11 +205,11 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                     {...attrs} >
                     <div className="flex flex-col">
                       <span className="hover:bg-fb-dark p-2 rounded-lg cursor-pointer flex gap-2"
-                        onClick={() => {dispatch(setActionPost(1)); dispatch(setEditPostId(post?.id))}}>
+                        onClick={() => { dispatch(setActionPost(1)); dispatch(setEditPostId(post?.id)) }}>
                         <BiPencil size={20} /> Edit post
                       </span>
                       <span className="hover:bg-fb-dark p-2 rounded-lg cursor-pointer flex gap-2"
-                        onClick={() => {dispatch(setActionPost(2)); dispatch(setEditPostId(post?.id))}}>
+                        onClick={() => { dispatch(setActionPost(2)); dispatch(setEditPostId(post?.id)) }}>
                         <BsFillTrashFill size={20} /> Delete post
                       </span>
                     </div>
@@ -241,79 +266,97 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
             height="278px" />
         </div>
       }
+      {(reactions?.length > 0)
+        && <div className="flex items-center justify-between px-4 py-[10px] ">
+          {reactions.length > 0 && (
+            <div className="flex items-center justify-center gap-2">
+              <Tippy
+                placement="bottom"
+                render={attrs => (
+                  <div className={`w-52 ml-[100px] box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                    {...attrs}>
+                    <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                      {reactionUsers?.slice(0, 10).map((user: UserType) => (
+                        <p className='py-[2px]'>{user?.first_name} {user?.last_name}</p>
+                      ))}
+                    </div>
+                  </div>)}>
+                <div className="flex items-center justify-center">
+                  {reactionsExist?.slice(0, 3).map((reaction, index) => {
+                    const reactionIcon = Icon.Reaction.find((item) =>
+                      item.name.toLowerCase() === reaction.toLowerCase()
+                    );
 
-      <div className="flex items-center justify-between px-4 py-[10px] ">
-        <div className="flex items-center justify-center gap-2">
-          <div className="flex items-center justify-center">
-            <div className="w-[20px] h-[20px] overflow-hidden z-20 rounded-full border-2 border-white">
-              <img src={Icon.Reaction[0].static} />
+                    if (reactionIcon) {
+                      return (
+                        <div
+                          key={reaction}
+                          className={`w-[20px] h-[20px] overflow-hidden z-20 rounded-full border-2 border-white`}
+                        >
+                          <img src={reactionIcon.static} alt={reaction} />
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })}
+                  <div className="text-sm ml-1 text-fb-gray-text cursor-pointer relative">
+                    {reactions?.length}
+                  </div>
+                </div>
+
+
+              </Tippy>
             </div>
-            <div className="w-[18px] h-[18px] overflow-hidden ml-[-2px] z-10 rounded-full border border-white">
-              <img src={Icon.Reaction[1].static} />
-            </div>
-            <div className="w-[18px] h-[18px] overflow-hidden ml-[-3px] rounded-full border border-white">
-              <img src={Icon.Reaction[2].static} />
-            </div>
+          )}
+
+          <div className="flex items-center justify-center gap-4">
+            <Tippy
+              placement="bottom"
+              render={attrs => (
+                <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                  {...attrs}>
+                  <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                    <p className='py-[2px]'>ViewCmtUser</p>
+                    <p className='py-[2px]'>ViewCmtUser</p>
+                    <p className='py-[2px]'>ViewCmtUser</p>
+                  </div>
+                </div>)}>
+              <div className="text-sm text-fb-gray-text mr-2">
+                <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
+              </div>
+            </Tippy>
+
+            <Tippy
+              placement="bottom"
+              render={attrs => (
+                <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                  {...attrs}>
+                  <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
+                    <p className='py-[2px]'>ViewShareUser</p>
+                    <p className='py-[2px]'>ViewShareUser</p>
+                    <p className='py-[2px]'>ViewShareUser</p>
+                  </div>
+                </div>)}>
+              <div className="text-sm text-fb-gray-text">
+                <span className="flex gap-2">45 <IoArrowRedoOutline size={18} /></span>
+              </div>
+            </Tippy>
+
           </div>
-          <Tippy
-            placement="bottom"
-            render={attrs => (
-              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
-                {...attrs}>
-                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
-                  <p className='py-[2px]'>ViewReactionUser</p>
-                  <p className='py-[2px]'>ViewReactionUser</p>
-                  <p className='py-[2px]'>ViewReactionUser</p>
-                </div>
-              </div>)}>
-            <div className="text-sm text-fb-gray-text cursor-pointer relative">
-              3,8K
-            </div>
-          </Tippy>
-
-        </div>
-        <div className="flex items-center justify-center gap-4">
-          <Tippy
-            placement="bottom"
-            render={attrs => (
-              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
-                {...attrs}>
-                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
-                  <p className='py-[2px]'>ViewCmtUser</p>
-                  <p className='py-[2px]'>ViewCmtUser</p>
-                  <p className='py-[2px]'>ViewCmtUser</p>
-                </div>
-              </div>)}>
-            <div className="text-sm text-fb-gray-text mr-2">
-              <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
-            </div>
-          </Tippy>
-
-          <Tippy
-            placement="bottom"
-            render={attrs => (
-              <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
-                {...attrs}>
-                <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
-                  <p className='py-[2px]'>ViewShareUser</p>
-                  <p className='py-[2px]'>ViewShareUser</p>
-                  <p className='py-[2px]'>ViewShareUser</p>
-                </div>
-              </div>)}>
-            <div className="text-sm text-fb-gray-text">
-              <span className="flex gap-2">45 <IoArrowRedoOutline size={18} /></span>
-            </div>
-          </Tippy>
-
-        </div>
-      </div>
+        </div>}
       <div className="grid grid-cols-3 h-11 w-[90%] mx-auto border-y border-fb-dark relative">
         <div onMouseOver={() => setShowIcon(true)} onMouseLeave={() => setShowIcon(false)}
           className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto 
          rounded">
           <div className="flex items-center gap-2">
-            <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>
-            <span>Like</span>
+            {userNowReaction.length > 0
+              ? <img className="mt-[-2px] w-5 h-5" src={userNowReactionImg} />
+              : <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>}
+            {userNowReaction.length > 0
+              ? <span>{userNowReaction[0]?.reaction_type.charAt(0).toUpperCase() + userNowReaction[0]?.reaction_type.slice(1)}</span>
+              : <span>Like</span>}
+
           </div>
           {showIcon && <Reaction />}
         </div>

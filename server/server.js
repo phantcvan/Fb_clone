@@ -6,7 +6,8 @@ const userRoutes = require("./routes/user.routes");
 const relationRoutes = require("./routes/relation.routes");
 const postRoutes = require("./routes/post.routes");
 const tagRoutes = require("./routes/tag.routes");
-const cmtRoutes = require("./routes/tag.routes");
+const cmtRoutes = require("./routes/cmt.routes");
+const reactionRoutes = require("./routes/reaction.routes");
 require("dotenv").config();
 
 const server = express();
@@ -23,6 +24,7 @@ server.use("/api/v1/relation", relationRoutes);
 server.use("/api/v1/posts", postRoutes);
 server.use("/api/v1/tag", tagRoutes);
 server.use("/api/v1/cmt", cmtRoutes);
+server.use("/api/v1/reaction", reactionRoutes);
 
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {

@@ -56,5 +56,11 @@ export interface EditPostType {
   mediaUrl?: string | null;
   type?: string | null;
 }
+export interface ReactionType {
+  id: number;
+  post_id: number;
+  user_id: number;
+  reaction_type:string
+}
 
 

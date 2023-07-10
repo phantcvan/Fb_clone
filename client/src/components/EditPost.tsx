@@ -1,6 +1,6 @@
 import "../index.css";
 import { useDispatch, useSelector } from 'react-redux';
-import { getAudience, getEditPostId, setActionPost, setAudience, setBgUrl, setContent, setEditPostId, setFeeling, setLocation, setMediaUrl, setTag, setType } from '../slices/postSlice';
+import { getAudience, getEditPostId, getTag, setActionPost, setAudience, setBgUrl, setContent, setDate, setEditPostId, setFeeling, setLocation, setMediaUrl, setTag, setType } from '../slices/postSlice';
 import { AiOutlineClose } from 'react-icons/ai';
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
@@ -16,7 +16,12 @@ import SelectAudience from "./SelectAudience";
 import { Icon } from "../static/icon";
 import { Location } from "../static/location";
 
-const EditPost = () => {
+interface EditProp {
+  setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditedPost: React.Dispatch<React.SetStateAction<PostType | []>>;
+  isEdited: boolean;
+}
+const EditPost = ({ setIsEdited, setEditedPost, isEdited }: EditProp) => {
   const dispatch = useDispatch();
   const [selectAddOn, setSelectAddOn] = useState(0);
   const navigate = useNavigate();
@@ -39,26 +44,28 @@ const EditPost = () => {
       console.log(editPost?.data?.post[0].bgUrl);
 
       if (editPost?.data?.post.length > 0) {
+        // setIsEdited(pre=>!pre);
+
         setEditPost(editPost?.data?.post);
         dispatch(setContent(editPost?.data?.post[0].content));
         dispatch(setAudience(editPost?.data?.post[0].audience));
-        dispatch(setFeeling(Icon.Feeling.filter((item)=>item.name===editPost?.data?.post[0].feeling)));
+        dispatch(setFeeling(Icon.Feeling.filter((item) => item.name === editPost?.data?.post[0].feeling)));
         setPostBgUrl(editPost?.data?.post[0].bgUrl);
-        dispatch(setLocation(Location.City.filter((item)=>item.city===editPost?.data?.post[0].location)));
+        dispatch(setLocation(Location.City.filter((item) => item.city === editPost?.data?.post[0].location)));
         dispatch(setMediaUrl(editPost?.data?.post[0].mediaUrl));
         setPreMedia(editPost?.data?.post[0].mediaUrl);
         dispatch(setType(editPost?.data?.post[0].type));
         dispatch(setTag(tagsResponse?.data?.tags));
-        setTextColor(editPost?.data?.post[0].textColor||"black")
+        dispatch(setDate(editPost?.data?.post[0].date))
+        setTextColor(editPost?.data?.post[0].textColor || "black")
       }
     } catch (error) {
       console.log(error);
     }
   }
   useEffect(() => {
-    fetchData()
+    fetchData();
   }, [])
-  console.log("selectAddOn", selectAddOn);
 
 
   return (
@@ -74,8 +81,9 @@ const EditPost = () => {
           onClick={() => { dispatch(setActionPost(0)); dispatch(setEditPostId(0)) }}>
           <AiOutlineClose size={20} />
         </div>
-        <EditMain setSelectAddOn={setSelectAddOn} postBgUrl={postBgUrl} setPostBgUrl={setPostBgUrl}
-        textColor={textColor} setTextColor={setTextColor} preMedia={preMedia}/>
+        <EditMain setSelectAddOn={setSelectAddOn} postBgUrl={postBgUrl} setPostBgUrl={setPostBgUrl} setIsEdited={setIsEdited}
+          textColor={textColor} setTextColor={setTextColor} preMedia={preMedia} setEditedPost={setEditedPost}
+          isEdited={isEdited}/>
         {selectAddOn === 1 && <SelectAudience setSelectAddOn={setSelectAddOn}
           setUploadPost={setUploadPost} />}
         {selectAddOn === 2

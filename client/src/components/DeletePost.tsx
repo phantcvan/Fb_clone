@@ -40,25 +40,26 @@ const DeletePost = ({ setIsDeleted, setIsLoaded }: DeletePost) => {
       <div className='w-[100%] h-[100%] fixed top-0 left-0 bg-overlay-40 flex items-center 
         justify-center z-[60]'
         onClick={() => { dispatch(setActionPost(0)); dispatch(setActionPost(0)) }} >
-        <div className={`login_box w-[450px] top-40 bg-white pt-4 flex flex-col items-center
+      </div>
+      <div className={`login_box w-[450px] top-40 bg-white pt-4 flex flex-col items-center
                 justify-center fixed rounded-md z-[70] `}>
-          <div className='absolute top-2 right-2 cursor-pointer p-2 rounded-full bg-fb-gray hover:bg-fb-dark'
-            onClick={() => { dispatch(setActionPost(0)); dispatch(setActionPost(0)) }}>
-            <AiOutlineClose size={20} />
-          </div>
-          <span className="font-semibold text-lg">Move to your trash?</span>
-          <div className="flex justify-center my-3 items-center gap-2">
-            <button className="hover:bg-gray-100 px-5 py-2 rounded-md text-blue-400"
-              onClick={() => { dispatch(setActionPost(0)); dispatch(setActionPost(0)) }}>
-              Cancel
-            </button>
-            <button className="bg-blue-400 text-white px-4 py-2 rounded-md"
-              onClick={handleDeletePost}>
-              Delete
-            </button>
-          </div>
-
+        <div className='absolute top-2 right-2 cursor-pointer p-2 rounded-full bg-fb-gray hover:bg-fb-dark'
+          onClick={() => { dispatch(setActionPost(0)); dispatch(setActionPost(0)) }}>
+          <AiOutlineClose size={20} />
         </div>
+        <span className="font-semibold text-lg">Move to your trash?</span>
+        <div className="flex justify-center my-3 items-center gap-2">
+          <button className="hover:bg-gray-100 px-5 py-2 rounded-md text-blue-400"
+            onClick={() => { dispatch(setActionPost(0)); dispatch(setActionPost(0)) }}>
+            Cancel
+          </button>
+          <button className="bg-blue-400 text-white px-4 py-2 rounded-md"
+            onClick={handleDeletePost}>
+            Delete
+          </button>
+        </div>
+
+
       </div>
     </div>
   )

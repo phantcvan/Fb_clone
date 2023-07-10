@@ -40,7 +40,7 @@ const ViewMiniProfile = ({ userView }: { userView: UserType | null }) => {
   // useEffect(() => {
   //   fetchDataUser()
   // }, []);
-  console.log("isFriend", isFriend);
+  // console.log("isFriend", isFriend);
   
   return (
     <div className='login_box z-40 bg-white w-[400px] mt-[-10px] rounded-md'>

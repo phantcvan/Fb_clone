@@ -132,7 +132,9 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
             console.log(error)
         }
         // Tag people
-        let tags: number[] = []
+        let tags: number[] = [];
+        console.log("tags", tags);
+
         if (tag.length > 0) {
             tags = tag.map((item: Tag) => item.id);
             try {
@@ -305,15 +307,18 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
                         onChange={(e) => setContent(e.target.value)}
                         style={styleBg}
                     ></textarea>
-                    <Scrollbars autoHide style={{ width: '100%', height: `200px`, overflow: 'hidden' }}>
-                        <div className="min-h-fit rounded-md border border-fb-dark">
-                            <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                    onClick={() => setUpload(false)}>
-                                    <AiOutlineClose size={20} />
-                                </div>
-                                {mediaType === ""
-                                    ? <div className="">
+                    <Scrollbars autoHide style={{ width: '100%', height: `150px`, overflow: 'hidden' }}>
+
+
+                        {mediaType === ""
+                            ?
+                            <div className="min-h-fit rounded-md border border-fb-dark">
+                                <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="">
                                         <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
                                             <p className="p-2 rounded-full bg-fb-gray h-12 w-12 flex items-center justify-center">
                                                 <MdAddPhotoAlternate size={24} style={{}} />
@@ -323,30 +328,43 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
                                         <input type="file" name="uploadMedia" id="uploadMedia"
                                             className="hidden" onChange={handleAddMedia} />
                                     </div>
-                                    : mediaType === "picture"
-                                        ? <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                            <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                                onClick={() => {setUpload(false);setSelectedMedia("")}}>
-                                                <AiOutlineClose size={20} />
-                                            </div>
-                                            <div className="">
-                                                <img src={previewSrc} alt="" />
-                                            </div>
-                                        </div>
-                                        : <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                            <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                                onClick={() => {setUpload(false);setSelectedMedia("")}}>
-                                                <AiOutlineClose size={20} />
-                                            </div>
-                                            <div className="">
-                                                <ReactPlayer url={previewSrc} controls
-                                                    width="100%"
-                                                    height="100%" />
-                                            </div>
-                                        </div>}
-
+                                </div>
                             </div>
-                        </div>
+                            : mediaType === "picture"
+                                ?
+                                <div className="min-h-fit rounded-md">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
+                                        <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                            onClick={() => { setUpload(false); setSelectedMedia("") }}>
+                                            <AiOutlineClose size={20} />
+                                        </div>
+                                        <div className="">
+                                            <img src={previewSrc} alt="w-full round-md" />
+                                        </div>
+                                    </div>
+                                </div>
+                                : <div className="min-h-fit rounded-md">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => { setUpload(false); setSelectedMedia("") }}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="">
+                                        <ReactPlayer url={previewSrc} controls
+                                            width="100%"
+                                            height="100%" />
+                                    </div>
+                                    </div>
+                                </div>}
+
                     </Scrollbars>
                 </div>
 
@@ -489,7 +507,7 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
                             Post
                         </button>
                         <div className="mr-3 mt-2 mb-3 flex-1 ">
-                        <CreatePostLoading/>
+                            <CreatePostLoading />
                         </div>
                     </div>
 

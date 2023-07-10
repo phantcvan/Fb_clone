@@ -1,14 +1,13 @@
 import { AiFillHeart } from "react-icons/ai";
 // import ReactPlayer from 'react-player'
-import { BsHouseFill } from "react-icons/bs";
+// import { BsHouseFill } from "react-icons/bs";
 import { MdCastConnected, MdSchool } from "react-icons/md";
-import { GiGraduateCap } from "react-icons/gi";
+// import { GiGraduateCap } from "react-icons/gi";
 import { IoLocationSharp } from "react-icons/io5";
-import Lisa from "../../assets/UserDetail/Lisa.mp4";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { getUser } from "../slices/whitelist";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { UserType, Relation } from "../static/types"
 import { BiSolidHome } from "react-icons/bi";
 import { Link } from "react-router-dom";
@@ -96,6 +95,7 @@ const follower = Math.floor(Math.random() *100)
                     </Link></strong>
                   </span>
                 ) : pageNow?.relationship === "In a relationship" && (
+                  relationship?.id &&
                   <span> with
                     <Link to={`/${relationship?.id}`}>
                       <strong className="cursor-pointer"> {relationship?.first_name} {relationship?.last_name}</strong>

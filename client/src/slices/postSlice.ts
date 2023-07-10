@@ -11,6 +11,7 @@ const initialState = {
     feeling: [],
     location: "",
     bgUrl: "",
+    date: "",
     textColor: "",
     mediaUrl: "",
     type: "",
@@ -41,6 +42,9 @@ export const postSlice = createSlice({
     },
     setFeeling: (state, action) => {
       state.newPost.feeling = action.payload;
+    },
+    setDate: (state, action) => {
+      state.newPost.date = action.payload;
     },
     setBgUrl: (state, action) => {
       state.newPost.bgUrl = action.payload;
@@ -73,7 +77,7 @@ export const postSlice = createSlice({
 
 
 export const { setPost, setAllPosts, setCreatedPost, setContent, setAudience, setBgUrl, setFeeling, setLocation,
-  setMediaUrl, setType, setTag, setActionPost, setEditPostId, setTextColor } = postSlice.actions;
+  setMediaUrl, setType, setTag, setActionPost, setEditPostId, setTextColor, setDate } = postSlice.actions;
 
 export const getPost = (state: any) => state.postInfo.post;
 export const getAllPosts = (state: any) => state.postInfo.allPosts;
@@ -81,6 +85,7 @@ export const getCreatedPost = (state: any) => state.postInfo.newPost;
 export const getContent = (state: any) => state.postInfo.newPost.content;
 export const getAudience = (state: any) => state.postInfo.newPost.audience;
 export const getFeeling = (state: any) => state.postInfo.newPost.feeling;
+export const getDate = (state: any) => state.postInfo.newPost.date;
 export const getBgUrl = (state: any) => state.postInfo.newPost.bgUrl;
 export const getTextColor = (state: any) => state.postInfo.newPost.textColor;
 export const getLocation = (state: any) => state.postInfo.newPost.location;

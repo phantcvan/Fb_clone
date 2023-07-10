@@ -14,7 +14,7 @@ import { getUser } from "../slices/whitelist";
 import Scrollbars from "react-custom-scrollbars-2";
 import ReactPlayer from "react-player";
 import axios from "axios";
-import { getAudience, getContent, getEditPostId, getFeeling, getLocation, getMediaUrl, getTag, getType, setActionPost, setAudience, setBgUrl, setContent, setCreatedPost, setFeeling, setLocation, setMediaUrl, setTag, setTextColor, setType } from "../slices/postSlice";
+import { getAudience, getContent, getDate, getEditPostId, getFeeling, getLocation, getMediaUrl, getTag, getType, setActionPost, setAudience, setBgUrl, setContent, setCreatedPost, setFeeling, setLocation, setMediaUrl, setTag, setTextColor, setType } from "../slices/postSlice";
 import CreatePostLoading from "./CreatePostLoading"
 
 interface Check {
@@ -23,11 +23,14 @@ interface Check {
 }
 interface EditPost {
     setSelectAddOn: React.Dispatch<React.SetStateAction<number>>;
+    setIsEdited: React.Dispatch<React.SetStateAction<boolean>>;
     postBgUrl: string;
     setPostBgUrl: React.Dispatch<React.SetStateAction<string>>;
     textColor: string;
     setTextColor: React.Dispatch<React.SetStateAction<string>>;
     preMedia: string;
+    setEditedPost: React.Dispatch<React.SetStateAction<PostType | []>>;
+    isEdited: boolean
 }
 interface MediaPost {
     post_id: number,
@@ -39,7 +42,7 @@ interface Tag {
     first_name: string,
     last_name: string,
 }
-const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textColor, preMedia }: EditPost) => {
+const EditMain = ({ setIsEdited, isEdited, setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textColor, preMedia, setEditedPost }: EditPost) => {
     // const [selectAudience, setSelectAudience] = useState(false);
     const userNow = useSelector(getUser);
     const [upload, setUpload] = useState(false);
@@ -60,9 +63,8 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
     const feeling = useSelector(getFeeling);
     const location = useSelector(getLocation);
     const dispatch = useDispatch();
-    const [isEdited, setIsEdited] = useState(false);
 
-    console.log("mediaType", mediaType);
+    console.log("postId", postId);
 
     useEffect(() => {
         setPreviewSrc(mediaUrl);
@@ -92,7 +94,7 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
 
 
     const handleAddPost = async () => {
-        setIsEdited(true);
+        setIsEdited(pre=>!pre);
         //     // mảng tags gồm id của user được tag
 
         // Edit Post
@@ -139,82 +141,78 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
             console.log(error)
         }
         // Tag people
-        // let tags: number[] = []
-        // if (tag.length > 0) {
-        //     tags = tag.map((item: Tag) => item.id);
-        //     try {
-        //         const [PostTagResponse] = await Promise.all([
-        //             axios.post(`http://localhost:8000/api/v1/tag`, {
-        //                 post_id: postId,
-        //                 tags: tags
-        //             })
-        //         ])
-        //         if (PostTagResponse.data.status === 200) {
-        //             console.log('Create Tags Successfully');
-        //         }
-        //         if (PostTagResponse.data.status === 400) {
-        //             console.log("Error")
-        //             // setMessage("Error");
-        //         }
-        //     } catch (error) {
-        //         console.log(error)
-        //     }
-        // }
-        //     // Upload media
-        //     let media;
-        //     if (selectedMedia) {
-        //         const formData = new FormData();
-        //         formData.append('file', selectedMedia);
-        //         formData.append('upload_preset', 'facebook');
-        //         try {
-        //             let uploadMedia;
-        //             if (mediaType === "picture") {
-        //                 uploadMedia = await axios.post('https://api.cloudinary.com/v1_1/dbs47qbrd/image/upload', formData);
-        //             } else if (mediaType === "video") {
-        //                 uploadMedia = await axios.post('https://api.cloudinary.com/v1_1/dbs47qbrd/video/upload', formData);
-        //             } else {
-        //                 // Xử lý khi mediaType không hợp lệ
-        //                 console.log("Invalid mediaType");
-        //                 return;
-        //             }
-        //             media = uploadMedia.data.secure_url;
-        //             dispatch(setMediaUrl(media));
-        //             const mediaPost: MediaPost = {
-        //                 post_id: idPost,
-        //                 mediaUrl: media,
-        //                 type: mediaType
-        //             }
-        //             // if (mediaUrl) {
-        //             //     mediaPost.mediaUrl = mediaUrl;
-        //             // }
-        //             try {
-        //                 const [uploadResponse] = await Promise.all([
-        //                     axios.post(`http://localhost:8000/api/v1/posts/uploadMedia`, mediaPost),
-        //                 ])
-        //                 if (uploadResponse.data.status === 200) {
-        //                     console.log('Upload Media Successfully');
-        //                 }
-        //                 if (uploadResponse.data.status === 400) {
-        //                     // setMessage("Error");
-        //                 }
-        //             } catch (error) {
-        //                 console.log(error)
-        //             }
-        //         } catch (error) {
-        //             console.error('Error uploading file:', error);
-        //         }
-        //     }
+        let tags: number[] = []
+        if (tag.length > 0) {
+            tags = tag.map((item: Tag) => item.id);
+            try {
+                const [PostTagResponse] = await Promise.all([
+                    axios.put(`http://localhost:8000/api/v1/tag`, {
+                        post_id: postId,
+                        tags: tags
+                    })
+                ])
+                if (PostTagResponse.data.status === 200) {
+                    console.log('Create Tags Successfully');
+                }
+                if (PostTagResponse.data.status === 400) {
+                    console.log("Error")
+                    // setMessage("Error");
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        // Upload media
+        let media;
+        if (selectedMedia) {
+            const formData = new FormData();
+            formData.append('file', selectedMedia);
+            formData.append('upload_preset', 'facebook');
+            try {
+                let uploadMedia;
+                if (mediaType === "picture") {
+                    uploadMedia = await axios.post('https://api.cloudinary.com/v1_1/dbs47qbrd/image/upload', formData);
+                } else if (mediaType === "video") {
+                    uploadMedia = await axios.post('https://api.cloudinary.com/v1_1/dbs47qbrd/video/upload', formData);
+                } else {
+                    // Xử lý khi mediaType không hợp lệ
+                    console.log("Invalid mediaType");
+                    return;
+                }
+                media = uploadMedia.data.secure_url;
+                dispatch(setMediaUrl(media));
+                const mediaPost: MediaPost = {
+                    post_id: postId,
+                    mediaUrl: media,
+                    type: mediaType
+                }
+                // if (mediaUrl) {
+                //     mediaPost.mediaUrl = mediaUrl;
+                // }
+                try {
+                    const [uploadResponse] = await Promise.all([
+                        axios.put(`http://localhost:8000/api/v1/posts/updateMedia`, mediaPost),
+                    ])
+                    if (uploadResponse.data.status === 200) {
+                        console.log('Upload Media Successfully');
+                    }
+                    if (uploadResponse.data.status === 400) {
+                        // setMessage("Error");
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+        }
 
-        //     const newPost = postData;
-        //     newPost.mediaUrl = media;
-        //     newPost.type = mediaType;
-        //     dispatch(setCreatedPost(newPost));
         dispatch(setActionPost(0));
-        //     dispatch(setAudience("public"));
-        //     dispatch(setTag([]));
-        //     dispatch(setFeeling([]));
-        //     dispatch(setLocation(""));
-        //     dispatch(setBgUrl(""));
+        dispatch(setAudience("public"));
+        dispatch(setTag([]));
+        dispatch(setFeeling([]));
+        dispatch(setLocation(""));
+        dispatch(setBgUrl(""));
         //     // dispatch(setTextColor(""));
         //     // dispatch(setMediaUrl(""));
         //     // dispatch(setType(""));
@@ -308,20 +306,21 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
             {/* mediaType===video-> player, mediaType===picture -> img */}
             {upload
                 ? <div className="gap-3 m-3 relative flex flex-col items-center justify-center">
-                    <textarea name="myTextarea" id="myTextarea" rows={2} placeholder={`What's on your mind, ${userNow.first_name}?`}
+                    <textarea name="myTextarea" id="myTextarea" rows={1} placeholder={`What's on your mind, ${userNow.first_name}?`}
                         className={`text-xl px-2 w-full outline-none resize-none flex items-center justify-center`}
                         onChange={(e) => setContent(e.target.value)}
                         style={styleBg}
                     ></textarea>
-                    <Scrollbars autoHide style={{ width: '100%', height: `200px`, overflow: 'hidden' }}>
-                        <div className="min-h-fit rounded-md border border-fb-dark">
-                            <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                    onClick={() => setUpload(false)}>
-                                    <AiOutlineClose size={20} />
-                                </div>
-                                {mediaType === ""
-                                    ? <div className="">
+                    <Scrollbars autoHide style={{ width: '100%', height: `150px`, overflow: 'hidden' }}>
+
+                        {mediaType === ""
+                            ? <div className="min-h-fit rounded-md border border-fb-dark">
+                                <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="">
                                         <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
                                             <p className="p-2 rounded-full bg-fb-gray h-12 w-12 flex items-center justify-center">
                                                 <MdAddPhotoAlternate size={24} style={{}} />
@@ -331,34 +330,41 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
                                         <input type="file" name="uploadMedia" id="uploadMedia"
                                             className="hidden" onChange={handleAddMedia} />
                                     </div>
-                                    : mediaType === "picture"
-                                        ? <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                            <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                                onClick={() => { setUpload(false); setSelectedMedia(""); dispatch(setType("")); dispatch(setMediaUrl("")) }}>
-                                                <AiOutlineClose size={20} />
-                                            </div>
-                                            <div className="">
-                                                <img src={previewSrc} alt="" />
-                                            </div>
-                                        </div>
-                                        : <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
-                                            <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                                onClick={() => { setUpload(false); setSelectedMedia(""); dispatch(setType("")); dispatch(setMediaUrl("")) }}>
-                                                <AiOutlineClose size={20} />
-                                            </div>
-                                            <div className="">
-                                                <ReactPlayer url={previewSrc} controls
-                                                    width="100%"
-                                                    height="100%" />
-                                            </div>
-                                        </div>}
-
+                                </div>
                             </div>
-                        </div>
+                            : mediaType === "picture"
+                                ?
+                                <div className="min-h-fit rounded-md">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="w-full m-1 hover:bg-gray-100 rounded-md h-[150px] flex items-center justify-center">
+                                        <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                            onClick={() => { setUpload(false); setSelectedMedia(""); dispatch(setType("")); dispatch(setMediaUrl("")) }}>
+                                            <AiOutlineClose size={20} />
+                                        </div>
+                                        <div className="">
+                                            <img src={previewSrc} alt="" className="w-full rounded-md" />
+                                        </div>
+                                    </div>
+                                </div>
+                                : mediaType === "video"
+                                && <div className="min-h-fit rounded-md">
+                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                        onClick={() => setUpload(false)}>
+                                        <AiOutlineClose size={20} />
+                                    </div>
+                                    <div className="">
+                                        <ReactPlayer url={previewSrc} controls
+                                            width="100%"
+                                            height="100%" />
+                                    </div>
+                                </div>}
                     </Scrollbars>
                 </div >
                 : <div className="gap-3 m-3 relative flex items-center justify-center">
-                    <textarea name="myTextarea" id="myTextarea" rows={7} placeholder={`What's on your mind, ${userNow.first_name}?`}
+                    <textarea name="myTextarea" id="myTextarea" rows={5} placeholder={`What's on your mind, ${userNow.first_name}?`}
                         className={`text-xl px-2 w-full outline-none resize-none flex items-center justify-center`}
                         onChange={(e) => dispatch(setContent(e.target.value))}
                         style={styleBg} value={content}>
@@ -375,7 +381,7 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
                                 >
                                     <div className="w-[38px] h-[38px] rounded-lg border-2 border-fb-gray bg-white"
                                         onClick={() => {
-                                            setPostBgUrl("");
+                                            setPostBgUrl(""); dispatch(setBgUrl('')); dispatch(setType(''))
                                             setPostBg(-1); setTextColor("black")
                                         }} >
                                         <div className="bg-fb-gray w-[34px] h-[34px] rounded-lg border-2 border-white "></div>
@@ -424,18 +430,31 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
                                 <TbPhotoFilled style={{ color: "#D9D9D9", cursor: "not-allowed" }} size={24} />
                             </div>
                         </Tippy>
-                        : <Tippy
-                            render={attrs => (
-                                <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
-                                    {...attrs}>
-                                    Photo/video
-                                </div>)}>
-                            <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
+                        : mediaUrl
+                            ? <Tippy
+                                render={attrs => (
+                                    <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                                        {...attrs}>
+                                        Photo/video
+                                    </div>)}>
+                                <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
                     ${mediaUrl ? "bg-[#D8E4CA] hover:bg-[#D8E4CA]" : "hover:bg-fb-gray"} `}
-                                onClick={() => setUpload(true)}>
-                                <TbPhotoFilled style={{ color: "#45BD62", cursor: "pointer" }} size={24} />
-                            </div>
-                        </Tippy>}
+                                    onClick={() => { setUpload(true) }}>
+                                    <TbPhotoFilled style={{ color: "#45BD62", cursor: "pointer" }} size={24} />
+                                </div>
+                            </Tippy>
+                            : <Tippy
+                                render={attrs => (
+                                    <div className={`box addOn-box  py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                                        {...attrs}>
+                                        Photo/video
+                                    </div>)}>
+                                <div className={`w-9 h-9 relative rounded-full flex items-center justify-center mx-1
+                ${mediaUrl ? "bg-[#D8E4CA] hover:bg-[#D8E4CA]" : "hover:bg-fb-gray"} `}
+                                    onClick={() => { setUpload(true); dispatch(setType("")); dispatch(setMediaUrl("")) }}>
+                                    <TbPhotoFilled style={{ color: "#45BD62", cursor: "pointer" }} size={24} />
+                                </div>
+                            </Tippy>}
 
                     <Tippy
                         render={attrs => (
@@ -480,18 +499,18 @@ const EditMain = ({ setSelectAddOn, postBgUrl, setPostBgUrl, setTextColor, textC
                 content || (feeling.length > 0 || tag.length > 0 || location.length > 0 || selectedMedia)
                     ? isEdited
                         ? <div className="flex justify-between items-center w-full">
-                            <button className={`w-[85%] mt-2 mb-3 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}>
-                                Save
-                            </button>
-                            <div className="mr-3 mt-2 mb-3 flex-1 ">
-                                <CreatePostLoading />
-                            </div>
-                        </div>
-
-                        : <button className={`mt-2 mb-3 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}
-                            onClick={handleAddPost}>
+                        <button className={`w-[85%] mt-2 mb-3 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}
+                        onClick={handleAddPost}>
                             Save
                         </button>
+                        <div className="mr-3 mt-2 mb-3 flex-1 ">
+                            <CreatePostLoading />
+                        </div>
+                    </div>
+                        : <button className={`mt-2 mb-3 bg-fb-blue mx-3 text-white py-[6px] rounded-md font-semibold cursor-pointer`}
+                        onClick={handleAddPost}>
+                        Save
+                    </button>
                     : <button className={`mt-2 mb-3 mx-3 py-[6px] rounded-md font-semibold bg-gray-100 text-fb-dark cursor-not-allowed`}>
                         Save
                     </button>

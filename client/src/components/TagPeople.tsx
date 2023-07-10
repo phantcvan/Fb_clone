@@ -28,7 +28,6 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
 
 
     const handleAddTag = (user: UserType) => {
-        const username = user.first_name + " " + user.last_name;
         const selectedTag = {
             id: user.id,
             first_name: user.first_name,
@@ -59,7 +58,7 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
 
         <div
             className='login_box w-[450px] top-20 bg-white pt-4 flex flex-col
-      fixed rounded-md z-[80] h-[470px]'
+      fixed rounded-md z-[80] h-[492px]'
         >
             <div className='absolute top-2 right-2 cursor-pointer px-2'
                 onClick={() => { setUploadPost(false) }}>
@@ -116,7 +115,7 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
 
                 {/* Danh sách gợi ý */}
                 <span className="mt-2 text-fb-gray-text font-semibold">SUGGESTIONS</span>
-                <Scrollbars autoHide style={{ width: '100%', height: `${tag.length !== 0 ? '153px' : '253px'}`, overflow: 'hidden' }}>
+                <Scrollbars autoHide style={{ width: '100%', height: `${newTag.length !== 0 ? '253px' : '353px'}`, overflow: 'hidden' }}>
                     <div >
                         {relation.length > 0 &&
                             relation.map((friend: UserType, index: number) => (

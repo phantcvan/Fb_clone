@@ -23,7 +23,7 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
   if (userId) {
     pageId = Number(userId);
   }
-  console.log(pageId);
+  // console.log(pageId);
   useEffect(() => {
     if (pageId !== userNow.id) {
       setPickMenu(3);
