@@ -9,7 +9,7 @@ import HeaderUser from '../components/HeaderUser';
 import Introduction from '../components/Introduction';
 import { useEffect, useState } from "react";
 import axios from 'axios';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { PostType, Relation, UserType } from "../static/types"
 import UserPhoto from '../components/UserPhoto';
 import { CategoryItems } from "../static/menu";
@@ -19,7 +19,7 @@ import Loading from '../components/Loading';
 import EditPost from '../components/EditPost';
 import DeletePost from '../components/DeletePost';
 import { getActionPost, getEditPostId } from '../slices/postSlice';
-import { getAllUsers, setRelation } from '../slices/userSlice';
+import { getAllUsers, setFriendRequest, setMyRequest, setRelation } from '../slices/userSlice';
 import EditProfile from '../components/EditProfile/EditProfile';
 
 
@@ -33,7 +33,7 @@ const User = () => {
   const [pageNow, setPageNow] = useState<UserType | null>(null);
   const [relationship, setRelationship] = useState<UserType | null>(null);
   const [isFriend, setIsFriend] = useState(false);
-  const [friends, setFriends] = useState([]);
+  const [friends, setFriends] = useState<UserType[] | []>([]);
   const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const action = useSelector(getActionPost);
@@ -47,8 +47,17 @@ const User = () => {
   const [editedPost, setEditedPost] = useState<PostType | []>([]);
   const [isEditProfile, setIsEditProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState(false);
+  const navigate = useNavigate();
 
 
+
+  const checkIfNumber = (str: any) => {
+    return /^\d+$/.test(str);
+  }
+  const checkExistPageId = allUsers?.filter((user: UserType) => user.id === pageId)
+  if (!checkIfNumber(userId) || checkExistPageId.length === 0) {
+    navigate("/");
+  }
 
 
   const fetchDataUser = async () => {
@@ -62,11 +71,14 @@ const User = () => {
         }),
         axios.get(`http://localhost:8000/api/v1/posts/loadPostsBelongToUser/${pageId}`),
         axios.get(`http://localhost:8000/api/v1/relation/${userNow.id}`),
-
       ]);
       const friend = relationResponse?.data?.request?.filter((item: Relation) => item.status === 2);
       const idsFromRelation = friend?.map((item: Relation) => [item.request_id, item.accept_id])
         .flat().filter((id: number) => id !== userNow.id);
+      const filteredObjects = relationResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.accept_id === userNow.id);
+      const myRequest = relationResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.request_id === userNow.id);
+      if (myRequest.length > 0) dispatch(setMyRequest(myRequest))
+      if (filteredObjects.length > 0) dispatch(setFriendRequest(filteredObjects));
       dispatch(setRelation(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id))));
       setPageNow(userResponse?.data?.user[0]);
       setFriends(listFriendsResponse?.data?.friends);
@@ -89,7 +101,7 @@ const User = () => {
   }
 
   useEffect(() => {
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     fetchDataUser();
   }, [userId, userNow, isDeleted, isEdited, editedProfile]);
   useEffect(() => {
@@ -105,6 +117,11 @@ const User = () => {
   }, [isEdited])
   // console.log("isEdited",isEdited);
 
+  const totalStyle = "w-full ml-[60px] mr-[95px]"
+  const subTotalStyle = "ml-[170px] mx-auto mr-56"
+  const coverStyle = "px-[170px] h-[350px] rounded-md mr-12 object-cover w-full"
+  const avatarStyle = "absolute bottom-[7px] left-8 border-4 border-white rounded-full bg-white"
+  const divAdd = "w-[210px]"
 
   return (
     <div className='bg-white relative'>
@@ -113,7 +130,9 @@ const User = () => {
         ? <div className="flex w-[100%] bg-white">
           <SmallSidebar userNow={userNow} />
           <div className='flex flex-col'>
-            <HeaderUser pageNow={pageNow} friends={friends} isFriend={isFriend} setIsEditProfile={setIsEditProfile} />
+            <HeaderUser pageNow={pageNow} friends={friends} setIsEditProfile={setIsEditProfile}
+              totalStyle={totalStyle} avatarStyle={avatarStyle} coverStyle={coverStyle} divAdd={divAdd}
+              subTotalStyle={subTotalStyle} setFriends={setFriends} />
             <div className="bg-gray-100 relative ml-[60px] w-full">
               <div className="flex ml-[170px] mx-auto pt-5 ">
                 <div className=" w-[360px] mt-3 h-fit top-[60px] bottom-0 left-0 inset-0 sticky">
@@ -157,7 +176,7 @@ const User = () => {
         ? <EditPost setIsEdited={setIsEdited} setEditedPost={setEditedPost} isEdited={isEdited} />
         : action === 2
         && <DeletePost setIsDeleted={setIsDeleted} setIsLoaded={setIsLoaded} />}
-      {isEditProfile && <EditProfile setIsEditProfile={setIsEditProfile} setEditedProfile={setEditedProfile}/>}
+      {isEditProfile && <EditProfile setIsEditProfile={setIsEditProfile} setEditedProfile={setEditedProfile} />}
     </div>
   )
 }

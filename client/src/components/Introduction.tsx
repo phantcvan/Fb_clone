@@ -90,14 +90,14 @@ const follower = Math.floor(Math.random() *100)
               {relationship?.relationship_to !== 0 ? (
                 pageNow?.relationship === "Married" ? (
                   <span> to <strong>
-                    <Link to={`/${relationship?.id}`}>
+                    <Link to={`/user/${relationship?.id}`}>
                       {relationship?.first_name} {relationship?.last_name}
                     </Link></strong>
                   </span>
                 ) : pageNow?.relationship === "In a relationship" && (
                   relationship?.id &&
                   <span> with
-                    <Link to={`/${relationship?.id}`}>
+                    <Link to={`/user/${relationship?.id}`}>
                       <strong className="cursor-pointer"> {relationship?.first_name} {relationship?.last_name}</strong>
                     </Link>
 

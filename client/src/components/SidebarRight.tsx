@@ -1,11 +1,12 @@
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { UserType, Relation } from "../static/types"
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { getShowMess, setShowMess } from "../slices/appSlice"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from "react";
 import moment from "moment";
+import "../index.css"
 
 
 
@@ -20,9 +21,13 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
     const showMess = useSelector(getShowMess);
     const dispatch = useDispatch();
     const [answer, setAnswer] = useState(false);
-    // console.log("contact", contact);
+    const navigate = useNavigate()
+    console.log("lastRequestUser", lastRequestUser);
     const handleAddFriend = () => {
-        axios.put(`http://localhost:8000/api/v1/relation/accept/${lastRequest?.id}`)
+        axios.put(`http://localhost:8000/api/v1/relation/accept`, {
+            request_id: lastRequest?.id,
+            accept_id: userNow?.id
+        })
             .then(response => {
                 dispatch(setShowMess(lastRequest?.id))
                 console.log('API call successful:', response.data);
@@ -33,7 +38,12 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
             });
     };
     const handleRejectFriend = () => {
-        axios.delete(`http://localhost:8000/api/v1/relation/${lastRequest?.id}`)
+        axios.delete(`http://localhost:8000/api/v1/relation/cancelRequest`, {
+            data: {
+                accept_id: userNow?.id,
+                request_id: lastRequestUser?.id
+            },
+        })
             .then(response => {
                 console.log('API call successful:', response.data);
                 setAnswer(true);
@@ -54,17 +64,18 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
                         <div className="px-5 w-[100%] my-2">
                             <div className="w-[100%] flex justify-between mt-3 mb-2 p-2">
                                 <span className="text-base font-semibold">Friend requests</span>
-                                <span className="text-fb-blue cursor-pointer">See all</span>
+                                <span className="text-fb-blue cursor-pointer"
+                                    onClick={() => navigate("/friends")}>See all</span>
                             </div>
                             <div className="flex items-start rounded-md px-2">
-                                <Link to={`/${lastRequestUser.id}`}>
+                                <Link to={`/user/${lastRequestUser.id}`}>
                                     <img src={lastRequestUser.avatar} alt=""
                                         className="w-14 h-14 rounded-full object-cover overflow-hidden cursor-pointer" />
                                 </Link>
                                 <div className="flex flex-col gap-2 w-[calc(100%-68px)] ml-3">
                                     <div className="flex flex-row justify-between">
                                         <div className="flex flex-col">
-                                            <Link to={`/${lastRequestUser.id}`}>
+                                            <Link to={`/user/${lastRequestUser.id}`}>
                                                 <span className="font-semibold mb-1 cursor-pointer">
                                                     {lastRequestUser.first_name} {lastRequestUser.last_name}
                                                 </span>
@@ -74,16 +85,21 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
                                             </span>}
 
                                         </div>
-                                        <span className="text-fb-gray-text">
-                                            {timeRequest}d ago
-                                        </span>
+                                        {timeRequest > 0
+                                            ? <span className="text-fb-gray-text text-xs">
+                                                {timeRequest}d ago
+                                            </span>
+                                            : <span className="text-fb-gray-text text-xs">
+                                                {moment(lastRequest?.date_request).fromNow()}
+                                            </span>}
+
                                     </div>
                                     <div className="flex justify-between font-semibold">
-                                        <button className="bg-blue-400 text-white px-4 py-2 rounded-md"
+                                        <button className="btn-primary"
                                             onClick={handleAddFriend}>
                                             Confirm
                                         </button>
-                                        <button className="bg-gray-100 hover:bg-fb-gray px-5 py-2 rounded-md"
+                                        <button className="btn-reject"
                                             onClick={handleRejectFriend}>
                                             Delete
                                         </button>

@@ -35,7 +35,7 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                         </div>
                         <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === 2 ? "border-fb-blue" : "border-white"}`}
                             onClick={() => setPick(2)}>
-                            <Link to={`/${userNow.id}`}>
+                            <Link to={`/user/${userNow.id}`}>
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
                                     <img src={userNow.avatar} alt="avatar"
                                         className="w-6 h-6 rounded-full object-cover overflow-hidden " />

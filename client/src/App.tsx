@@ -10,6 +10,7 @@ import { getAllUsers, setAllUsers } from "./slices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Search from "./pages/Search";
+import Friends from "./pages/Friends";
 
 
 
@@ -40,12 +41,13 @@ function App() {
         <Routes>
           <Route path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
-            <Route path="/:userId" element={<User />} />
+            <Route path="/user/:userId" element={<User />} />
             {/* <Route path="/user" element={<User />} /> */}
-            <Route path="/login" element={<Login />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/friends" element={<Friends />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="*" element={<NotFound />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>

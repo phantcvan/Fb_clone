@@ -220,7 +220,7 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
     // console.log("mediaUrl", mediaUrl);
 
     const handleClickTag = (id: number) => {
-        navigate(`/${id}`)
+        navigate(`/user/${id}`)
     }
     // Nếu người dùng chọn background
     const styleBg = postBgUrl

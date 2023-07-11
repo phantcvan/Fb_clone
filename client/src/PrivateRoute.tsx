@@ -7,6 +7,8 @@ import { setNotification } from "./slices/userSlice";
 
 const PrivateRoute = () => {
   const { userId } = useParams();
+  // console.log("Params", userId);
+  
   const navigate = useNavigate();
   const user = useSelector(getUser);
   const token = localStorage.getItem("authToken");
@@ -21,7 +23,7 @@ const PrivateRoute = () => {
         dispatch(setNotification(usersResponse?.data?.findUser[0]?.notification));
         if (userId) {
           if (usersResponse?.data?.findUser[0]) {
-              navigate(`/${userId}`);
+              navigate(`/user/${userId}`);
               dispatch(setNotification(usersResponse?.data?.findUser[0].notification))
           }
       } else if (usersResponse?.data?.findUser[0]) navigate("/");

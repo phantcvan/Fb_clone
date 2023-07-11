@@ -49,19 +49,27 @@ export default function Post({ lastCmt, post }: PostProps) {
   const [reactionsExist, setReactionsExist] = useState<string[] | []>([]);
   const navigate = useNavigate();
   const allUsers = useSelector(getAllUsers);
-  const [userNowReaction, setUserNowReaction] = useState<ReactionType[] | []>([]);
+  const [userNowReaction, setUserNowReaction] = useState("");
   const [userNowReactionImg, setUserNowReactionImg] = useState("");
 
 
   const fetchData = async () => {
     try {
-      const [userResponse, tagsResponse, reactionResponse] = await Promise.all([
+      const [userResponse, tagsResponse,] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
         axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
-        axios.get(`http://localhost:8000/api/v1/reaction/${post?.id}`)
       ]);
       setUserPosted(userResponse?.data?.user[0]);
       setTags(tagsResponse?.data?.tags);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const fetchDataReaction = async () => {
+    try {
+      const [reactionResponse] = await Promise.all([
+        axios.get(`http://localhost:8000/api/v1/reaction/${post?.id}`)
+      ]);
       setReactions(reactionResponse?.data?.reactions);
       const uniqueReactionTypes: string[] = [...new Set((reactionResponse?.data?.reactions as ReactionType[])
         .map(reaction => reaction.reaction_type))];
@@ -71,21 +79,63 @@ export default function Post({ lastCmt, post }: PostProps) {
       ));
       const userReaction = reactionResponse?.data?.reactions.filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
       if (userReaction.length > 0) {
-        setUserNowReaction(userReaction);
+        setUserNowReaction(userReaction[0]?.reaction_type);
         setUserNowReactionImg(Icon.Reaction
-          .find(item => item.name.toLowerCase() === userNowReaction[0]?.reaction_type.toLowerCase()).static);
-
+          .find(item => item.name.toLowerCase() === userReaction[0]?.reaction_type).static);
       }
     } catch (error) {
       console.error(error);
     }
   }
   useEffect(() => {
-    fetchData()
+    fetchData();
+    fetchDataReaction()
   }, [post?.user_id]);
-  console.log("reactions", reactions)
-  console.log("userNowReaction", userNowReaction)
-  console.log("userNowReactionImg", userNowReactionImg)
+  // useEffect(() => {
+  //   fetchDataReaction();
+  // }, [userNowReaction])
+  const handleDeleteReaction = async () => {
+    try {
+      const [reactionResponse] = await Promise.all([
+        axios.delete(`http://localhost:8000/api/v1/reaction/${post?.id}`, {
+          data: { user_id: userNow?.id },
+        }),
+      ]);
+      setUserNowReaction("");
+      setUserNowReactionImg("");
+      setShowIcon(false);
+      const reactionArr = reactions.filter(r => r.user_id !== userNow?.id);
+      setReactions(reactionArr);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const handleAddReaction = async () => {
+    try {
+      const [reactionResponse] = await Promise.all([
+        axios.post(`http://localhost:8000/api/v1/reaction/${post?.id}`, {
+          user_id: userNow.id,
+          reaction_type: "like",
+        })
+      ]);
+      setUserNowReaction("like");
+      setUserNowReactionImg("/assets/reactions/like_s.png");
+      setShowIcon(false);
+      const id = Math.floor(Math.random() * 10000000000)
+      const newReaction = {
+        id: id,
+        post_id: post?.id,
+        user_id: userNow?.id,
+        reaction_type: "like"
+      }
+      setReactions((pre) => [...pre, newReaction])
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  // console.log("reactions", reactions)
+  // console.log("userNowReaction", userNowReaction)
+  // console.log("userNowReactionImg", userNowReactionImg)
 
   const styleBg = post?.bgUrl
     ? {
@@ -111,7 +161,7 @@ export default function Post({ lastCmt, post }: PostProps) {
     }
   }
   const handleClickTag = (id: number) => {
-    navigate(`/${id}`)
+    navigate(`/user/${id}`)
   }
   // console.log("tags", tags);
 
@@ -126,7 +176,7 @@ export default function Post({ lastCmt, post }: PostProps) {
                 {...attrs} >
                 <ViewMiniProfile userView={userPosted} />
               </div>)}>
-            <Link to={`/${post?.user_id}`}>
+            <Link to={`/user/${post?.user_id}`}>
               <div
                 className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
 justify-center cursor-pointer overflow-hidden`}
@@ -141,7 +191,7 @@ justify-center cursor-pointer overflow-hidden`}
               </div>
             </Link >
           </Tippy >
-          : <Link to={`/${post?.user_id}`}>
+          : <Link to={`/user/${post?.user_id}`}>
             <div
               className={`w-10 h-10 border-[3px] box-content border-fb-blue rounded-full flex items-center
 justify-center cursor-pointer overflow-hidden`}
@@ -167,13 +217,13 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                       {...attrs} >
                       <ViewMiniProfile userView={userPosted} />
                     </div>)}>
-                  <Link to={`/${post?.user_id}`}>
+                  <Link to={`/user/${post?.user_id}`}>
                     <span className="font-semibold text-[15px] cursor-pointer">
                       {userPosted?.first_name} {userPosted?.last_name}
                     </span>
                   </Link >
                 </Tippy>
-                : <Link to={`/${post?.user_id}`}>
+                : <Link to={`/user/${post?.user_id}`}>
                   <div className="font-semibold text-[15px] cursor-pointer">
                     <span>{userPosted?.first_name} {userPosted?.last_name} </span>
                   </div>
@@ -185,7 +235,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 <span>
                   &nbsp;with{" "}
                   {tags?.map((item: Tag) => (
-                    <Link to={`/${item?.id}`}>
+                    <Link to={`/user/${item?.id}`}>
                       <span key={item?.id} onClick={() => handleClickTag(item.id)} className="cursor-pointer hover:underline font-semibold">
                         {item.first_name} {item.last_name}
                       </span>
@@ -262,7 +312,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         (post?.mediaUrl && post?.type === "video")
         && <div className="w-full overflow-hidden flex items-center object-cover" >
           <ReactPlayer url={post?.mediaUrl} controls
-            width="500px"
+            width="100%"
             height="278px" />
         </div>
       }
@@ -270,6 +320,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         && <div className="flex items-center justify-between px-4 py-[10px] ">
           {reactions.length > 0 && (
             <div className="flex items-center justify-center gap-2">
+              {/* Số lượng reaction */}
               <Tippy
                 placement="bottom"
                 render={attrs => (
@@ -291,7 +342,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                       return (
                         <div
                           key={reaction}
-                          className={`w-[20px] h-[20px] overflow-hidden z-20 rounded-full border-2 border-white`}
+                          className={`w-[20px] h-[20px] overflow-hidden rounded-full ml-[-2px]`}
                         >
                           <img src={reactionIcon.static} alt={reaction} />
                         </div>
@@ -311,6 +362,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           )}
 
           <div className="flex items-center justify-center gap-4">
+            {/* Số lượng cmt */}
             <Tippy
               placement="bottom"
               render={attrs => (
@@ -326,7 +378,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
               </div>
             </Tippy>
-
+            {/* Số lượng share */}
             <Tippy
               placement="bottom"
               render={attrs => (
@@ -346,19 +398,27 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </div>
         </div>}
       <div className="grid grid-cols-3 h-11 w-[90%] mx-auto border-y border-fb-dark relative">
+        {/* Reaction của userNow */}
         <div onMouseOver={() => setShowIcon(true)} onMouseLeave={() => setShowIcon(false)}
           className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto 
-         rounded">
+         rounded hover:bg-gray-100">
+          {userNowReaction
+            ? <div className="flex items-center gap-2"
+              onClick={handleDeleteReaction}>
+              <img className="mt-[-2px] w-5 h-5" src={userNowReactionImg} />
+              <span>{userNowReaction.charAt(0).toUpperCase() + userNowReaction.slice(1)}</span>
+            </div>
+            : <div className="flex items-center gap-2"
+              onClick={handleAddReaction}>
+              <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>
+              <span>Like</span>
+            </div>}
           <div className="flex items-center gap-2">
-            {userNowReaction.length > 0
-              ? <img className="mt-[-2px] w-5 h-5" src={userNowReactionImg} />
-              : <span className="mt-[-2px]"><AiOutlineLike size={18} /></span>}
-            {userNowReaction.length > 0
-              ? <span>{userNowReaction[0]?.reaction_type.charAt(0).toUpperCase() + userNowReaction[0]?.reaction_type.slice(1)}</span>
-              : <span>Like</span>}
 
           </div>
-          {showIcon && <Reaction />}
+          {showIcon &&
+            <Reaction setUserNowReaction={setUserNowReaction} setUserNowReactionImg={setUserNowReactionImg}
+              postId={post.id} userNowReaction={userNowReaction} setReactions={setReactions} />}
         </div>
         <div className="flex items-center justify-center gap-2 cursor-pointer py-2 h-[80%] my-auto rounded">
           <div className="flex items-center gap-2">
@@ -377,7 +437,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
       {
         lastCmt ? <div>
           <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
-            <Tippy placement="bottom"
+            <Tippy placement="bottom" interactive
               render={attrs => (
                 <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
                   {...attrs} >
@@ -402,7 +462,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
             </span>
             <span className="font-semibold text-xs text-fb-dark-1">Reply</span>
             <span className="font-semibold text-xs text-fb-dark-1">2h</span>
-            {showIconCmt && <Reaction />}
+            {/* {showIconCmt && <Reaction />} */}
           </div>
           {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
             <span className="font-semibold text-xs text-fb-dark-1">

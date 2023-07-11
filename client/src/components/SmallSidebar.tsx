@@ -55,7 +55,7 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             {...attrs} >
             Your profile
           </div>)}>
-          <Link to={`/${userNow?.id}`}>
+          <Link to={`/user/${userNow?.id}`}>
         <div className={`border-l-4 px-5 py-2 ${pickMenu === 2 ? "border-fb-blue" : "border-white"}`}
           onClick={() => setPickMenu(2)}>
           <div className="h-6 w-6 rounded-full overflow-hidden object-cover">

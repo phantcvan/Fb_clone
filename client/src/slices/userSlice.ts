@@ -4,7 +4,9 @@ const initialState = {
   allUsers: null,
   relation: [],
   notification: 0,
-  userPost: null
+  userPost: null,
+  friendRequest: [],
+  myRequest: [],
 };
 
 export const userSlice = createSlice({
@@ -23,14 +25,22 @@ export const userSlice = createSlice({
     setUserPost: (state, action) => {
       state.userPost = action.payload;
     },
+    setFriendRequest: (state, action) => {
+      state.friendRequest = action.payload;
+    },
+    setMyRequest: (state, action) => {
+      state.myRequest = action.payload;
+    },
   },
 });
 
-export const { setAllUsers, setRelation, setNotification, setUserPost } = userSlice.actions;
+export const { setAllUsers, setRelation, setNotification, setUserPost, setFriendRequest, setMyRequest } = userSlice.actions;
 
 export const getAllUsers = (state: any) => state.userInfo.allUsers;
 export const getRelation = (state: any) => state.userInfo.relation;
 export const getNotification = (state: any) => state.userInfo.notification;
 export const getUserPost = (state: any) => state.userInfo.userPost;
+export const getFriendRequest = (state: any) => state.userInfo.friendRequest;
+export const getMyRequest = (state: any) => state.userInfo.myRequest;
 
 export default userSlice.reducer;

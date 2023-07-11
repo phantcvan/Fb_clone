@@ -59,13 +59,6 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
 
   const handleClose = () => {
     setIsEditProfile(false);
-    // setSelectedAvatar("");
-    // setPreviewAvatarSrc("");
-    // setSelectedCover("");
-    // setPreviewCoverSrc("");
-    // setEditBio(false);
-    // setMessage("");
-
   }
 
   useEffect(() => {

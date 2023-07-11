@@ -5,7 +5,7 @@ import Topbar from "../components/Topbar";
 // import { useNavigate } from "react-router-dom";
 import { setShowMess, getShowMess, getShowCmt, setGoHome } from "../slices/appSlice";
 import { getUser, setUser } from "../slices/whitelist";
-import { getAllUsers, setAllUsers, setRelation, getRelation, getNotification, setNotification } from "../slices/userSlice";
+import { getAllUsers, setAllUsers, setRelation, getRelation, getNotification, setNotification, setFriendRequest, setMyRequest } from "../slices/userSlice";
 import { useDispatch, useSelector } from 'react-redux';
 import Conversation from "../components/Conversation";
 import Comment from "../components/Comment";
@@ -82,7 +82,10 @@ const Home = () => {
       setContact(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id)));
       dispatch(setRelation(allUsers?.filter((user: UserType) => idsFromRelation.includes(user.id))));
       const filteredObjects = requestResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.accept_id === userNow.id);
-      if (filteredObjects.length > 0) {
+      const myRequest = requestResponse?.data?.request?.filter((item: Relation) => item.status === 1 && item.request_id === userNow.id);
+      if (myRequest?.length > 0) dispatch(setMyRequest(myRequest))
+      if (filteredObjects?.length > 0) {
+        dispatch(setFriendRequest(filteredObjects));
         const latestObject = filteredObjects.reduce((prev: Relation, current: Relation) => {
           return compareDate(prev, current) < 0 ? current : prev;
         });
@@ -96,7 +99,7 @@ const Home = () => {
               user2: lastRequestUser?.id
             })
           ])
-          setMutualCount(mutualResponse?.data?.mutual.length)
+          setMutualCount(mutualResponse?.data?.mutual?.length)
         } catch (error) {
           console.error(error);
         }
@@ -125,8 +128,8 @@ const Home = () => {
     }
   }, [start])
   useEffect(() => {
-    if (isDeleted && editPostId!==0) {
-      setDeleted(pre=>!pre)
+    if (isDeleted && editPostId !== 0) {
+      setDeleted(pre => !pre)
     }
   }, [isDeleted])
 

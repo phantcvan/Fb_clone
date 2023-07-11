@@ -58,6 +58,28 @@ router.post("/isFriend", async (req, res) => {
     });
   }
 });
+// Add friend
+router.post("/sendRequest", async (req, res) => {
+  try {
+    let { request_id, accept_id, status, date_request } = req.body;
+    console.log(request_id, accept_id, status, date_request);
+    const query = `INSERT INTO tbl_relation(request_id, accept_id, status, date_request) VALUES (?, ?, ?, ?)`;
+    let data = await database.execute(query, [
+      request_id,
+      accept_id,
+      status,
+      date_request,
+    ]);
+    let [checkFriend] = data;
+    res.status(200).json({
+      checkFriend,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+});
 
 router.post("/mutual-relations", async (req, res) => {
   try {
@@ -81,13 +103,13 @@ router.post("/mutual-relations", async (req, res) => {
   }
 });
 
-router.put("/accept/:id", async (req, res) => {
-  const { id } = req.params;
+router.put("/accept", async (req, res) => {
+  const { request_id, accept_id } = req.body;
+  console.log(request_id, accept_id);
   try {
     const query = `
-    UPDATE tbl_relation SET status = 2 WHERE id=?`;
-    let data = await database.execute(query, [id]);
-    console.log("123");
+    UPDATE tbl_relation SET status = 2 WHERE request_id = ? AND accept_id = ?`;
+    let data = await database.execute(query, [request_id, accept_id ]);
     let [contact] = data;
     res.json({
       message: "Update relationship successfully",
@@ -97,11 +119,32 @@ router.put("/accept/:id", async (req, res) => {
     res.json({ error });
   }
 });
-
-router.delete("/:id", async (req, res) => {
-  let { id } = req.params;
+// Từ chối lời mời kết bạn
+router.delete("/cancelRequest", async (req, res) => {
+  let { request_id, accept_id } = req.body;
+  console.log( request_id, accept_id );
   try {
-    await database.execute(`DELETE FROM tbl_relation WHERE id = ${id}`);
+    await database.execute(
+      `DELETE FROM tbl_relation WHERE request_id = ? AND accept_id = ? `,
+      [request_id, accept_id]
+    );
+    res.json({
+      status: "success",
+      message: "Delete successfully",
+    });
+  } catch (error) {
+    res.json({ error });
+  }
+});
+// Xoá bạn bè
+router.delete("/deleteFriend", async (req, res) => {
+  let { user1, user2 } = req.body;
+  console.log( user1, user2 );
+  try {
+    await database.execute(
+      `DELETE FROM tbl_relation WHERE (request_id = ? AND accept_id = ?) OR (request_id = ? AND accept_id = ?)`,
+      [user1, user2, user2, user1]
+    );
     res.json({
       status: "success",
       message: "Delete successfully",

@@ -84,8 +84,8 @@ const Topbar = ({ userNow }: TopProps) => {
     }
     const handleClickUser = (id: number) => {
         console.log("123");
-
-        navigate(`/${id}`)
+        setShowTooltip(false)
+        navigate(`/user/${id}`)
     }
 
     // console.log("matchedUsers", matchedUsers)

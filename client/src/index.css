@@ -69,7 +69,26 @@ code {
 
 .header_user {
   background: #181816;
-  background: -moz-linear-gradient(top, #181816 0%, #CBCAC9 53%, #FFFFFF 100%);
-  background: -webkit-linear-gradient(top, #181816 0%, #CBCAC9 53%, #FFFFFF 100%);
-  background: linear-gradient(to bottom, #181816 0%, #CBCAC9 53%, #FFFFFF 100%);
+  background: -moz-linear-gradient(top, #181816 0%, #cbcac9 53%, #ffffff 100%);
+  background: -webkit-linear-gradient(
+    top,
+    #181816 0%,
+    #cbcac9 53%,
+    #ffffff 100%
+  );
+  background: linear-gradient(to bottom, #181816 0%, #cbcac9 53%, #ffffff 100%);
+}
+.btn-primary {
+  background-color: #1B74E4;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 0.375rem;
+}
+.btn-reject {
+  background-color: #E4E6EB;
+  padding: 8px 20px;
+  border-radius: 0.375rem;
+}
+.btn-reject:hover {
+  background-color: #D8DADF;
 }

@@ -59,7 +59,7 @@ const Comment = () => {
             {/* Comment */}
             <div>
               <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
-                <Tippy placement="bottom"
+                <Tippy placement="bottom" interactive
                   render={attrs => (
                     <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
                       {...attrs} >

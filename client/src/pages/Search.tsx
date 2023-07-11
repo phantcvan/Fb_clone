@@ -133,7 +133,7 @@ const Search = () => {
                                     {...attrs} >
                                     <ViewMiniProfile userView={user} />
                                   </div>)}>
-                                <Link to={`/${user?.id}`}>
+                                <Link to={`/user/${user?.id}`}>
                                   <div className='w-16 h-16 rounded-full'>
                                     <img src={user?.avatar} alt="" className='w-16 h-16 rounded-full object-cover overflow-hidden' />
                                   </div>
@@ -147,7 +147,7 @@ const Search = () => {
                                       {...attrs} >
                                       <ViewMiniProfile userView={user} />
                                     </div>)}>
-                                  <Link to={`/${user?.id}`}>
+                                  <Link to={`/user/${user?.id}`}>
                                     <span className="font-semibold">{user?.first_name} {user?.last_name}</span>
                                   </Link>
                                 </Tippy >
@@ -219,7 +219,7 @@ const Search = () => {
                                     {...attrs} >
                                     <ViewMiniProfile userView={user} />
                                   </div>)}>
-                                <Link to={`/${user?.id}`}>
+                                <Link to={`/user/${user?.id}`}>
                                   <div className='w-16 h-16 rounded-full'>
                                     <img src={user?.avatar} alt="" className='w-16 h-16 rounded-full object-cover overflow-hidden' />
                                   </div>
@@ -233,7 +233,7 @@ const Search = () => {
                                       {...attrs} >
                                       <ViewMiniProfile userView={user} />
                                     </div>)}>
-                                  <Link to={`/${user?.id}`}>
+                                  <Link to={`/user/${user?.id}`}>
                                     <span className="font-semibold">{user?.first_name} {user?.last_name}</span>
                                   </Link>
                                 </Tippy >

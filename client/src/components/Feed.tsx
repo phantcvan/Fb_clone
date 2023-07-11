@@ -92,13 +92,13 @@ const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
                         </div>
                     </div>
                     {newPost
-                        && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
+                        && <div className="content-box bg-white border border-fb-gray rounded-lg my-2">
                             <Post lastCmt={lastCmt} post={newPost} />
                         </div>}
                     {deleted
                         ? <div>
                             {updatedPosts?.map((post: PostType) => (
-                                <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
+                                <div className="content-box bg-white border border-fb-gray rounded-lg my-2"
                                     key={post.id}>
                                     <Post lastCmt={lastCmt} post={post} />
                                 </div>
@@ -106,7 +106,7 @@ const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
                         </div>
                         : <div>
                             {posts?.map((post: PostType) => (
-                                <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
+                                <div className="content-box bg-white border border-fb-gray rounded-lg my-2"
                                     key={post.id}>
                                     <Post lastCmt={lastCmt} post={post} />
                                 </div>

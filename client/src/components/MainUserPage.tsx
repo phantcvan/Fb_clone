@@ -56,33 +56,31 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
 
   useEffect(() => {
     // if (editPostId) {
-      fetchData();
-      setIsLoaded(true);
+    fetchData();
+    setIsLoaded(true);
     // }
   }, [edited]);
 
   return (
     <div className=' mr-40'>
       {isLoaded
-        ? <>
-          <div className="content-box w-full flex bg-white border border-fb-gray p-4 rounded-lg my-3">
-            <div>
-              <img src={userNow.avatar} alt=""
-                className="w-10 h-10 rounded-full cursor-pointer object-cover mr-4" />
-            </div>
-            <div className="bg-gray-100 hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
-              onClick={() => setUploadPost(true)}>
-              {userNow?.id === pageId
-                ? <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, {userNow?.last_name}?</span>
-                : <span className="ml-3 text-fb-gray-text text-[15px]">Write something to {pageNow?.last_name}...</span>}
-
-            </div>
-          </div>
+        ? <div className='mt-3'>
+          {userNow?.id === pageId
+            && <div className="content-box w-full flex bg-white border border-fb-gray p-4 rounded-lg my-3">
+              <div>
+                <img src={userNow.avatar} alt=""
+                  className="w-10 h-10 rounded-full cursor-pointer object-cover mr-4" />
+              </div>
+              <div className="bg-gray-100 hover:bg-fb-gray w-full rounded-l-full rounded-r-full flex items-center"
+                onClick={() => setUploadPost(true)}>
+                <span className="ml-3 text-fb-gray-text text-[15px]">What's on your mind, {userNow?.last_name}?</span>
+              </div>
+            </div>}
           {newPost
             && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
               <Post lastCmt={lastCmt} post={newPost} />
             </div>}
-          {(deleted||edited)
+          {(deleted || edited)
             ? <div>
               {updatedPosts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
@@ -93,7 +91,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
             </div>
             : <div>
               {posts?.map((post: PostType) => (
-                <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
+                <div className="content-box bg-white border border-fb-gray rounded-lg my-3"
                   key={post.id}>
                   <Post lastCmt={lastCmt} post={post} />
                 </div>
@@ -101,7 +99,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
             </div>
           }
 
-        </>
+        </div>
         : <div className='absolute top-0 bottom-0 left-0 right-0 z-20 flex items-center justify-center'>
           <Loading />
         </div>}
