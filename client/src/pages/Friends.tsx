@@ -6,8 +6,8 @@ import SmallSidebar from '../components/SmallSidebar';
 import { FaUserGroup } from 'react-icons/fa6';
 import { BsFillPersonPlusFill, BsFillPersonLinesFill } from 'react-icons/bs';
 import "../index.css"
-import { getAllUsers, getFriendRequest, setFriendRequest, setMyRequest, setRelation } from '../slices/userSlice';
-import { Relation, UserType } from '../static/types';
+import { getAllUsers, getFriendRequest, getRelation, setFriendRequest, setMyRequest, setRelation } from '../slices/userSlice';
+import { Relation, UserType, Mutual } from '../static/types';
 import FriendsRequestComp from '../components/Friends/FriendsRequestComp';
 import { BiArrowBack } from 'react-icons/bi';
 import MiniRequest from '../components/Friends/MiniRequest';
@@ -17,6 +17,9 @@ import Introduction from "../components/Introduction";
 import UserPhoto from "../components/UserPhoto";
 import MainUserPage from "../components/MainUserPage";
 import ViewSentRequest from "../components/Friends/ViewSentRequest";
+import { HiMagnifyingGlass } from "react-icons/hi2";
+import MiniFriend from "../components/Friends/MiniFriend";
+import { Scrollbars } from 'react-custom-scrollbars-2';
 
 const Friends = () => {
   const userNow = useSelector(getUser);
@@ -35,6 +38,10 @@ const Friends = () => {
   const [edited, setEdited] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [viewSent, setViewSent] = useState(false);
+  const relation = useSelector(getRelation);
+  const [result, setResult] = useState([]);
+
+
 
 
 
@@ -42,7 +49,7 @@ const Friends = () => {
   const friendRequestInfo = allUsers?.filter((user: UserType) =>
     friendRequest?.some((req: Relation) => req.request_id === user.id)
   )
-
+  // tìm bạn chung
 
   const fetchDataUser = async () => {
     try {
@@ -86,6 +93,7 @@ const Friends = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     fetchDataUser();
+    setResult(relation);
   }, [chooseFriend, userNow]);
   const totalStyle = "w-full ml-[2px]";
   const coverStyle = "h-[350px] rounded-md mr-12 object-cover w-full";
@@ -93,6 +101,14 @@ const Friends = () => {
   const divAdd = "w-[100px]";
   const subTotalStyle = "ml-[170px] mx-auto mr-16";
 
+  const handleInputKeyword = (e: any) => {
+    const inputSearch = e.target.value.trim().replace(/\s+/g, " ").toLowerCase();
+    setResult(relation?.filter(
+      (user: UserType) =>
+      (user.first_name.toLowerCase().includes(inputSearch) ||
+        user.last_name.toLowerCase().includes(inputSearch))
+    ));
+  }
 
   return (
     <div className='relative '>
@@ -131,30 +147,69 @@ const Friends = () => {
             </span>
           </div>
           : pick === 1
-          && <div className='flex flex-col pb-3 w-1/4 content-box px-2 py-4 h-screen fixed top-[57px] left-[60px] bg-white'>
-            <div className='flex items-center gap-2 border-b pb-3 border-fb-gray'>
-              <span className='p-2 rounded-full hover:bg-gray-100 mb-3 cursor-pointer'
-                onClick={() => setPick(0)}>
-                <BiArrowBack size={20} style={{ color: "#606770", backgroundColor: "" }} /> </span>
-              <div className=''>
-                <span className='text-xs text-fb-gray-text'>Friends</span>
-                <p className='text-2xl font-semibold '>Friend Requests</p>
-              </div>
-            </div>
-            <div className='flex flex-col mt-3 gap-2'>
-              <span className='text-md font-semibold'>{friendRequestInfo.length} Friend {friendRequestInfo.length > 1 ? "Requests" : "Request"}</span>
-              <span className='text-sm text-fb-blue cursor-pointer' onClick={() => setViewSent(true)}>
-                View sent request
-              </span>
-              {friendRequestInfo.reverse().map((item: UserType, index: number) => (
-                <div className=' w-full' key={index}>
-                  <MiniRequest item={item} setChooseFriend={setChooseFriend}
-                    request={friendRequest?.filter((fQ: Relation) => fQ.request_id === item.id)[0]} />
+            ? <div className='flex flex-col pb-3 w-1/4 content-box px-2 py-4 h-screen fixed top-[57px] left-[60px] bg-white'>
+              <div className='flex items-center gap-2 border-b pb-3 border-fb-gray'>
+                <span className='p-2 rounded-full hover:bg-gray-100 mb-3 cursor-pointer'
+                  onClick={() => { setPick(0); setChooseFriend(0) }}>
+                  <BiArrowBack size={20} style={{ color: "#606770", backgroundColor: "" }} /> </span>
+                <div className=''>
+                  <span className='text-xs text-fb-gray-text'>Friends</span>
+                  <p className='text-2xl font-semibold '>Friend Requests</p>
                 </div>
-              ))}
-            </div>
+              </div>
+              <div className='flex flex-col mt-3 gap-2'>
+                <span className='text-md font-semibold'>{friendRequestInfo.length} Friend {friendRequestInfo.length > 1 ? "Requests" : "Request"}</span>
+                <span className='text-sm text-fb-blue cursor-pointer' onClick={() => setViewSent(true)}>
+                  View sent request
+                </span>
+                {friendRequestInfo.reverse().map((item: UserType, index: number) => (
+                  <div className=' w-full' key={index}>
+                    <MiniRequest item={item} setChooseFriend={setChooseFriend}
+                      request={friendRequest?.filter((fQ: Relation) => fQ.request_id === item.id)[0]} />
+                  </div>
+                ))}
+              </div>
 
-          </div>}
+            </div>
+            : pick === 2
+            && <div className='flex flex-col pb-3 w-1/4 content-box px-2 py-4 h-screen fixed top-[57px] left-[60px] bg-white'>
+              <div className='flex items-center gap-2 border-b pb-3 border-fb-gray'>
+                <span className='p-2 rounded-full hover:bg-gray-100 mb-3 cursor-pointer'
+                  onClick={() => { setPick(0); setChooseFriend(0) }}>
+                  <BiArrowBack size={20} style={{ color: "#606770", backgroundColor: "" }} /> </span>
+                <div className=''>
+                  <span className='text-xs text-fb-gray-text'>Friends</span>
+                  <p className='text-2xl font-semibold '>All friends</p>
+                </div>
+              </div>
+              <div className='flex items-center mt-3 pb-3 w-[100%] h-10 py-2 text-fb-gray-text bg-gray-100 rounded-l-full rounded-r-full'>
+                <div className="pl-2 flex items-center justify-center ">
+                  <span><HiMagnifyingGlass size={19} /></span>
+                </div>
+                <input
+                  type="text"
+                  onChange={handleInputKeyword}
+                  placeholder="Search Friends"
+                  className="border-none outline-none bg-gray-100 w-[100%] pl-2 rounded-r-full"
+                />
+              </div>
+              <Scrollbars autoHide style={{ width: '100%', height: `390px`, overflow: 'hidden' }}>
+
+                {result?.length > 0
+                  ? <div className='flex flex-col mt-3 gap-2'>
+                    <span className='text-md font-semibold'>
+                      {relation?.length} {relation?.length > 1 ? "friends" : "friend"}</span>
+                    {result?.map((item: UserType, index: number) => (
+                      <div className=' w-full' key={index}>
+                        <MiniFriend item={item} setChooseFriend={setChooseFriend}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  : <span>You don't have any friend</span>}
+              </Scrollbars>
+
+            </div>}
 
         {pick === 0
           && <div className='flex flex-col mt-6 gap-3 ml-[calc(100vh*1/3+170px)]'>
@@ -167,11 +222,12 @@ const Friends = () => {
               ))}
             </div>
           </div>}
-        {(pick === 1 && chooseFriend === 0)
-          && <div className='flex flex-col mt-6 gap-3 ml-[calc(100vh*1/3+170px)] items-center justify-center w-full'>
+        {((pick === 1 || pick === 2) && chooseFriend === 0)
+          && <div className='flex flex-col gap-3 ml-[calc(100vh*1/3+170px)] items-center justify-center w-full'>
             <img src="/assets/friendPage.png" alt="" className='w-[112px] h-[112px] overflow-hidden object-cover' />
             <span className='text-fb-gray-text font-semibold text-xl'>Select people's names to preview their profile.</span>
           </div>}
+
         {chooseFriend !== 0
           && <div className='flex flex-col gap-3 ml-[calc(100vh*1/3+140px)] w-[900px]' >
             <div className="bg-white rounded-md ml-[-11px]">
@@ -190,7 +246,9 @@ const Friends = () => {
                 setIsLoaded={setIsLoaded} edited={edited} />
             </div>
           </div>}
-      {viewSent && <ViewSentRequest setViewSent={setViewSent}/>}
+        {/* {pick===2 
+          &&} */}
+        {viewSent && <ViewSentRequest setViewSent={setViewSent} />}
       </div>
     </div>
   )

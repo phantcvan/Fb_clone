@@ -7,7 +7,7 @@ const initialState = {
   goHome: false,
   hadNew: 0,
   searchQuery:"",
-  // actionPost: 0,
+
 };
 
 export const appSlice = createSlice({
@@ -20,6 +20,9 @@ export const appSlice = createSlice({
     setShowMess: (state, action) => {
       state.showMess = action.payload;
     },
+    // setCreatePost: (state, action) => {
+    //   state.showMess = action.payload;
+    // },
     setShowCmt: (state, action) => {
       state.showCmt = action.payload;
     },

@@ -40,6 +40,25 @@ router.get("/friends/:id", async (req, res) => {
     });
   }
 });
+// Thông tin các yêu cầu kết bạn đã gửi đi
+router.get("/myRequest/:id", async (req, res) => {
+  try {
+    let { id } = req.params;
+    const query = `SELECT u.*
+    FROM tbl_users u
+    JOIN tbl_relation r ON u.id = r.accept_id
+    WHERE r.request_id = ? AND r.status = 1`;
+    let data = await database.execute(query, [id]);
+    let [request] = data;
+    res.status(200).json({
+      request,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+});
 
 router.post("/isFriend", async (req, res) => {
   try {

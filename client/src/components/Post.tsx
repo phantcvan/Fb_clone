@@ -11,7 +11,7 @@ import { setShowCmt, getShowCmt } from "../slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 // import { IoMdSend } from "react-icons/io";
 import ViewMiniProfile from "./ViewMiniProfile";
-import { UserType, PostType, ReactionType } from "../static/types";
+import { UserType, PostType, ReactionType, CmtType } from "../static/types";
 import { getUser } from "../slices/whitelist";
 import axios from "axios";
 import { BiPencil, BiSolidLockAlt } from "react-icons/bi";
@@ -22,10 +22,11 @@ import { setPost, setActionPost, setEditPostId } from "../slices/postSlice";
 import { getAllUsers, setUserPost } from "../slices/userSlice";
 import AddComment from "./AddComment";
 import { BsFillTrashFill, BsThreeDots } from "react-icons/bs";
+import ReactionCmt from "./ReactionCmt";
 
 interface PostProps {
-  lastCmt: boolean;
   post: PostType;
+  upperCmt: boolean
 }
 interface Tag {
   id: number;
@@ -34,7 +35,7 @@ interface Tag {
 }
 
 
-export default function Post({ lastCmt, post }: PostProps) {
+export default function Post({ post, upperCmt }: PostProps) {
   const userNow = useSelector(getUser);
   const [showIcon, setShowIcon] = useState(false);
   // const [showProfile, setShowProfile] = useState(false);
@@ -46,34 +47,66 @@ export default function Post({ lastCmt, post }: PostProps) {
   const [tags, setTags] = useState([]);
   const [reactions, setReactions] = useState<ReactionType[] | []>([]);
   const [reactionUsers, setReactionUsers] = useState([]);
+  const [allCmt, setAllCmt] = useState<CmtType[] | []>([]);
+  const [allCmtUser, setAllCmtUser] = useState<UserType[] | []>([]);
+  const [lastCmtUser, setLastCmtUser] = useState<UserType | null>(null);
   const [reactionsExist, setReactionsExist] = useState<string[] | []>([]);
   const navigate = useNavigate();
   const allUsers = useSelector(getAllUsers);
   const [userNowReaction, setUserNowReaction] = useState("");
   const [userNowReactionImg, setUserNowReactionImg] = useState("");
-
+  const [newCmt, setNewCmt] = useState<CmtType | null>(null);
+  const [allCmtL1, setAllCmtL1] = useState<CmtType[] | []>([]);
+  const [allCmtL2, setAllCmtL2] = useState<CmtType[] | []>([]);
 
   const fetchData = async () => {
     try {
-      const [userResponse, tagsResponse,] = await Promise.all([
+      const [userResponse, tagsResponse, cmtResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
         axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
+        axios.get(`http://localhost:8000/api/v1/cmt/${post?.id}`),
       ]);
+      // console.log("cmtResponse", cmtResponse);
+      setAllCmt(cmtResponse?.data?.comments);
+      setAllCmtL1(cmtResponse?.data?.comments.filter((cmt: CmtType) => cmt.level === 1));
+      setAllCmtL2(cmtResponse?.data?.comments.filter((cmt: CmtType) => cmt.level === 2));
+      const cmtUsers: number[] = cmtResponse?.data?.comments.map(
+        (cmt: CmtType) => cmt.user_id
+      );
+      const uniqueCmtUser: number[] = Array.from(new Set(cmtUsers));
+      setAllCmtUser(allUsers?.filter((user: UserType) => {
+        return uniqueCmtUser.some((uni: number) => uni === user.id);
+      }));
+      setLastCmtUser(allUsers
+        .filter((user: UserType) => user?.id === (cmtResponse?.data?.comments
+          .filter((cmt: CmtType) => cmt?.level === 1))[0]?.user_id)[0])
+      // setLastCmtUser(allUsers?.find((user: UserType) => {
+      //   return cmtResponse?.data?.comments?.some((cmt: CmtType) => cmt.level === 1 && cmt.user_id == user.id);
+      // }))
       setUserPosted(userResponse?.data?.user[0]);
       setTags(tagsResponse?.data?.tags);
     } catch (error) {
       console.error(error);
     }
   }
+
+
   const fetchDataReaction = async () => {
     try {
       const [reactionResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/reaction/${post?.id}`)
       ]);
       setReactions(reactionResponse?.data?.reactions);
-      const uniqueReactionTypes: string[] = [...new Set((reactionResponse?.data?.reactions as ReactionType[])
-        .map(reaction => reaction.reaction_type))];
-      setReactionsExist(uniqueReactionTypes);
+      const reactionTypes: string[] = reactionResponse?.data?.reactions.map(
+        (reaction: ReactionType) => reaction.reaction_type
+      );
+      const uniqueReactionTypes: string[] = Array.from(new Set(reactionTypes));
+      const sortedReactionTypes: string[] = uniqueReactionTypes.sort((a, b) => {
+        const countA = reactionTypes.filter((reaction) => reaction === a).length;
+        const countB = reactionTypes.filter((reaction) => reaction === b).length;
+        return countB - countA;
+      });
+      setReactionsExist(sortedReactionTypes);
       setReactionUsers(allUsers.filter((user: UserType) =>
         reactions?.some((reaction: ReactionType) => reaction.user_id === user.id)
       ));
@@ -133,9 +166,11 @@ export default function Post({ lastCmt, post }: PostProps) {
       console.error(error);
     }
   }
+  // console.log("reactionUsers", reactionUsers)
   // console.log("reactions", reactions)
   // console.log("userNowReaction", userNowReaction)
   // console.log("userNowReactionImg", userNowReactionImg)
+  // console.log("allCmtL1", allCmtL1, lastCmtUser)
 
   const styleBg = post?.bgUrl
     ? {
@@ -270,10 +305,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 </div>
               </Tippy>
             }
-
-
           </div>
-
           <div className="text-[#65676B] text-[13px] flex items-center gap-3  ">
             <div>{moment(post?.date).fromNow()}</div>{" "}
             {post?.audience === "public"
@@ -301,9 +333,10 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
 
       {
         (post?.mediaUrl && post?.type === "picture")
-        && <div className="w-full h-full overflow-hidden flex items-center object-cover">
+        && <div className="w-full h-full overflow-hidden flex items-center object-cover"
+          onClick={handleShowCmt}>
           <img
-            className="object-cover w-full"
+            className="object-cover w-full aspect-[4/3]"
             src={post?.mediaUrl}
           />
         </div>
@@ -311,9 +344,8 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
       {
         (post?.mediaUrl && post?.type === "video")
         && <div className="w-full overflow-hidden flex items-center object-cover" >
-          <ReactPlayer url={post?.mediaUrl} controls
-            width="100%"
-            height="278px" />
+          <ReactPlayer url={post?.mediaUrl} controls className="aspect-video"
+            width="100%" />
         </div>
       }
       {(reactions?.length > 0)
@@ -335,6 +367,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 <div className="flex items-center justify-center">
                   {reactionsExist?.slice(0, 3).map((reaction, index) => {
                     const reactionIcon = Icon.Reaction.find((item) =>
+
                       item.name.toLowerCase() === reaction.toLowerCase()
                     );
 
@@ -366,20 +399,21 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
             <Tippy
               placement="bottom"
               render={attrs => (
-                <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+                <div className={`w-52 ml-[100px] box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
                   {...attrs}>
                   <div className='bg-fb-dark-3 opacity-80 absolute  p-2 text-white text-xs rounded-md'>
-                    <p className='py-[2px]'>ViewCmtUser</p>
-                    <p className='py-[2px]'>ViewCmtUser</p>
-                    <p className='py-[2px]'>ViewCmtUser</p>
+                    {allCmtUser?.slice(0, 10).map((user: UserType) => (
+                      <p className='py-[2px]'>{user?.first_name} {user?.last_name}</p>
+                    ))}
+
                   </div>
                 </div>)}>
               <div className="text-sm text-fb-gray-text mr-2">
-                <span className="flex gap-2">457 <IoChatboxOutline size={18} /></span>
+                <span className="flex gap-2">{allCmt?.length} <IoChatboxOutline size={18} /></span>
               </div>
             </Tippy>
             {/* Số lượng share */}
-            <Tippy
+            {/* <Tippy
               placement="bottom"
               render={attrs => (
                 <div className={`box addOn-box mt-[-10px] px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -393,7 +427,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
               <div className="text-sm text-fb-gray-text">
                 <span className="flex gap-2">45 <IoArrowRedoOutline size={18} /></span>
               </div>
-            </Tippy>
+            </Tippy> */}
 
           </div>
         </div>}
@@ -433,38 +467,92 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </div>
         </div>
       </div>
-      <AddComment />
-      {
-        lastCmt ? <div>
+      {upperCmt && <AddComment level={0} setNewCmt={setNewCmt} postId={post?.id} />}
+      {newCmt
+        && <div>
           <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
-            <Tippy placement="bottom" interactive
-              render={attrs => (
-                <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
-                  {...attrs} >
-                  <ViewMiniProfile userView={userPosted} />
-                </div>)}>
-              <div className={`w-8 h-8 box-content rounded-full flex items-center
-          justify-center cursor-pointer overflow-hidden`}>
-                <img
-                  className="object-cover w-8 h-8"
-                  src="https://img.meta.com.vn/Data/image/2021/10/12/hinh-anh-lisa-blackpink-2.jpg"
-                />
-              </div>
-            </Tippy>
-            <span className="flex-1 h-fit text-fb-gray-text bg-gray-100 rounded-xl flex items-center p-2">
-              adsfdasdfsdafaafdfdfdfdfdfdf dfdfdfdfdfdfdef
+            <div className={`w-8 h-8 box-content rounded-full flex items-center
+        justify-center cursor-pointer overflow-hidden`}>
+              <img
+                className="object-cover w-8 h-8"
+                src={userNow?.avatar}
+              />
+            </div>
+            <span className="flex-1 h-fit bg-gray-100 rounded-xl flex items-center p-2">
+              {newCmt?.content}
             </span>
           </div>
-          <div className="flex gap-4 pl-10 mx-auto w-[90%] relative">
-            <span className="font-semibold text-xs text-fb-dark-1"
-              onMouseOver={() => setShowIconCmt(true)} onMouseLeave={() => setShowIconCmt(false)}>
+          <div className="pl-10 mx-auto w-[90%] relative"
+            onMouseEnter={() => setShowIconCmt(true)} onMouseLeave={() => setShowIconCmt(false)}>
+            <div className="flex gap-4">
+              <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer" >
+                Like
+              </span>
+              <span className="font-semibold text-xs text-fb-dark-1">Reply</span>
+              <span className="font-semibold text-xs text-fb-dark-1">
+                {moment(newCmt?.date).fromNow()}
+              </span>
+
+            </div>
+            {showIconCmt &&
+              <div className="relative ml-[-120px] bottom-[-25px]">
+                <ReactionCmt cmtId={allCmt[allCmt?.length-1]?.id +1}/>
+              </div>}
+          </div>
+          {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
+          <span className="font-semibold text-xs text-fb-dark-1">
+            <PiArrowBendDownRightBold size={18} style={{ color: "#65676B" }} />
+          </span>
+          <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
+            onClick={handleShowCmt}>
+            View more comments
+          </span>
+        </div> */}
+          <div className="flex gap-2 mt-1 mb-3 mx-auto w-[90%] relative">
+            <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
+              onClick={handleShowCmt}>
+              View more comments
+            </span>
+          </div>
+        </div>}
+      {(upperCmt && allCmt?.length > 0) ? <div>
+        <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
+          <Tippy placement="bottom" interactive
+            render={attrs => (
+              <div className={`box py-1 px-2 h-fit rounded-lg cursor-pointer text-xs`}
+                {...attrs} >
+                <ViewMiniProfile userView={lastCmtUser} />
+              </div>)}>
+            <div className={`w-8 h-8 box-content rounded-full flex items-center
+          justify-center cursor-pointer overflow-hidden`}>
+              <img
+                className="object-cover w-8 h-8"
+                src={lastCmtUser?.avatar}
+              />
+            </div>
+          </Tippy>
+          <span className="flex-1 h-fit bg-gray-100 rounded-xl flex items-center p-2">
+            {allCmt?.find(item => item.level === 1)?.content}
+          </span>
+        </div>
+        <div className="pl-10 mx-auto w-[90%] relative"
+          onMouseEnter={() => setShowIconCmt(true)} onMouseLeave={() => setShowIconCmt(false)}>
+          <div className="flex gap-4">
+            <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer" >
               Like
             </span>
             <span className="font-semibold text-xs text-fb-dark-1">Reply</span>
-            <span className="font-semibold text-xs text-fb-dark-1">2h</span>
-            {/* {showIconCmt && <Reaction />} */}
+            <span className="font-semibold text-xs text-fb-dark-1">
+              {moment(allCmt?.find(item => item.level === 1)?.date).fromNow()}
+            </span>
+
           </div>
-          {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
+          {showIconCmt &&
+            <div className="relative ml-[-120px] bottom-[-25px]">
+              <ReactionCmt cmtId={allCmt?.find(item => item.level === 1)?.id}/>
+            </div>}
+        </div>
+        {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
             <span className="font-semibold text-xs text-fb-dark-1">
               <PiArrowBendDownRightBold size={18} style={{ color: "#65676B" }} />
             </span>
@@ -473,14 +561,14 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
               View more comments
             </span>
           </div> */}
-          <div className="flex gap-2 mt-1 mb-3 mx-auto w-[90%] relative">
-            <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
-              onClick={handleShowCmt}>
-              View more comments
-            </span>
-          </div>
+        <div className="flex gap-2 mt-1 mb-3 mx-auto w-[90%] relative">
+          <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
+            onClick={handleShowCmt}>
+            View more comments
+          </span>
         </div>
-          : ""
+      </div>
+        : ""
       }
 
     </div >

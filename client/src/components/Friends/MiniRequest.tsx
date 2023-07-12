@@ -4,7 +4,6 @@ import "../../index.css";
 import moment from "moment";
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setShowMess } from '../../slices/appSlice';
 import { getUser } from '../../slices/whitelist';
 
 interface MiniProp {

@@ -47,6 +47,7 @@ const User = () => {
   const [editedPost, setEditedPost] = useState<PostType | []>([]);
   const [isEditProfile, setIsEditProfile] = useState(false);
   const [editedProfile, setEditedProfile] = useState(false);
+  const [upperCmt, setUpperCmt] = useState(true);
   const navigate = useNavigate();
 
 

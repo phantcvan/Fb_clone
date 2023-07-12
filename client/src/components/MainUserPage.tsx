@@ -30,6 +30,8 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
   const editPostId = useSelector(getEditPostId);
   const [updatedPosts, setUpdatedPosts] = useState<PostType[]>([]);
   const [editedPost, setEditedPost] = useState<PostType | {}>({});
+  const [upperCmt, setUpperCmt] = useState(true);
+
 
 
 
@@ -78,14 +80,14 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
             </div>}
           {newPost
             && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
-              <Post lastCmt={lastCmt} post={newPost} />
+              <Post lastCmt={lastCmt} post={newPost} upperCmt={upperCmt}/>
             </div>}
           {(deleted || edited)
             ? <div>
               {updatedPosts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
                   key={post.id}>
-                  <Post lastCmt={lastCmt} post={post} />
+                  <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt} />
                 </div>
               ))}
             </div>
@@ -93,7 +95,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
               {posts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-3"
                   key={post.id}>
-                  <Post lastCmt={lastCmt} post={post} />
+                  <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt}/>
                 </div>
               ))}
             </div>

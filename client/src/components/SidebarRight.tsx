@@ -22,10 +22,10 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
     const dispatch = useDispatch();
     const [answer, setAnswer] = useState(false);
     const navigate = useNavigate()
-    console.log("lastRequestUser", lastRequestUser);
+    // console.log("lastRequestUser", lastRequestUser);
     const handleAddFriend = () => {
         axios.put(`http://localhost:8000/api/v1/relation/accept`, {
-            request_id: lastRequest?.id,
+            request_id: lastRequestUser?.id,
             accept_id: userNow?.id
         })
             .then(response => {

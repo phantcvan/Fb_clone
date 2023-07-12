@@ -20,6 +20,10 @@ export interface UserType {
   relationship_to: number | null;
   notification: number;
 }
+export interface Mutual {
+  id: number;
+  mutual: number;
+}
 
 export interface Tag {
   id: number;
@@ -60,7 +64,16 @@ export interface ReactionType {
   id: number;
   post_id: number;
   user_id: number;
-  reaction_type:string
+  reaction_type: string
 }
-
+export interface CmtType {
+  id: number;
+  post_id: number;
+  user_id: number;
+  content: string|null;
+  mediaUrl: string|null;
+  level: number;
+  cmt_reply: number;
+  date: string;
+}
 

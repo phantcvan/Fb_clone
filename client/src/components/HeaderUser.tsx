@@ -26,9 +26,8 @@ interface HeaderProp {
 }
 const HeaderUser = ({ pageNow, friends, setIsEditProfile, totalStyle, coverStyle, avatarStyle, divAdd,
   subTotalStyle, setFriends }: HeaderProp) => {
-  console.log("friends", friends);
-  const dispatch = useDispatch();
-  const userNow = useSelector(getUser);
+    const dispatch = useDispatch();
+    const userNow = useSelector(getUser);
   const relation = useSelector(getRelation);
   const myRequest = useSelector(getMyRequest);
   const friendRequest = useSelector(getFriendRequest);
@@ -36,16 +35,17 @@ const HeaderUser = ({ pageNow, friends, setIsEditProfile, totalStyle, coverStyle
   const [isCancel, setIsCancel] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
   const [viewDeleteRequest, setViewDeleteRequest] = useState(false);
-
   const [pickNav, setPickNav] = useState<string>("Post");
 
+  console.log("relation", relation);
+  
   useEffect(() => {
     setIsFriend(relation?.some((item: Relation) => item.id === pageNow?.id));
     setIsCancel(myRequest?.some((item: Relation) => item.accept_id === pageNow?.id));
     setIsConfirm(friendRequest?.some((item: Relation) => item.request_id === pageNow?.id));
   }, [myRequest, friendRequest, relation, isFriend]);
   // console.log("isConfirm", isConfirm);
-  // console.log("isFriend", isFriend);
+  console.log("isFriend", isFriend);
   // console.log("relation", relation);
   // console.log("isCancel", isCancel);
   // console.log("myRequest", myRequest);

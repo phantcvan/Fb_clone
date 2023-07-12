@@ -32,6 +32,7 @@ const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
     const goHome = useSelector(getGoHome);
     const [newPost, setNewPost] = useState<PostType | null>(null);
     const editPostId = useSelector(getEditPostId);
+    const [upperCmt, setUpperCmt] = useState(true);
 
 
 
@@ -93,14 +94,14 @@ const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
                     </div>
                     {newPost
                         && <div className="content-box bg-white border border-fb-gray rounded-lg my-2">
-                            <Post lastCmt={lastCmt} post={newPost} />
+                            <Post lastCmt={lastCmt} post={newPost} upperCmt={upperCmt} />
                         </div>}
                     {deleted
                         ? <div>
                             {updatedPosts?.map((post: PostType) => (
                                 <div className="content-box bg-white border border-fb-gray rounded-lg my-2"
                                     key={post.id}>
-                                    <Post lastCmt={lastCmt} post={post} />
+                                    <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt} />
                                 </div>
                             ))}
                         </div>
@@ -108,7 +109,7 @@ const Feed = ({ posts, isLoaded, deleted, setIsLoaded}: FeedProps) => {
                             {posts?.map((post: PostType) => (
                                 <div className="content-box bg-white border border-fb-gray rounded-lg my-2"
                                     key={post.id}>
-                                    <Post lastCmt={lastCmt} post={post} />
+                                    <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt} />
                                 </div>
                             ))}
                         </div>

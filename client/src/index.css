@@ -92,3 +92,14 @@ code {
 .btn-reject:hover {
   background-color: #D8DADF;
 }
+/* .aspectRatioContainer {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.aspectRatioContainer .reactPlayer {
+  width: 100%;
+  aspect-ratio: 16/10; 
+} */

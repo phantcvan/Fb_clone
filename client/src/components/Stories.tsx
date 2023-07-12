@@ -104,10 +104,10 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
+              src="/assets/story/1.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue  top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
-              <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
+              <img className="object-cover" src={userNow.avatar} />
             </div>
             <div className="absolute bottom-1 left-1">
               <span className="text-xs font-semibold mb-1 text-white">Create story</span>
@@ -118,10 +118,10 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl  overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
+              src="/assets/story/2.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
-              <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
+              <img className="object-cover" src={userNow.avatar} />
             </div>
           </div>
         </div>
@@ -129,10 +129,10 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl  overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
+              src="/assets/story/3.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
-              <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
+            <img className="object-cover" src={userNow.avatar} />
             </div>
           </div>
         </div>
@@ -140,10 +140,10 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl  overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
+              src="/assets/story/4.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
-              <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
+            <img className="object-cover" src={userNow.avatar} />
             </div>
           </div>
         </div>
@@ -151,10 +151,10 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl  overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="https://bedental.vn/wp-content/uploads/2022/11/hot-girl_8-683x1024.jpg"
+              src="/assets/story/5.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
-              <img className="object-cover" src="https://kenh14cdn.com/2020/6/10/de05583c2e86b6d550cd7450a3c9d9d5-15917629640381500726674.jpg" />
+            <img className="object-cover" src={userNow.avatar} />
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { HiUserGroup } from "react-icons/hi2";
 import CreatePost from './CreatePost';
 import { Link, useParams } from 'react-router-dom';
 import { PostType, UserType } from "../static/types";
+import { BsLink45Deg } from 'react-icons/bs';
 
 interface SidebarProp {
   userNow: UserType;
@@ -28,12 +29,13 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
     if (pageId !== userNow.id) {
       setPickMenu(3);
     }
+
   }, [userId])
 
 
 
   return (
-    <div className='w-[60px] flex flex-col border-r border-fb-dark fixed bg-white'>
+    <div className='w-[60px] flex flex-col border-r border-fb-dark fixed bg-white pb-10'>
       <Tippy placement="right"
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -55,13 +57,13 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             {...attrs} >
             Your profile
           </div>)}>
-          <Link to={`/user/${userNow?.id}`}>
-        <div className={`border-l-4 px-5 py-2 ${pickMenu === 2 ? "border-fb-blue" : "border-white"}`}
-          onClick={() => setPickMenu(2)}>
-          <div className="h-6 w-6 rounded-full overflow-hidden object-cover">
-            <img src={userNow?.avatar} alt="" className='h-6 w-6 overflow-hidden object-cover' />
+        <Link to={`/user/${userNow?.id}`}>
+          <div className={`border-l-4 px-5 py-2 ${pickMenu === 2 ? "border-fb-blue" : "border-white"}`}
+            onClick={() => setPickMenu(2)}>
+            <div className="h-6 w-6 rounded-full overflow-hidden object-cover">
+              <img src={userNow?.avatar} alt="" className='h-6 w-6 overflow-hidden object-cover' />
+            </div>
           </div>
-        </div>
         </Link>
       </Tippy>
       <div className='ml-5 mr-2 text-fb-dark my-2'>
@@ -73,12 +75,15 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             {...attrs} >
             Friends
           </div>)}>
-        <div className={`border-l-4 px-5 py-2 ${pickMenu === 3 ? "border-fb-blue" : "border-white"}`}
+            <Link to={`/friends`}>
+            <div className={`border-l-4 px-5 py-2 ${pickMenu === 3 ? "border-fb-blue" : "border-white"}`}
           onClick={() => setPickMenu(3)}>
           <div className="h-6 w-6 rounded-full overflow-hidden object-cover">
             <img src="/assets/friend.png" alt="" className='h-6 w-6 overflow-hidden object-cover' />
           </div>
         </div>
+            </Link>
+        
       </Tippy>
       <Tippy placement="right"
         render={attrs => (
@@ -93,9 +98,9 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
           </div>
         </div>
       </Tippy>
-      <div className='ml-5 mr-2 text-fb-dark my-2'>
+      {/* <div className='ml-5 mr-2 text-fb-dark my-2'>
         <hr />
-      </div>
+      </div> */}
       <Tippy placement="right"
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -109,7 +114,7 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
           </div>
         </div>
       </Tippy>
-      <Tippy placement="right"
+      {/* <Tippy placement="right"
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
             {...attrs} >
@@ -121,8 +126,8 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             <span><LuEdit size={20} /></span>
           </div>
         </div>
-      </Tippy>
-      <Tippy placement="right"
+      </Tippy> */}
+      {/* <Tippy placement="right"
         render={attrs => (
           <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
             {...attrs} >
@@ -134,11 +139,11 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             <span><FaBookOpen size={20} /></span>
           </div>
         </div>
-      </Tippy>
+      </Tippy> */}
       <div className='ml-5 mr-2 text-fb-dark my-2'>
         <hr />
       </div>
-      {SideBarGroup.Group.slice(0, 3).map((item, index) => (
+      {SideBarGroup.Group.slice(0, 2).map((item, index) => (
         <Tippy placement="right" key={index}
           render={attrs => (
             <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
@@ -160,16 +165,47 @@ const SmallSidebar = ({ userNow }: SidebarProp) => {
             {...attrs} >
             See all groups
           </div>)}>
-        <div className={`border-l-4 px-3 ${pickMenu === 12 ? "border-fb-blue" : "border-white"}`}
-          onClick={() => setPickMenu(12)}>
+        <div className={`border-l-4 px-3 ${pickMenu === 10 ? "border-fb-blue" : "border-white"}`}
+          onClick={() => setPickMenu(10)}>
           <div className='h-7 w-7 rounded-lg hover:bg-fb-gray flex items-center justify-center p-5'>
             <span><HiUserGroup size={20} /></span>
           </div>
         </div>
       </Tippy>
+      <div className='ml-5 mr-2 text-fb-dark my-2'>
+        <hr />
+      </div>
+      {SideBarGroup.Page.slice(0, 2).map((item, index) => (
+        <Tippy placement="right" key={index}
+          render={attrs => (
+            <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+              {...attrs} >
+              {item.name}
+            </div>)}>
+          <div key={index} className={`border-l-4 px-5 py-2 ${pickMenu === (index + 11) ? "border-fb-blue" : "border-white"}`}
+            onClick={() => setPickMenu(index + 11)}>
+            <div className="h-6 w-6 rounded-lg overflow-hidden object-cover">
+              <img src={item.logoUrl} alt="" />
+            </div>
+          </div>
+        </Tippy>
 
-      {(pickMenu === 4 && uploadPost === true) && 
-      <CreatePost userNow={userNow} setUploadPost={setUploadPost} left={left} setNewPost={setNewPost}/>}
+      ))}
+      <Tippy placement="right"
+        render={attrs => (
+          <div className={`box ml-[-10px] addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
+            {...attrs} >
+            See all pages
+          </div>)}>
+        <div className={`border-l-4 px-3 ${pickMenu === 13 ? "border-fb-blue" : "border-white"}`}
+          onClick={() => setPickMenu(13)}>
+          <div className='h-7 w-7 rounded-lg hover:bg-fb-gray flex items-center justify-center p-5'>
+            <span><BsLink45Deg size={20} /></span>
+          </div>
+        </div>
+      </Tippy>
+      {(pickMenu === 6 && uploadPost === true) &&
+        <CreatePost userNow={userNow} setUploadPost={setUploadPost} left={left} setNewPost={setNewPost} />}
     </div>
   )
 }

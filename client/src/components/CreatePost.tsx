@@ -31,6 +31,8 @@ const CreatePost = ({ setUploadPost, userNow, left, setNewPost }: CreatePost) =>
     const [postBg, setPostBg] = useState(-1);
     const [postBgUrl, setPostBgUrl] = useState("");
     const [textColor, setTextColor] = useState("black");
+    console.log("123");
+    
 
 
     // Khi đóng cửa sổ Post
@@ -47,14 +49,14 @@ const CreatePost = ({ setUploadPost, userNow, left, setNewPost }: CreatePost) =>
         : {};
     let bigDiv = "";
     if (left !== 0) {
-        bigDiv = "w-[100%] h-full absolute top-0 left-[-300px] bg-overlay-40 flex items-center justify-center z-50";
+        bigDiv = "w-[100%] h-full absolute top-0 left-[-300px] bg-overlay-40 flex items-center justify-center z-[80]";
     } else {
-        bigDiv = "w-[100%] h-full absolute top-0 left-0 bg-overlay-40 flex items-center justify-center z-50"
+        bigDiv = "w-[100%] h-full absolute top-0 left-0 bg-overlay-40 flex items-center justify-center z-[80]"
     }
 
 
     return (
-        <div className={bigDiv}>
+        <div className="w-[100%] h-full absolute top-0 left-0 bg-overlay-40 flex items-center justify-center z-[80]">
 
             <div className='w-[100%] h-[100%] fixed top-0 left-0 bg-overlay-40 flex items-center 
         justify-center z-[60]'

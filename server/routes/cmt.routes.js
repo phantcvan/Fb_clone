@@ -7,7 +7,7 @@ require("dotenv").config();
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const query = `SELECT * FROM tbl_cmt WHERE id = ?`;
+    const query = `SELECT * FROM tbl_cmt WHERE post_id = ? ORDER BY date DESC`;
     let data = await database.execute(query, [id]);
     let [comments] = data;
     res.status(200).json({
@@ -22,12 +22,21 @@ router.get("/:id", async (req, res) => {
 });
 // Thêm cmt vào bài post
 router.post("/", async (req, res) => {
-  const { post_id, cmt, user_id } = req.body;
-  console.log(cmt);
-
+  const { post_id, user_id, content, mediaUrl, level, cmt_reply } = req.body;
+  console.log(post_id, user_id, content, mediaUrl, level, cmt_reply);
+  const date = new Date().toISOString();
   try {
-    const query = ``;
-    let data = await database.execute(query, [id]);
+    const query = `INSERT INTO tbl_cmt(post_id, user_id, content, mediaUrl, level, cmt_reply, date) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let data = await database.execute(query, [
+      post_id,
+      user_id,
+      content,
+      mediaUrl,
+      level,
+      cmt_reply,
+      date,
+    ]);
     return res.status(200).json({
       status: 200,
       success: true,
