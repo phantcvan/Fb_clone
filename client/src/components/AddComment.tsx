@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IoMdSend } from 'react-icons/io';
 import { useSelector } from 'react-redux';
 import { getUser } from '../slices/whitelist';
@@ -9,7 +9,7 @@ import { MdAddPhotoAlternate } from 'react-icons/md';
 
 interface AddProp {
   level: number;
-  setNewCmt: React.Dispatch<React.SetStateAction<CmtType | null>>;
+  setNewCmt: React.Dispatch<React.SetStateAction<boolean>>;
   postId: number;
 }
 interface CmtSend {
@@ -26,6 +26,7 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
   const [comment, setComment] = useState("");
   const [mediaUrl, setMediaUrl] = useState("");
   const [selectedMedia, setSelectedMedia] = useState("");
+  const [flag, setFlag] = useState(false)
   // const [mediaType, setMediaType] = useState("");
   const [previewSrc, setPreviewSrc] = useState('');
 
@@ -47,6 +48,7 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
 
   // choose photos/videos
   const handleAddMedia = (event: any) => {
+    console.log("22222222")
     const mediaFileArr = event.target.files[0].name.split('.');
     const typeOfMedia = mediaFileArr[mediaFileArr.length - 1].toLowerCase();
     if (typeOfMedia === "png" || typeOfMedia === 'jpg' || typeOfMedia === 'jpeg' || typeOfMedia === 'bmp' || typeOfMedia === 'gif') {
@@ -60,6 +62,7 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
       setPreviewSrc(event.target.result);
     };
     reader.readAsDataURL(file);
+    console.log("hihihihihihi")
   };
   // console.log("picture", previewSrc);
   const handlePostCmt = async () => {
@@ -76,23 +79,24 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
     if (mediaUrl) {
       cmtData.mediaUrl = mediaUrl
     }
-    const newCmt: CmtType = {
-      id: Math.floor(Math.random() * 10000000),
-      post_id: postId,
-      user_id: userNow?.id,
-      content: comment,
-      mediaUrl: null,
-      level: levelCmt,
-      cmt_reply: cmtReply,
-      date: new Date().toISOString()
-    }
-    setNewCmt(newCmt);
+    // const newCmt: CmtType = {
+    //   id: Math.floor(Math.random() * 10000000),
+    //   post_id: postId,
+    //   user_id: userNow?.id,
+    //   content: comment,
+    //   mediaUrl: null,
+    //   level: levelCmt,
+    //   cmt_reply: cmtReply,
+    //   date: new Date().toISOString()
+    // }
+
     try {
       const [createPostResponse] = await Promise.all([
         axios.post(`http://localhost:8000/api/v1/cmt`, cmtData),
       ])
       if (createPostResponse.data.status === 200) {
         setInput("");
+        setNewCmt(true);
         console.log('Comment added successfully');
       }
       if (createPostResponse.data.status === 400) {
@@ -107,9 +111,17 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
       handlePostCmt();
     }
   };
+  console.log(selectedMedia);
+
+  useEffect(() => {
+    // previewSrc && setFlag(true)
+    if (previewSrc) setFlag(true)
+    console.log("--------------------------------Preview", previewSrc)
+    console.log("--------------------------------Flag", flag)
+  }, [previewSrc])
 
   return (
-    <div className=" mx-auto gap-2 m-2 m flex w-[90%] flex-col">
+    <div className=" mx-auto gap-2 m-2 m flex w-[90%] flex-col overflow-y-auto max-h-[300px]">
       <div className='flex items-center gap-2'>
         <div className={`w-8 h-8 box-content rounded-full flex items-center
   justify-center cursor-pointer overflow-hidden`}>
@@ -160,10 +172,15 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
 
         </div>
       </div>
-      {selectedMedia &&
-        <div className='w-1/3 aspect-[4/3] ml-[40px]'>
-          <img src={previewSrc} alt="" />
-        </div>}
+      {/* <div className='w-96 h-96'>
+      </div> */}
+
+      {(flag) &&
+        <div className='w-16 h-16 aspect-[4/3] ml-[40px]'>
+          <h2>222222</h2>
+          <img src="https://i.pinimg.com/564x/55/67/48/556748f6bfc33e1e39fecc7e4efecb77.jpg" alt="" />
+        </div>
+      }
 
     </div>
 

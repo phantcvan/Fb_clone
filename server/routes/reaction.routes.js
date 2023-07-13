@@ -19,6 +19,22 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
+// lấy reaction của comment
+router.get("/cmt/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const query = `SELECT * FROM tbl_reaction WHERE post_id = ?`;
+    let data = await database.execute(query, [id]);
+    let [reactions] = data;
+    res.status(200).json({
+      reactions,
+    });
+  } catch (error) {
+    res.json({
+      error,
+    });
+  }
+});
 // Thêm reaction vào bài post
 router.post("/:post_id", async (req, res) => {
   const { post_id } = req.params;

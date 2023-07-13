@@ -104,7 +104,7 @@ const Slick = ({ userNow }: { userNow: UserType }) => {
           <div className={`w-[calc(100%/(${n}+1)-20px)] h-[200px] mr-2 rounded-xl overflow-hidden flex items-center justify-center  relative`}>
             <img
               className="object-cover w-full h-full cursor-pointer"
-              src="/assets/story/1.jpg"
+              src="https://i.pinimg.com/564x/63/a3/1f/63a31f2eeb5cdf22c2a35eb3a7479dc6.jpg"
             />
             <div className="absolute w-10 h-10 border-4 border-fb-blue  top-2 left-2 rounded-full overflow-hidden flex items-center justify-center">
               <img className="object-cover" src={userNow.avatar} />

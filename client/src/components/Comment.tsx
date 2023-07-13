@@ -35,7 +35,7 @@ const Comment = () => {
   const [allCmtL1, setAllCmtL1] = useState<CmtType[] | []>([]);
   const [allCmtL2, setAllCmtL2] = useState<CmtType[] | []>([]);
   const [allCmtUser, setAllCmtUser] = useState<UserType[] | []>([]);
-  const [newCmt, setNewCmt] = useState<CmtType | null>(null);
+  const [newCmt, setNewCmt] = useState(false);
 
   const handleTextareaChange = (event: any) => {
     const { value } = event.target;
@@ -53,7 +53,6 @@ const Comment = () => {
       const allCmt = cmtResponse?.data?.comments.reverse();
       setAllCmtL1(allCmt?.filter((cmt: CmtType) => cmt.level === 1));
       setAllCmtL2(allCmt?.filter((cmt: CmtType) => cmt.level === 2));
-
       const cmtUsers: number[] = cmtResponse?.data?.comments.map(
         (cmt: CmtType) => cmt.user_id
       );
@@ -67,19 +66,23 @@ const Comment = () => {
   }
   useEffect(() => {
     fetchData();
-  }, []);
-  useEffect(() => {
-    if (newCmt?.level === 1) {
-      setAllCmtL1([...allCmtL1, newCmt])
+    if (newCmt) {
+      setShowCmtL2([...showCmtL2, allCmtL2[0]?.id])
     }
-    if (newCmt?.level === 2) {
-      setAllCmtL2([...allCmtL2, newCmt])
-    }
-  }, [newCmt])
+  }, [newCmt]);
+  // useEffect(() => {
+  //   if (newCmt?.level === 1) {
+  //     setAllCmtL1([...allCmtL1, newCmt])
+  //   }
+  //   if (newCmt?.level === 2) {
+  //     setAllCmtL2([...allCmtL2, newCmt])
+  //   }
+  // }, [newCmt])
+
+  console.log("showIconCmt", showIconCmt);
 
 
-
-  // console.log("L1", allCmtL1, allCmtL2)
+  console.log("L1", allCmtL1, allCmtL2)
   // console.log("showCmt", showCmt)
   return (
     <div className='w-[100%] h-[100%] absolute top-0 left-0 bg-overlay-40 flex items-center 
@@ -132,12 +135,19 @@ const Comment = () => {
                         <img src={cmt1?.mediaUrl} alt="" className="w-[40%] rounded-md" />
                       </div>
                     }
-                    <div className="pl-10 mx-auto w-[90%] relative"
-                      onMouseEnter={() => setShowIconCmt(cmt1?.id)} onMouseLeave={() => setShowIconCmt(0)}>
-                      <div className="flex gap-4">
-                        <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer" >
+                    <div className="pl-10 mx-auto w-[90%] relative flex items-center gap-3">
+                      <div className="flex gap-4 w-6" onMouseEnter={() => setShowIconCmt(cmt1?.id)} onMouseLeave={() => setShowIconCmt(0)}>
+                        <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer"
+                        >
                           Like
                         </span>
+                        {/* <div className="absolute top-0"> */}
+                        {showIconCmt === cmt1?.id &&
+                          <div className="relative ml-[-116px] bottom-[-25px]">
+                            <ReactionCmt cmtId={cmt1?.id} />
+                          </div>}
+                      </div>
+                      <div className="flex gap-3 items-center">
                         <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer"
                           onClick={() => setAddCmtL2([...addCmtL2, cmt1?.id])}>
                           Reply
@@ -145,10 +155,7 @@ const Comment = () => {
                         <span className="text-xs text-fb-dark-1">{moment(cmt1?.date).fromNow()}</span>
 
                       </div>
-                      {showIconCmt === cmt1?.id &&
-                        <div className="relative ml-[-76px] bottom-[-25px]">
-                          <ReactionCmt  cmtId={cmt1?.id}/>
-                        </div>}
+
                     </div>
                     {/* <div className="flex gap-4 pl-14 mx-auto w-[90%] relative">
                       <span className="font-semibold text-xs text-fb-dark-1 cursor-pointer"
@@ -212,7 +219,7 @@ const Comment = () => {
                               </div>
                               {showIconCmt === cmt2?.id &&
                                 <div className="relative ml-[-110px] bottom-[-25px] ">
-                                  <ReactionCmt cmtId={cmt2?.id}/>
+                                  <ReactionCmt cmtId={cmt2?.id} />
                                 </div>}
                             </div>
                           </div>
@@ -233,11 +240,11 @@ const Comment = () => {
 
           </div>
         </Scrollbars>
-        <div>
-
+        {/* <div> */}
 
           <AddComment level={0} postId={showCmt} setNewCmt={setNewCmt} />
-        </div>
+
+        {/* </div> */}
       </div >
     </div >
   )

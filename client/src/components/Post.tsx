@@ -2,16 +2,14 @@ import { useState, useEffect, useRef, } from "react";
 import "../index.css"
 import { FaEarthAmericas, FaUserGroup } from "react-icons/fa6";
 import { AiOutlineLike } from "react-icons/ai";
-// import { PiArrowBendDownRightBold } from "react-icons/pi";
 import { IoChatboxOutline, IoArrowRedoOutline } from "react-icons/io5";
 import { Icon } from "../static/icon";
 import Tippy from '@tippyjs/react/headless';
 import Reaction from "./Reaction";
 import { setShowCmt, getShowCmt } from "../slices/appSlice";
 import { useDispatch, useSelector } from "react-redux";
-// import { IoMdSend } from "react-icons/io";
 import ViewMiniProfile from "./ViewMiniProfile";
-import { UserType, PostType, ReactionType, CmtType } from "../static/types";
+import { UserType, PostType, ReactionType, CmtType, CmtReactionType } from "../static/types";
 import { getUser } from "../slices/whitelist";
 import axios from "axios";
 import { BiPencil, BiSolidLockAlt } from "react-icons/bi";
@@ -55,15 +53,33 @@ export default function Post({ post, upperCmt }: PostProps) {
   const allUsers = useSelector(getAllUsers);
   const [userNowReaction, setUserNowReaction] = useState("");
   const [userNowReactionImg, setUserNowReactionImg] = useState("");
-  const [newCmt, setNewCmt] = useState<CmtType | null>(null);
+  const [newCmt, setNewCmt] = useState(false);
   const [allCmtL1, setAllCmtL1] = useState<CmtType[] | []>([]);
   const [allCmtL2, setAllCmtL2] = useState<CmtType[] | []>([]);
 
+  const [cmtReactions, setCmtReactions] = useState<CmtReactionType[] | []>([]);
+  const [cmtReactionUsers, setCmtReactionUsers] = useState([]);
+  const [cmtReactionsExist, setCmtReactionsExist] = useState<string[] | []>([]);
+  const [userNowCmtReaction, setUserNowCmtReaction] = useState("");
+  const [userNowCmtReactionImg, setUserNowCmtReactionImg] = useState("");
+
+
   const fetchData = async () => {
     try {
-      const [userResponse, tagsResponse, cmtResponse] = await Promise.all([
+      const [userResponse, tagsResponse, ] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
         axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
+      ]);
+      // console.log("cmtResponse", cmtResponse);
+      setUserPosted(userResponse?.data?.user[0]);
+      setTags(tagsResponse?.data?.tags);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const fetchDataCmt = async () => {
+    try {
+      const [cmtResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/cmt/${post?.id}`),
       ]);
       // console.log("cmtResponse", cmtResponse);
@@ -80,16 +96,13 @@ export default function Post({ post, upperCmt }: PostProps) {
       setLastCmtUser(allUsers
         .filter((user: UserType) => user?.id === (cmtResponse?.data?.comments
           .filter((cmt: CmtType) => cmt?.level === 1))[0]?.user_id)[0])
-      // setLastCmtUser(allUsers?.find((user: UserType) => {
-      //   return cmtResponse?.data?.comments?.some((cmt: CmtType) => cmt.level === 1 && cmt.user_id == user.id);
-      // }))
-      setUserPosted(userResponse?.data?.user[0]);
-      setTags(tagsResponse?.data?.tags);
     } catch (error) {
       console.error(error);
     }
   }
-
+useEffect(()=>{
+  fetchDataCmt()
+},[newCmt])
 
   const fetchDataReaction = async () => {
     try {
@@ -113,7 +126,36 @@ export default function Post({ post, upperCmt }: PostProps) {
       const userReaction = reactionResponse?.data?.reactions.filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
       if (userReaction.length > 0) {
         setUserNowReaction(userReaction[0]?.reaction_type);
-        setUserNowReactionImg(Icon.Reaction
+        setUserNowReactionImg(Icon?.Reaction
+          .find(item => item.name.toLowerCase() === userReaction[0]?.reaction_type).static);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  const fetchDataCmtReaction = async () => {
+    try {
+      const [cmtReactionResponse] = await Promise.all([
+        axios.get(`http://localhost:8000/api/v1/reaction/cmt/${post?.id}`)
+      ]);
+      setReactions(cmtReactionResponse?.data?.reactions);
+      const reactionTypes: string[] = cmtReactionResponse?.data?.reactions.map(
+        (reaction: ReactionType) => reaction.reaction_type
+      );
+      const uniqueReactionTypes: string[] = Array.from(new Set(reactionTypes));
+      const sortedReactionTypes: string[] = uniqueReactionTypes.sort((a, b) => {
+        const countA = reactionTypes.filter((reaction) => reaction === a).length;
+        const countB = reactionTypes.filter((reaction) => reaction === b).length;
+        return countB - countA;
+      });
+      setReactionsExist(sortedReactionTypes);
+      setReactionUsers(allUsers.filter((user: UserType) =>
+        reactions?.some((reaction: ReactionType) => reaction.user_id === user.id)
+      ));
+      const userReaction = reactionResponse?.data?.reactions.filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
+      if (userReaction.length > 0) {
+        setUserNowReaction(userReaction[0]?.reaction_type);
+        setUserNowReactionImg(Icon?.Reaction
           .find(item => item.name.toLowerCase() === userReaction[0]?.reaction_type).static);
       }
     } catch (error) {
@@ -468,7 +510,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         </div>
       </div>
       {upperCmt && <AddComment level={0} setNewCmt={setNewCmt} postId={post?.id} />}
-      {newCmt
+      {/* {newCmt
         && <div>
           <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
             <div className={`w-8 h-8 box-content rounded-full flex items-center
@@ -499,22 +541,13 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
                 <ReactionCmt cmtId={allCmt[allCmt?.length-1]?.id +1}/>
               </div>}
           </div>
-          {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">
-          <span className="font-semibold text-xs text-fb-dark-1">
-            <PiArrowBendDownRightBold size={18} style={{ color: "#65676B" }} />
-          </span>
-          <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
-            onClick={handleShowCmt}>
-            View more comments
-          </span>
-        </div> */}
           <div className="flex gap-2 mt-1 mb-3 mx-auto w-[90%] relative">
             <span className="font-semibold text-[13px] text-fb-dark-1 cursor-pointer hover:underline"
               onClick={handleShowCmt}>
               View more comments
             </span>
           </div>
-        </div>}
+        </div>} */}
       {(upperCmt && allCmt?.length > 0) ? <div>
         <div className=" mx-auto gap-2 m-2 flex w-[90%] items-center">
           <Tippy placement="bottom" interactive

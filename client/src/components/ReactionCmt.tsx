@@ -7,11 +7,15 @@ import axios from "axios";
 import { ReactionType } from "../static/types";
 
 interface ReactionProps {
-  cmtId:number;
+  cmtId: number;
 }
-const ReactionCmt = ({ cmtId }: ReactionProps) => {
+const ReactionCmt = ({ cmtId}: ReactionProps) => {
   const userNow = useSelector(getUser);
-  
+  // const visible = showIconCmt === cmtId ? true : false;
+  // console.log("visible", visible);
+  // console.log("showIconCmt", showIconCmt);
+
+
 
   const handleAddReaction = async (index: number) => {
     const reaction_type = Icon.Reaction[index].name.toLowerCase();
@@ -59,7 +63,7 @@ const ReactionCmt = ({ cmtId }: ReactionProps) => {
   return (
     <div className="absolute bottom-10 left-0 p-[2px] bg-white rounded-3xl shadow-xl flex z-40">
       {Icon.Reaction.map((item, index) => (
-        <Tippy key={index} interactive 
+        <Tippy key={index} interactive
           render={attrs => (
             <div className={`box addOn-box py-1 px-2 bg-fb-dark-2 text-white rounded-lg cursor-pointer text-xs`}
               {...attrs}>

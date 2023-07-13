@@ -66,6 +66,12 @@ export interface ReactionType {
   user_id: number;
   reaction_type: string
 }
+export interface CmtReactionType {
+  id: number;
+  cmt_id: number;
+  user_id: number;
+  reaction_type: string
+}
 export interface CmtType {
   id: number;
   post_id: number;
