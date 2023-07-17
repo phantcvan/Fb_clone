@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { AiFillHeart, AiOutlineClose } from 'react-icons/ai';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { useSelector } from 'react-redux';
-import { getUser } from '../../slices/whitelist';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser, setUser } from '../../slices/whitelist';
 import axios from 'axios';
 import { BiSolidHome } from 'react-icons/bi';
 import { PiBagFill } from 'react-icons/pi';
@@ -11,7 +11,7 @@ import { IoLocationSharp } from 'react-icons/io5';
 import { getAllUsers, getRelation } from '../../slices/userSlice';
 import { UserType } from '../../static/types';
 import Tippy from '@tippyjs/react/headless';
-
+import { notification } from "antd";
 
 
 interface EditProfile {
@@ -50,12 +50,14 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
   const [newRelationshipTo, setRelationshipTo] = useState<number | null>(null);
   const [newRelationshipToUser, setRelationshipToUser] = useState<UserType[] | []>([]);
   const [message, setMessage] = useState("");
+  const [searchPartner, setSearchPartner] = useState("");
   const [editBio, setEditBio] = useState(false);
   const [editIntro, setEditIntro] = useState(false);
   const relation = useSelector(getRelation);
   const [showTooltip, setShowTooltip] = useState(false);
   const [matchedUsers, setMatchedUsers] = useState<UserType[] | null>(null);
-  const [partner, setPartner] = useState<string | null | undefined>(null)
+  const [partner, setPartner] = useState<string | null | undefined>(null);
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setIsEditProfile(false);
@@ -106,8 +108,14 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
     setPartner(partnerName);
     const updatedRelationship = [user, ...newRelationshipToUser];
     setRelationshipToUser(updatedRelationship);
-
+    console.log("partnerName", partnerName);
+    setSearchPartner(partnerName);
   };
+  const handleKeyDown = (event: any) => {
+    if (event.key === 'Backspace') {
+      setSearchPartner("");
+    }
+  }
 
   // Add avatar
   const handleAddAvatar = (event: any) => {
@@ -141,7 +149,7 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
   }
   const handleEditInfo = async () => {
     const requests = [];
-
+    let userNowNewInfo: UserType = { ...userNow };
     if (selectedAvatar) {
       const avatarData = new FormData();
       avatarData.append('file', selectedAvatar);
@@ -155,9 +163,11 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
               id: userNow?.id,
               img: avatar,
             };
+            userNowNewInfo.avatar = avatar;
             return axios.put(`http://localhost:8000/api/v1/users/updateAvatar`, avatarUpdate);
           })
       );
+
     }
 
     if (selectedCover) {
@@ -173,6 +183,9 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
               id: userNow?.id,
               img: cover,
             };
+            userNowNewInfo.cover = cover;
+            // console.log("cover", cover);
+
             return axios.put(`http://localhost:8000/api/v1/users/updateCover`, coverUpdate);
           })
       );
@@ -180,6 +193,7 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
     if (newRelationship !== "In a relationship" || newRelationship !== "Married") {
       setRelationshipTo(null);
     }
+
     const userUpdate: UserUpdate = {
       bio: newBio,
       job: newJob,
@@ -190,14 +204,30 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
       relationship: newRelationship,
       relationship_to: newRelationshipTo,
     }
+
     console.log("userUpdate", userUpdate);
 
     requests.push(axios.put(`http://localhost:8000/api/v1/users/updateUser/${userNow.id}`, userUpdate))
 
     try {
       await axios.all(requests);
-
+      userNowNewInfo.bio = newBio;
+      userNowNewInfo.job = newJob;
+      userNowNewInfo.highSchool = newHighSchool;
+      userNowNewInfo.college = newCollege;
+      userNowNewInfo.currentCity = newCurrentCity;
+      userNowNewInfo.hometown = newHometown;
+      userNowNewInfo.relationship = newRelationship;
+      userNowNewInfo.relationship_to = newRelationshipTo;
+      dispatch(setUser(userNowNewInfo));
       console.log('Upload Successfully');
+      notification.success({
+        message: `Profile updated successfully`,
+        style: {
+          top: 5,
+        },
+        duration: 2,
+      });
     } catch (error) {
       console.log(error);
       setMessage('Error! Please try again');
@@ -207,7 +237,7 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
     setIsEditProfile(false);
     setEditedProfile(true);
   };
-  console.log("newRelationshipToUser", newRelationshipToUser[0]?.last_name);
+  // console.log("newRelationshipToUser", newRelationshipToUser[0]?.last_name);
 
 
   return (
@@ -453,9 +483,9 @@ const EditProfile = ({ setIsEditProfile, setEditedProfile }: EditProfile) => {
                   <input
                     type='text'
                     placeholder="Partner"
-                    onChange={handleInputPartner}
+                    onChange={handleInputPartner} onKeyDown={handleKeyDown}
                     className='p-2 text-fb-gray-text border border-fb-gray-text shadow-sm rounded-md outline-none'
-                    value={newRelationshipToUser[0]?.first_name}
+                    value={searchPartner}
                   />
                 </Tippy>
                 : newRelationshipToUser.length > 0

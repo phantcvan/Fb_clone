@@ -24,8 +24,8 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
 
     return (
         <div className="flex basis-1/4 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D] sticky top-[60px] ">
-            <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
-                <div className={`w-[100%] my-2`}>
+            {/* <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}> */}
+                <div className={`w-[100%] my-2 overflow-y-auto min-h-[552px] `}>
                     <div className={`w-[100%] font-semibold `}>
                         <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 ${pick === 1 ? "border-fb-blue" : "border-white"}`}
                             onClick={() => setPick(1)}>
@@ -73,7 +73,7 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                         <div className={`hover:bg-fb-gray p-2 rounded-sm border-l-4 
                         ${pick === 5 ? "border-fb-blue" : "border-white"}`}
                             onClick={() => setPick(5)}>
-                            <Link to={`/`}>
+                            <Link to={`/messages/t`}>
                                 <div className="flex px-5 gap-4 cursor-pointer items-center ">
                                     <img src="/assets/messenger.png" alt="" className='h-6 w-6 overflow-hidden object-cover' />
                                     <span>Message</span>
@@ -152,7 +152,7 @@ const Sidebar = ({ userNow }: { userNow: UserType }) => {
                         ))}
                     </div>
                 </div >
-            </Scrollbars >
+            {/* </Scrollbars > */}
 
         </div >
     )

@@ -50,7 +50,7 @@ router.post("/register", async (req, res) => {
   const cover = process.env.DATABASE_URL + "/cover_default.png";
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  const verify = 0;
+  const verify = 1;
   const isOnline = 0;
   const notification = 0;
   const newUser = [
@@ -98,6 +98,7 @@ router.post("/register", async (req, res) => {
 // active email
 router.post("/active", async (req, res) => {
   let { token } = req.body;
+  console.log("token", token);
   const user = jwt.verify(token, process.env.SECRET);
   if (user) {
     try {

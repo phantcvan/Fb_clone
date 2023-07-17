@@ -15,7 +15,8 @@ import Scrollbars from "react-custom-scrollbars-2";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import { getAudience, getFeeling, getLocation, getTag, setAudience, setBgUrl, setCreatedPost, setFeeling, setLocation, setTag, setType } from "../slices/postSlice";
-import CreatePostLoading from "./CreatePostLoading"
+import CreatePostLoading from "./CreatePostLoading";
+import { notification } from "antd";
 
 interface Check {
     checkIn: string;
@@ -72,6 +73,14 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
             setMediaType("video")
         } else if (typeOfMedia === "png" || typeOfMedia === 'jpg' || typeOfMedia === 'jpeg' || typeOfMedia === 'bmp' || typeOfMedia === 'gif') {
             setMediaType("picture")
+        } else {
+            notification.warning({
+                message: "Please choose a picture or a video",
+                style: {
+                    top: 5,
+                },
+            });
+            return;
         }
         setSelectedMedia(event.target.files[0]);
         // xem trước media
@@ -307,52 +316,52 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
                         onChange={(e) => setContent(e.target.value)}
                         style={styleBg}
                     ></textarea>
-                    <Scrollbars autoHide style={{ width: '100%', height: `150px`, overflow: 'hidden' }}>
+                    {/* <Scrollbars autoHide style={{ width: '100%', height: `150px`, overflow: 'hidden' }}> */}
 
 
-                        {mediaType === ""
+                    {mediaType === ""
+                        ?
+                        <div className=" min-h-[130px] rounded-md border border-fb-dark overflow-y-auto w-full">
+                            <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center relative">
+                                <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                    onClick={() => setUpload(false)}>
+                                    <AiOutlineClose size={20} />
+                                </div>
+                                <div className="">
+                                    <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
+                                        <p className="p-2 rounded-full bg-fb-gray h-12 w-12 flex items-center justify-center">
+                                            <MdAddPhotoAlternate size={24} style={{}} />
+                                        </p>
+                                        <p className="font-semibold text-[16px]">Add Photo/Video</p>
+                                    </label>
+                                    <input type="file" name="uploadMedia" id="uploadMedia"
+                                        className="hidden" onChange={handleAddMedia} />
+                                </div>
+                            </div>
+                        </div>
+                        : mediaType === "picture"
                             ?
-                            <div className="min-h-fit rounded-md border border-fb-dark">
-                                <div className="m-1 hover:bg-gray-100 rounded-md h-[191px] flex items-center justify-center">
+                            <div className="min-h-fit rounded-md overflow-y-auto">
+                                <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                    onClick={() => setUpload(false)}>
+                                    <AiOutlineClose size={20} />
+                                </div>
+                                <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
                                     <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                        onClick={() => setUpload(false)}>
+                                        onClick={() => { setUpload(false); setSelectedMedia("") }}>
                                         <AiOutlineClose size={20} />
                                     </div>
                                     <div className="">
-                                        <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
-                                            <p className="p-2 rounded-full bg-fb-gray h-12 w-12 flex items-center justify-center">
-                                                <MdAddPhotoAlternate size={24} style={{}} />
-                                            </p>
-                                            <p className="font-semibold text-[16px]">Add Photo/Video</p>
-                                        </label>
-                                        <input type="file" name="uploadMedia" id="uploadMedia"
-                                            className="hidden" onChange={handleAddMedia} />
+                                        <img src={previewSrc} alt="w-full round-md" />
                                     </div>
                                 </div>
                             </div>
-                            : mediaType === "picture"
-                                ?
-                                <div className="min-h-fit rounded-md">
-                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                        onClick={() => setUpload(false)}>
-                                        <AiOutlineClose size={20} />
-                                    </div>
-                                    <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
-                                        <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                            onClick={() => { setUpload(false); setSelectedMedia("") }}>
-                                            <AiOutlineClose size={20} />
-                                        </div>
-                                        <div className="">
-                                            <img src={previewSrc} alt="w-full round-md" />
-                                        </div>
-                                    </div>
+                            : <div className="min-h-fit rounded-md overflow-y-auto">
+                                <div className='absolute top-3 right-1 cursor-pointer px-2'
+                                    onClick={() => setUpload(false)}>
+                                    <AiOutlineClose size={20} />
                                 </div>
-                                : <div className="min-h-fit rounded-md">
-                                    <div className='absolute top-3 right-1 cursor-pointer px-2'
-                                        onClick={() => setUpload(false)}>
-                                        <AiOutlineClose size={20} />
-                                    </div>
-                                    <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
+                                <div className="m-1 hover:bg-gray-100 rounded-md h-[100px] flex items-center justify-center">
                                     <div className='absolute top-3 right-1 cursor-pointer px-2'
                                         onClick={() => { setUpload(false); setSelectedMedia("") }}>
                                         <AiOutlineClose size={20} />
@@ -362,10 +371,10 @@ const CreateMain = ({ setUploadPost, setSelectAddOn, setNewPost }: CreatePost) =
                                             width="100%"
                                             height="100%" />
                                     </div>
-                                    </div>
-                                </div>}
+                                </div>
+                            </div>}
 
-                    </Scrollbars>
+                    {/* </Scrollbars> */}
                 </div>
 
                 //     ? <div className="gap-3 m-3 relative flex items-center justify-center">

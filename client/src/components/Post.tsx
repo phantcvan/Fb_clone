@@ -24,7 +24,7 @@ import ReactionCmt from "./ReactionCmt";
 
 interface PostProps {
   post: PostType;
-  upperCmt: boolean
+  upperCmt: boolean;
 }
 interface Tag {
   id: number;
@@ -56,7 +56,6 @@ export default function Post({ post, upperCmt }: PostProps) {
   const [newCmt, setNewCmt] = useState(false);
   const [allCmtL1, setAllCmtL1] = useState<CmtType[] | []>([]);
   const [allCmtL2, setAllCmtL2] = useState<CmtType[] | []>([]);
-
   const [cmtReactions, setCmtReactions] = useState<CmtReactionType[] | []>([]);
   const [cmtReactionUsers, setCmtReactionUsers] = useState([]);
   const [cmtReactionsExist, setCmtReactionsExist] = useState<string[] | []>([]);
@@ -66,7 +65,7 @@ export default function Post({ post, upperCmt }: PostProps) {
 
   const fetchData = async () => {
     try {
-      const [userResponse, tagsResponse, ] = await Promise.all([
+      const [userResponse, tagsResponse,] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/users/${post?.user_id}`),
         axios.get(`http://localhost:8000/api/v1/tag/${post?.id}`),
       ]);
@@ -100,14 +99,14 @@ export default function Post({ post, upperCmt }: PostProps) {
       console.error(error);
     }
   }
-useEffect(()=>{
-  fetchDataCmt()
-},[newCmt])
+  useEffect(() => {
+    fetchDataCmt()
+  }, [newCmt])
 
   const fetchDataReaction = async () => {
     try {
       const [reactionResponse] = await Promise.all([
-        axios.get(`http://localhost:8000/api/v1/reaction/${post?.id}`)
+        axios.get(`http://localhost:8000/api/v1/reaction/post/${post?.id}`)
       ]);
       setReactions(reactionResponse?.data?.reactions);
       const reactionTypes: string[] = reactionResponse?.data?.reactions.map(
@@ -138,25 +137,28 @@ useEffect(()=>{
       const [cmtReactionResponse] = await Promise.all([
         axios.get(`http://localhost:8000/api/v1/reaction/cmt/${post?.id}`)
       ]);
-      setReactions(cmtReactionResponse?.data?.reactions);
-      const reactionTypes: string[] = cmtReactionResponse?.data?.reactions.map(
-        (reaction: ReactionType) => reaction.reaction_type
+      console.log(cmtReactionResponse?.data?.reactions);
+
+      setCmtReactions(cmtReactionResponse?.data?.reactions);
+      const cmtReactionTypes: string[] = cmtReactionResponse?.data?.reactions.map(
+        (reaction: CmtReactionType) => reaction.reaction_type
       );
-      const uniqueReactionTypes: string[] = Array.from(new Set(reactionTypes));
-      const sortedReactionTypes: string[] = uniqueReactionTypes.sort((a, b) => {
-        const countA = reactionTypes.filter((reaction) => reaction === a).length;
-        const countB = reactionTypes.filter((reaction) => reaction === b).length;
+      const uniqueCmtReactionTypes: string[] = Array.from(new Set(cmtReactionTypes));
+      const sortedReactionTypes: string[] = uniqueCmtReactionTypes.sort((a, b) => {
+        const countA = cmtReactionTypes.filter((reaction) => reaction === a).length;
+        const countB = cmtReactionTypes.filter((reaction) => reaction === b).length;
         return countB - countA;
       });
-      setReactionsExist(sortedReactionTypes);
-      setReactionUsers(allUsers.filter((user: UserType) =>
-        reactions?.some((reaction: ReactionType) => reaction.user_id === user.id)
+      setCmtReactionsExist(sortedReactionTypes);
+      setCmtReactionUsers(allUsers.filter((user: UserType) =>
+      cmtReactionTypes?.some((reaction: ReactionType) => reaction.user_id === user.id)
       ));
-      const userReaction = reactionResponse?.data?.reactions.filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
-      if (userReaction.length > 0) {
-        setUserNowReaction(userReaction[0]?.reaction_type);
-        setUserNowReactionImg(Icon?.Reaction
-          .find(item => item.name.toLowerCase() === userReaction[0]?.reaction_type).static);
+      const userCmtReaction = cmtReactionResponse?.data?.reactions
+      .filter((reaction: ReactionType) => reaction.user_id === userNow?.id)
+      if (userCmtReaction.length > 0) {
+        setUserNowCmtReaction(userCmtReaction[0]?.reaction_type);
+        setUserNowCmtReactionImg(Icon?.Reaction
+          ?.find(item => item.name.toLowerCase() === userCmtReaction[0]?.reaction_type).static);
       }
     } catch (error) {
       console.error(error);
@@ -164,7 +166,8 @@ useEffect(()=>{
   }
   useEffect(() => {
     fetchData();
-    fetchDataReaction()
+    fetchDataReaction();
+    fetchDataCmtReaction();
   }, [post?.user_id]);
   // useEffect(() => {
   //   fetchDataReaction();
@@ -172,7 +175,7 @@ useEffect(()=>{
   const handleDeleteReaction = async () => {
     try {
       const [reactionResponse] = await Promise.all([
-        axios.delete(`http://localhost:8000/api/v1/reaction/${post?.id}`, {
+        axios.delete(`http://localhost:8000/api/v1/reaction/post/${post?.id}`, {
           data: { user_id: userNow?.id },
         }),
       ]);
@@ -188,7 +191,7 @@ useEffect(()=>{
   const handleAddReaction = async () => {
     try {
       const [reactionResponse] = await Promise.all([
-        axios.post(`http://localhost:8000/api/v1/reaction/${post?.id}`, {
+        axios.post(`http://localhost:8000/api/v1/reaction/post/${post?.id}`, {
           user_id: userNow.id,
           reaction_type: "like",
         })
@@ -378,7 +381,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
         && <div className="w-full h-full overflow-hidden flex items-center object-cover"
           onClick={handleShowCmt}>
           <img
-            className="object-cover w-full aspect-[4/3]"
+            className="object-cover w-full"
             src={post?.mediaUrl}
           />
         </div>
@@ -582,7 +585,7 @@ justify-center hover:bg-gray-300 cursor-pointer overflow-hidden`}>
           </div>
           {showIconCmt &&
             <div className="relative ml-[-120px] bottom-[-25px]">
-              <ReactionCmt cmtId={allCmt?.find(item => item.level === 1)?.id}/>
+              <ReactionCmt cmtId={allCmt?.find(item => item.level === 1)?.id} />
             </div>}
         </div>
         {/* <div className="flex gap-2 my-1 pl-10 mx-auto w-[90%] relative">

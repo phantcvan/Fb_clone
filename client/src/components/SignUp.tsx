@@ -8,7 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { UserType } from "../static/types"
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { generateRandomId } from "../static/function"
+import { generateRandomId } from "../static/function";
+import { notification } from "antd";
+
 
 
 
@@ -145,13 +147,27 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                 .then(res => {
                     console.log(res.data);
                     if (res.data.status === 200) {
+                            notification.success({
+                                message: `Welcome ${res?.data?.data.first_name} ${res?.data?.data.last_name}`,
+                                style: {
+                                    top: 5,
+                                },
+                                duration: 2,
+                            });
                         console.log('Đăng nhập thành công');
                         dispatch(setUser(res.data.data));
                         navigate({
                             pathname: `/`,
                         })
                     } else {
-                        setMessage("The email you entered had already been signed up, but password incorrect. Please try again.")
+                        notification.error({
+                            message: "The email you entered had already been signed up, but password incorrect. Please try again.",
+                            style: {
+                                top: 5,
+                            },
+                            duration: 2,
+                        });
+                        // setMessage("The email you entered had already been signed up, but password incorrect. Please try again.")
                     }
                 })
                 .catch(error => console.log(error))
@@ -181,6 +197,13 @@ const SignUp = ({ setOpenSignUp }: { setOpenSignUp: React.Dispatch<React.SetStat
                 .then(res => {
                     console.log(res.data);
                     if (res.data.status === 200) {
+                        notification.success({
+                            message: "Register successfully. Please enter your email address và password",
+                            style: {
+                                top: 5,
+                            },
+                            duration: 2,
+                        });
                         console.log('Đăng ký thành công');
                         setOpenSignUp(false);
                     }

@@ -17,9 +17,10 @@ interface MainProp {
   deleted: boolean;
   setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>;
   edited: boolean;
+  setEdited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }: MainProp) => {
+const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited, setEdited }: MainProp) => {
   const userNow = useSelector(getUser);
   const [uploadPost, setUploadPost] = useState(false);
   const { userId } = useParams();
@@ -53,7 +54,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
       console.error(error);
     }
   }
-  // console.log("edited MAIN", edited);
+  console.log("edited MAIN", edited);
   // console.log("updatedPosts", updatedPosts);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
     fetchData();
     setIsLoaded(true);
     // }
-  }, [edited]);
+  }, [edited, editPostId]);
 
   return (
     <div className=' mr-40'>
@@ -80,14 +81,14 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
             </div>}
           {newPost
             && <div className="content-box bg-white border border-fb-gray rounded-lg my-1">
-              <Post lastCmt={lastCmt} post={newPost} upperCmt={upperCmt}/>
+              <Post post={newPost} upperCmt={upperCmt} />
             </div>}
           {(deleted || edited)
             ? <div>
               {updatedPosts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-1"
                   key={post.id}>
-                  <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt} />
+                  <Post post={post} upperCmt={upperCmt} />
                 </div>
               ))}
             </div>
@@ -95,7 +96,7 @@ const MainUserPage = ({ pageNow, posts, isLoaded, deleted, setIsLoaded, edited }
               {posts?.map((post: PostType) => (
                 <div className="content-box bg-white border border-fb-gray rounded-lg my-3"
                   key={post.id}>
-                  <Post lastCmt={lastCmt} post={post} upperCmt={upperCmt}/>
+                  <Post post={post} upperCmt={upperCmt} />
                 </div>
               ))}
             </div>

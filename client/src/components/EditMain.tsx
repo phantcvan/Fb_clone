@@ -64,7 +64,7 @@ const EditMain = ({ setIsEdited, isEdited, setSelectAddOn, postBgUrl, setPostBgU
     const location = useSelector(getLocation);
     const dispatch = useDispatch();
 
-    console.log("postId", postId);
+    // console.log("postId", postId);
 
     useEffect(() => {
         setPreviewSrc(mediaUrl);

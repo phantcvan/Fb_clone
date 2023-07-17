@@ -45,7 +45,6 @@ const EditPost = ({ setIsEdited, setEditedPost, isEdited }: EditProp) => {
 
       if (editPost?.data?.post.length > 0) {
         // setIsEdited(pre=>!pre);
-
         setEditPost(editPost?.data?.post);
         dispatch(setContent(editPost?.data?.post[0].content));
         dispatch(setAudience(editPost?.data?.post[0].audience));

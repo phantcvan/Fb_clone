@@ -21,12 +21,12 @@ const PrivateRoute = () => {
         ]);
         dispatch(setUser(usersResponse?.data?.findUser[0]));
         dispatch(setNotification(usersResponse?.data?.findUser[0]?.notification));
-        if (userId) {
-          if (usersResponse?.data?.findUser[0]) {
-              navigate(`/user/${userId}`);
-              dispatch(setNotification(usersResponse?.data?.findUser[0].notification))
-          }
-      } else if (usersResponse?.data?.findUser[0]) navigate("/");
+      //   if (userId) {
+      //     if (usersResponse?.data?.findUser[0]) {
+      //         navigate(`/user/${userId}`);
+      //         dispatch(setNotification(usersResponse?.data?.findUser[0].notification))
+      //     }
+      // } else if (usersResponse?.data?.findUser[0]) navigate("/");
   
       }
     } catch (error) {

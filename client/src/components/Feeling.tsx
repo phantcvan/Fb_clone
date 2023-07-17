@@ -83,8 +83,8 @@ const Feeling = ({ setUploadPost, setSelectAddOn, }: FeelingProps) => {
                         onChange={handleSearchIcon} />
                 </div>
             </div>
-            <Scrollbars autoHide style={{ width: '100%', height: `350px`, overflow: 'hidden' }}>
-                <div className="flex flex-row ml-3 my-1 flex-wrap items-center">
+            {/* <Scrollbars autoHide style={{ width: '100%', height: `350px`, overflow: 'hidden' }}> */}
+                <div className="flex flex-row ml-3 my-1 flex-wrap items-center overflow-y-auto min-h-[352px]">
                     {iconSearch.length === 0
                         ? message.length > 0
                             ? <span className="text-fb-gray-text m-auto mt-2 text-[15px]">{message}</span>
@@ -122,7 +122,7 @@ const Feeling = ({ setUploadPost, setSelectAddOn, }: FeelingProps) => {
                         </>
                     }
                 </div>
-            </Scrollbars>
+            {/* </Scrollbars> */}
 
 
         </div >

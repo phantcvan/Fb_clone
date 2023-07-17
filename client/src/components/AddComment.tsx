@@ -61,8 +61,8 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
     reader.onload = function (event: any) {
       setPreviewSrc(event.target.result);
     };
+    console.log("file", file)
     reader.readAsDataURL(file);
-    console.log("hihihihihihi")
   };
   // console.log("picture", previewSrc);
   const handlePostCmt = async () => {
@@ -106,22 +106,22 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
       console.log(error)
     }
   }
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       handlePostCmt();
     }
   };
-  console.log(selectedMedia);
 
   useEffect(() => {
     // previewSrc && setFlag(true)
     if (previewSrc) setFlag(true)
-    console.log("--------------------------------Preview", previewSrc)
-    console.log("--------------------------------Flag", flag)
+    // console.log("--------------------------------Preview", previewSrc)
+    // console.log("--------------------------------Flag", flag)
   }, [previewSrc])
 
+  // console.log(flag);
   return (
-    <div className=" mx-auto gap-2 m-2 m flex w-[90%] flex-col overflow-y-auto max-h-[300px]">
+    <div className=" mx-auto gap-2 flex my-1 w-[90%] flex-col overflow-y-auto max-h-[350px] min-h-[52px]">
       <div className='flex items-center gap-2'>
         <div className={`w-8 h-8 box-content rounded-full flex items-center
   justify-center cursor-pointer overflow-hidden`}>
@@ -138,7 +138,7 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
     resize-none pt-1" />
             {comment
               ? <div className='flex items-center gap-2 mr-2'>
-                <div className="">
+                {/* <div className="">
                   <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
                     <p className="p-1 rounded-full hover:bg-fb-gray h-8 w-8 flex items-center justify-center">
                       <MdAddPhotoAlternate size={24} style={{}} />
@@ -146,14 +146,14 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
                   </label>
                   <input type="file" name="uploadMedia" id="uploadMedia"
                     className="hidden" onChange={handleAddMedia} />
-                </div>
+                </div> */}
                 <p onClick={handlePostCmt}>
                   <IoMdSend size={20}
                     style={{ color: '#0571ED', cursor: 'pointer' }} />
                 </p>
               </div>
               : <div className='flex items-center gap-2 mr-2'>
-                <div className="">
+                {/* <div className="">
                   <label htmlFor="uploadMedia" className="flex gap-3 cursor-pointer flex-col items-center justify-center">
                     <p className="p-1 rounded-full hover:bg-fb-gray h-8 w-8 flex items-center justify-center">
                       <MdAddPhotoAlternate size={22} style={{}} />
@@ -161,7 +161,7 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
                   </label>
                   <input type="file" name="uploadMedia" id="uploadMedia"
                     className="hidden" onChange={handleAddMedia} />
-                </div>
+                </div> */}
                 <p>
                   <IoMdSend size={20}
                     style={{ color: '#BEC3C9', cursor: 'not-allowed' }} />
@@ -174,14 +174,16 @@ const AddComment = ({ level, setNewCmt, postId }: AddProp) => {
       </div>
       {/* <div className='w-96 h-96'>
       </div> */}
-
-      {(flag) &&
-        <div className='w-16 h-16 aspect-[4/3] ml-[40px]'>
+{/* 
+      {
+        previewSrc ?  */}
+        {/* <div className='w-16 h-16 aspect-[4/3] ml-[40px]'>
           <h2>222222</h2>
           <img src="https://i.pinimg.com/564x/55/67/48/556748f6bfc33e1e39fecc7e4efecb77.jpg" alt="" />
-        </div>
-      }
+        </div>  */}
+        {/* : <></>
 
+      } */}
     </div>
 
   )

@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Search from "./pages/Search";
 import Friends from "./pages/Friends";
+import Messenger from "./pages/Messenger";
 
 
 
@@ -42,7 +43,7 @@ function App() {
           <Route path="" element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/user/:userId" element={<User />} />
-            {/* <Route path="/user" element={<User />} /> */}
+            <Route path="/messages/t" element={<Messenger />} />
             <Route path="/search" element={<Search />} />
             <Route path="/friends" element={<Friends />} />
             <Route path="*" element={<NotFound />} />

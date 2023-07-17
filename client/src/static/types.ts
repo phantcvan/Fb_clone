@@ -82,4 +82,9 @@ export interface CmtType {
   cmt_reply: number;
   date: string;
 }
+export interface IconReaction {
+  iconURL: string;
+  name: string;
+  static: string;
+}
 

@@ -81,7 +81,7 @@ const AccountSetting = ({ setPick, userNow }: AccProps) => {
           </div>
         </div>
         <div className="p-2 hover:bg-gray-100 rounded-lg flex items-center justify-between cursor-pointer"
-          onClick={() => dispatch(logout(null))}>
+          onClick={() => {dispatch(logout(null)); localStorage.setItem("authToken", "");}}>
           <div className="font-semibold text-[15px] flex gap-3 items-center">
             <div className="w-9 h-9 rounded-full flex items-center justify-center bg-fb-gray ">
               <IoLogOut size={24} />

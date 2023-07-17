@@ -24,7 +24,7 @@ const Reaction = ({ setUserNowReaction, setUserNowReactionImg, postId, userNowRe
     if (userNowReaction) {
       try {
         const [reactionResponse] = await Promise.all([
-          axios.put(`http://localhost:8000/api/v1/reaction/${postId}`, {
+          axios.put(`http://localhost:8000/api/v1/reaction/post/${postId}`, {
             user_id: userNow.id,
             reaction_type: reaction_type,
           })
@@ -37,7 +37,7 @@ const Reaction = ({ setUserNowReaction, setUserNowReactionImg, postId, userNowRe
     } else {
       try {
         const [reactionResponse] = await Promise.all([
-          axios.post(`http://localhost:8000/api/v1/reaction/${postId}`, {
+          axios.post(`http://localhost:8000/api/v1/reaction/post/${postId}`, {
             user_id: userNow.id,
             reaction_type: reaction_type,
           })

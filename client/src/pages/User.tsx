@@ -21,7 +21,7 @@ import DeletePost from '../components/DeletePost';
 import { getActionPost, getEditPostId } from '../slices/postSlice';
 import { getAllUsers, setFriendRequest, setMyRequest, setRelation } from '../slices/userSlice';
 import EditProfile from '../components/EditProfile/EditProfile';
-
+import { notification } from "antd";
 
 const User = () => {
   const showMess = useSelector(getShowMess);
@@ -108,15 +108,29 @@ const User = () => {
   useEffect(() => {
     if (isDeleted && editPostId !== 0) {
       setDeleted(pre => !pre)
+      notification.success({
+        message: `Post deleted successfully`,
+        style: {
+          top: 5,
+        },
+        duration: 2,
+      });
     }
   }, [isDeleted])
 
   useEffect(() => {
     if (isEdited && editPostId !== 0) {
       setEdited(true);
+      notification.success({
+        message: `Post edited successfully`,
+        style: {
+          top: 5,
+        },
+        duration: 2,
+      });
     }
   }, [isEdited])
-  // console.log("isEdited",isEdited);
+  console.log("editedProfile", editedProfile);
 
   const totalStyle = "w-full ml-[60px] mr-[95px]"
   const subTotalStyle = "ml-[170px] mx-auto mr-56"
@@ -160,7 +174,7 @@ const User = () => {
                 <div className="flex-1 ml-3 flex flex-col mr-16 pb-2">
                   <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
                     <MainUserPage pageNow={pageNow} posts={posts} isLoaded={isLoaded} deleted={deleted}
-                      setIsLoaded={setIsLoaded} edited={edited} />
+                      setIsLoaded={setIsLoaded} edited={edited} setEdited={setEdited} />
                   </Scrollbars >
                 </div>
               </div>

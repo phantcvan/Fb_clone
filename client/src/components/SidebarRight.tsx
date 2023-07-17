@@ -58,8 +58,8 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
 
     return (
         <div className="flex flex-col flex-1 h-[calc(100vh-50px)] text-sm gap-2 text-[#1D1D1D] pl-20 sticky top-[60px] ">
-            <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}>
-                <div>
+            {/* <Scrollbars autoHide style={{ width: '100%', height: '100%', overflow: "hidden" }}> */}
+                <div className=' overflow-y-auto min-h-[552px]'>
                     {(!answer && lastRequestUser) &&
                         <div className="px-5 w-[100%] my-2">
                             <div className="w-[100%] flex justify-between mt-3 mb-2 p-2">
@@ -124,7 +124,7 @@ const SidebarRight = ({ userNow, contact, lastRequestUser, lastRequest, mutualCo
                     </div>
                 </div>
 
-            </Scrollbars>
+            {/* </Scrollbars> */}
         </div>
 
     )

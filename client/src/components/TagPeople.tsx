@@ -115,8 +115,7 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
 
                 {/* Danh sách gợi ý */}
                 <span className="mt-2 text-fb-gray-text font-semibold">SUGGESTIONS</span>
-                <Scrollbars autoHide style={{ width: '100%', height: `${newTag.length !== 0 ? '253px' : '353px'}`, overflow: 'hidden' }}>
-                    <div >
+                    <div className=" overflow-y-auto max-h-[330px]">
                         {relation.length > 0 &&
                             relation.map((friend: UserType, index: number) => (
                                 <div className="flex gap-4 pb-2 pt-3 cursor-pointer items-center px-2 hover:bg-fb-gray rounded-md"
@@ -128,7 +127,6 @@ const TagPeople = ({ setUploadPost, setSelectAddOn }: TagPeopleProps) => {
                             ))}
 
                     </div>
-                </Scrollbars>
             </div>
         </div >
 

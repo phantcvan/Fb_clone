@@ -7,6 +7,7 @@ import { getUser, setUser } from "../slices/whitelist";
 import { useDispatch, useSelector } from 'react-redux';
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { setNotification } from "../slices/userSlice";
+import { notification } from "antd";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Login = () => {
     const [emailInput, setEmail] = useState("");
     const [passwordInput, setPassword] = useState("");
     const userNow = useSelector(getUser);
+    const notificationDuration = 500;
     const handleAddEmail = (e: any) => {
         setEmail(e.target.value);
         setMessage("");
@@ -27,12 +29,34 @@ const Login = () => {
         setMessage("");
     };
     if (userNow) navigate("/");
+    // Thông báo
+
+
     const handleLogin = async (e: any) => {
         e.preventDefault();
         if (emailInput.trim() === "") {
-            setMessage("The email address you entered isn't connected to an account.")
+            // setTimeout(() => {
+                notification.error({
+                    message: "The email address you entered isn't connected to an account.",
+                    style: {
+                        top: 5,
+                    },
+                    duration: 2,
+                });
+            // }, notificationDuration);
+            // setMessage("The email address you entered isn't connected to an account.")
         } else if (passwordInput === "") {
-            setMessage("Please enter your password.")
+
+                notification.error({
+                    message: "Please enter your password.",
+                    style: {
+                        top: 5,
+                    },
+                    duration: 2,
+                });
+
+
+            // setMessage("Please enter your password.")
         } else {
             await axios.post('http://localhost:8000/api/v1/users/login', {
                 email: emailInput,
@@ -45,10 +69,27 @@ const Login = () => {
                         localStorage.setItem("authToken", res.data.token);
                         setMessage("");
                         dispatch(setUser(res?.data?.data));
+                            notification.success({
+                                message: `Welcome ${res?.data?.data.first_name} ${res?.data?.data.last_name}`,
+                                style: {
+                                    top: 5,
+                                },
+                                duration: 2,
+                            });
+
+                        
                         dispatch(setNotification(res?.data?.data?.notification))
                         navigate({
                             pathname: `/`,
                         })
+                    } else {
+                        notification.error({
+                            message: "Please try again!!!",
+                            style: {
+                                top: 5,
+                            },
+                            duration: 2,
+                        });
                     }
                 })
                 .catch(error => console.log(error))

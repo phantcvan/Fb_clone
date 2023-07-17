@@ -37,7 +37,7 @@ const HeaderUser = ({ pageNow, friends, setIsEditProfile, totalStyle, coverStyle
   const [viewDeleteRequest, setViewDeleteRequest] = useState(false);
   const [pickNav, setPickNav] = useState<string>("Post");
 
-  console.log("relation", relation);
+  // console.log("relation", relation);
   
   useEffect(() => {
     setIsFriend(relation?.some((item: Relation) => item.id === pageNow?.id));
@@ -45,7 +45,7 @@ const HeaderUser = ({ pageNow, friends, setIsEditProfile, totalStyle, coverStyle
     setIsConfirm(friendRequest?.some((item: Relation) => item.request_id === pageNow?.id));
   }, [myRequest, friendRequest, relation, isFriend]);
   // console.log("isConfirm", isConfirm);
-  console.log("isFriend", isFriend);
+  // console.log("isFriend", isFriend);
   // console.log("relation", relation);
   // console.log("isCancel", isCancel);
   // console.log("myRequest", myRequest);
